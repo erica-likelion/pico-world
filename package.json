@@ -9,7 +9,8 @@
 		"web": "expo start --web",
 		"lint": "biome lint .",
 		"format": "biome format --write .",
-		"prepare": "husky install"
+		"prepare": "husky install",
+		"build": "expo export"
 	},
 	"dependencies": {
 		"@expo/vector-icons": "^15.0.2",
