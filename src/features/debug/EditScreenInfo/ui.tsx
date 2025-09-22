@@ -1,5 +1,3 @@
-import React from "react";
-
 import { ExternalLink } from "@/shared/ui/ExternalLink";
 import { MonoText } from "@/shared/ui/StyledText";
 import { Text, View } from "@/shared/ui/Themed";

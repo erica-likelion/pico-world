@@ -18,6 +18,20 @@
 			"recommended": true
 		}
 	},
+	"overrides": [
+		{
+			"includes": ["global.css"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noUnknownAtRules": {
+							"level": "off"
+						}
+					}
+				}
+			}
+		}
+	],
 	"javascript": {
 		"formatter": {
 			"quoteStyle": "double"
