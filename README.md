@@ -9,7 +9,7 @@
 - **Framework**: React Native (Expo)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS v4 (with NativeWind)
-- **Architecture**: Feaㅔture-Sliced Design (FSD)
+- **Architecture**: Feature-Sliced Design (FSD)
 
 ### Feature-Sliced Design (FSD)
 
@@ -48,7 +48,7 @@ pnpm run web
 Expo Go 앱에서 QR 코드를 스캔하여 실제 기기에서 앱을 실행하려면:
 
 ```bash
-pnpm run start
+pnpm run start -c
 ```
 
 ### 3. Code Quality (Biome Lint & Format)

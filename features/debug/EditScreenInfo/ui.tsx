@@ -1,7 +1,7 @@
 import { ExternalLink } from "@/shared/ui/ExternalLink";
 import { MonoText } from "@/shared/ui/StyledText";
 import { Text, View } from "@/shared/ui/Themed";
-import Colors from "@/shared/config/theme/Colors";
+import Colors from "../../../../shared/config/theme/Colors";
 
 export default function EditScreenInfo({ path }: { path: string }) {
 	return (
