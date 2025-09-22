@@ -1,0 +1,6 @@
+# This is a CODEOWNERS file.
+#
+# All pull requests will automatically be assigned to these users for review.
+# For more advanced configurations, see the GitHub documentation.
+
+* @gn-ioeo @gyuhochoime
