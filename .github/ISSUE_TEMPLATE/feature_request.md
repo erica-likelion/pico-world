@@ -1,28 +1,35 @@
 ---
-name: Feature Request
-about: Suggest an idea for this project
-title: 'feat: '
-labels: 'enhancement'
+name: Feature
+about: 새로운 기능 제안 또는 개선 아이디어를 작성하세요.
+title: '[Feat] '
+labels: Feat
 assignees: ''
+---
+
+## 📝 작업 개요
+<!-- 어떤 기능을 제안하는지 한 줄로 설명해주세요. -->
+예: 
 
 ---
 
-## 🚀 Feature Proposal
+## 📋 작업 상세 내용
+<!-- 기능을 구현하기 위해 필요한 세부 작업을 체크리스트로 작성해주세요. -->
+- [ ] 
+- [ ] 
+- [ ] 
+---
 
-> 제안하고 싶은 기능에 대해 명확하고 간결하게 설명해주세요.
+## 💬 추가 논의 사항
+<!-- 기획, 디자인, 기술적으로 더 논의가 필요한 내용이 있다면 적어주세요. -->
 
-## 🤔 Is your feature request related to a problem?
+---
 
-> 만약 현재 겪고 있는 문제점과 관련된 기능 제안이라면, 문제 상황을 설명해주세요. (e.g., I'm always frustrated when...)
+## ⚙️ 예상 동작 방식
+<!-- 사용자가 해당 기능을 어떻게 사용할지 흐름을 적어주세요. 가능하면 예시 이미지/링크 첨부 -->
 
-## ✨ Describe the solution you'd like
+---
 
-> 원하는 해결책을 명확하고 간결하게 설명해주세요.
-
-##  альтернативы (optional)
-
-> 생각해 본 다른 대안이 있다면 설명해주세요.
-
-## 📝 Additional Context
-
-> 그 외에 제안하고 싶은 기능에 대한 다른 정보가 있다면 여기에 작성해주세요.
+## 📚 참고 자료
+<!-- 관련 문서, 레퍼런스, 디자인 링크 등을 첨부해주세요. -->
+- Figma 디자인 시안: [링크]
+- 유사 기능 레퍼런스: [사이트 링크]
