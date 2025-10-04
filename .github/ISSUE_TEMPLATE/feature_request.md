@@ -1,7 +1,7 @@
 ---
 name: Feature
 about: 새로운 기능 제안 또는 개선 아이디어를 작성하세요.
-title: '[Feat] '
+title: 'Feat: '
 labels: Feat
 assignees: ''
 ---
