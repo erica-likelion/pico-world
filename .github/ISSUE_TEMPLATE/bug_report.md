@@ -1,7 +1,7 @@
 ---
 name: Bug
 about: 버그 제보 및 수정 사항을 작성하세요.
-title: '[Bug] '
+title: 'bug: '
 labels: Bug
 assignees: ''
 ---
