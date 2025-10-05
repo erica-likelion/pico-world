@@ -7,5 +7,5 @@ export const rem = (px: number) => {
 	if (Platform.OS === "web") {
 		return `${px / 16}rem`;
 	}
-	return (px / 16) * baseFontSize;
+	return `${(px / 16) * baseFontSize}px`;
 };
