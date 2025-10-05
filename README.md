@@ -8,7 +8,7 @@
 
 - **Framework**: React Native (Expo)
 - **Language**: TypeScript
-- **Styling**: Tailwind CSS v4 (with NativeWind)
+- **Styling**: styled-components
 - **Architecture**: Feature-Sliced Design (FSD)
 
 ### Feature-Sliced Design (FSD)
