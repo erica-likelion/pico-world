@@ -16,4 +16,8 @@ export const grayscale = {
 export const colors = {
 	text: "#000",
 	background: "#fff",
+	happy: "#FF685B",
+	depressed: "#063FB2",
+	comfort: "#F3E9DA",
+	discomfort: "#8529D4",
 };
