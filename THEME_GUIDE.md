@@ -13,9 +13,7 @@ import { theme } from "@/shared/config/theme/theme";
 
 function RootLayoutNav() {
   return (
-    <StyledThemeProvider theme={theme}>
-      {/* ... a ... */}
-    </StyledThemeProvider>
+    <StyledThemeProvider theme={theme}>{/* ... a ... */}</StyledThemeProvider>
   );
 }
 ```
@@ -30,14 +28,15 @@ function RootLayoutNav() {
 **사용법:**
 
 ```tsx
-import styled from 'styled-components/native';
+import styled from "styled-components/native";
 
 const Container = styled.View`
   padding: ${({ theme }) => theme.rem(20)}; /* 20px을 기준으로 반응형 값 적용 */
 `;
 
 const Title = styled.Text`
-  font-size: ${({ theme }) => theme.rem(24)}; /* 24px을 기준으로 반응형 값 적용 */
+  font-size: ${({ theme }) =>
+    theme.rem(24)}; /* 24px을 기준으로 반응형 값 적용 */
 `;
 ```
 
@@ -48,7 +47,7 @@ const Title = styled.Text`
 **사용법:**
 
 ```tsx
-import styled from 'styled-components/native';
+import styled from "styled-components/native";
 
 const PageTitle = styled.Text`
   ${({ theme }) => theme.typography.h1};
@@ -65,7 +64,7 @@ const BodyText = styled.Text`
 
 ```tsx
 // shared/ui/Typography.tsx
-import styled from 'styled-components/native';
+import styled from "styled-components/native";
 
 export const H1 = styled.Text`
   ${({ theme }) => theme.typography.h1};
@@ -82,7 +81,7 @@ export const H1 = styled.Text`
 **사용법:**
 
 ```tsx
-import styled from 'styled-components/native';
+import styled from "styled-components/native";
 
 const Card = styled.View`
   background-color: ${({ theme }) => theme.grayscale.white};
@@ -108,3 +107,7 @@ const SubtleText = styled.Text`
 - `gray100`
 - `gray50`
 - `white`
+- `happy`
+- `depressed`
+- `comfort`
+- `discomfort`
