@@ -1,9 +1,9 @@
 import { colors, grayscale } from "./Colors";
-import { typography } from "./typography";
 import { rem } from "./metrics";
+import { typography } from "./typography";
 
 export const theme = {
-	...colors,
+	colors,
 	grayscale,
 	typography,
 	rem,
