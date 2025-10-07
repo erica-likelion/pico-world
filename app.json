@@ -4,12 +4,12 @@
 		"slug": "omegamon",
 		"version": "1.0.0",
 		"orientation": "portrait",
-		"icon": "./src/shared/assets/images/icon.png",
+		"icon": "./shared/assets/images/icon.png",
 		"scheme": "omegamon",
 		"userInterfaceStyle": "automatic",
 		"newArchEnabled": true,
 		"splash": {
-			"image": "./src/shared/assets/images/splash-icon.png",
+			"image": "./shared/assets/images/splash-icon.png",
 			"resizeMode": "contain",
 			"backgroundColor": "#ffffff"
 		},
@@ -18,7 +18,7 @@
 		},
 		"android": {
 			"adaptiveIcon": {
-				"foregroundImage": "./src/shared/assets/images/adaptive-icon.png",
+				"foregroundImage": "./shared/assets/images/adaptive-icon.png",
 				"backgroundColor": "#ffffff"
 			},
 			"edgeToEdgeEnabled": true,
@@ -27,7 +27,7 @@
 		"web": {
 			"bundler": "metro",
 			"output": "static",
-			"favicon": "./src/shared/assets/images/favicon.png"
+			"favicon": "./shared/assets/images/favicon.png"
 		},
 		"plugins": ["expo-router"],
 		"experiments": {
