@@ -1,4 +1,4 @@
-import CheckIconSvg from "@/shared/assets/icons/check.svg";
+import { CheckIcon as CheckIconComponent } from "@/shared/assets/icons/CheckIcon";
 import styled from "styled-components/native";
 
 export const ChipContainer = styled.View<{ selected: boolean }>`
@@ -20,8 +20,9 @@ export const ChipText = styled.Text`
   ${({ theme }) => theme.typography["title2-medium"]};
 `;
 
-export const CheckIcon = styled(CheckIconSvg)`
+export const CheckIcon = styled(CheckIconComponent).attrs(({ theme }) => ({
+	color: theme.grayscale.gray200,
+}))`
   width: ${({ theme }) => theme.rem(24)};
   height: ${({ theme }) => theme.rem(24)};
-  color: ${({ theme }) => theme.grayscale.gray200};
 `;
