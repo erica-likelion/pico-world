@@ -1,6 +1,6 @@
-import { theme } from "@/shared/config/theme/theme";
+import { navigationTheme, theme } from "@/shared/config/theme/theme";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
+import { ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -41,9 +41,9 @@ function RootLayoutNav() {
 	return (
 		<SafeAreaProvider>
 			<StyledThemeProvider theme={theme}>
-				<ThemeProvider value={DefaultTheme}>
-					<SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-						<StatusBar style="dark" backgroundColor="white" />
+				<ThemeProvider value={navigationTheme}>
+					<SafeAreaView style={{ flex: 1 }}>
+						<StatusBar style="light" />
 						<Stack screenOptions={{ headerShown: false }} />
 					</SafeAreaView>
 				</ThemeProvider>
