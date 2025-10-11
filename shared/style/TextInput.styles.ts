@@ -11,8 +11,4 @@ export const TextInputContainer = styled.TextInput<{ height?: number }>`
 
   color: ${({ theme }) => theme.grayscale.gray50};
   ${({ theme }) => theme.typography.b2};
-
-  &::placeholder {
-    color: ${({ theme }) => theme.grayscale.gray400};
-  }
 `;

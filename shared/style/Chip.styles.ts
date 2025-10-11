@@ -16,7 +16,7 @@ export const ChipContainer = styled.View<{ selected: boolean }>`
 `;
 
 export const ChipText = styled.Text`
-  color: ${({ theme }) => theme.colors.text};
+  color: ${({ theme }) => theme.grayscale.gray200};
   ${({ theme }) => theme.typography["title2-medium"]};
 `;
 

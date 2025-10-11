@@ -15,6 +15,7 @@
  * </TouchableWithoutFeedback>
  */
 
+import { useTheme } from "styled-components/native";
 import * as S from "../style/TextInput.styles";
 
 interface TextInputProps {
@@ -28,11 +29,14 @@ export function TextInput({
 	placeholder,
 	multiline = false,
 }: TextInputProps) {
+	const theme = useTheme();
+
 	return (
 		<S.TextInputContainer
 			multiline={multiline}
 			height={height}
 			placeholder={placeholder}
+			placeholderTextColor={theme.grayscale.gray400}
 		/>
 	);
 }

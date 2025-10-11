@@ -7,13 +7,13 @@ import "@storybook/addon-ondevice-controls/register";
 const normalizedStories = [
 	{
 		titlePrefix: "",
-		directory: "./.rnstorybook/stories",
+		directory: "./stories",
 		files: "**/*.stories.?(ts|tsx|js|jsx)",
 		importPathMatcher:
 			/^\.(?:(?:^|\/|(?:(?:(?!(?:^|\/)\.).)*?)\/)(?!\.)(?=.)[^/]*?\.stories\.(?:ts|tsx|js|jsx)?)$/,
 		// @ts-ignore
 		req: require.context(
-			"./stories",
+			"../stories",
 			true,
 			/^\.(?:(?:^|\/|(?:(?:(?!(?:^|\/)\.).)*?)\/)(?!\.)(?=.)[^/]*?\.stories\.(?:ts|tsx|js|jsx)?)$/,
 		),
@@ -21,7 +21,7 @@ const normalizedStories = [
 ];
 
 declare global {
-	var views: View;
+	var view: View;
 	var STORIES: typeof normalizedStories;
 }
 
@@ -44,4 +44,4 @@ if (!global.view) {
 	updateView(global.view, annotations, normalizedStories);
 }
 
-export const view: View = global.view;
+export const appView: View = global.view;
