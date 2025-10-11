@@ -15,8 +15,8 @@
  * </TouchableWithoutFeedback>
  */
 
+import * as S from "@/shared/style/TextInput.styles";
 import { useTheme } from "styled-components/native";
-import * as S from "../style/TextInput.styles";
 
 interface TextInputProps {
 	height?: number;

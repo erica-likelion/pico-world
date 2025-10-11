@@ -19,9 +19,9 @@
    };
  */
 
+import * as S from "@/shared/style/Chip.styles";
 import { useEffect, useRef } from "react";
 import { Animated, Pressable } from "react-native";
-import * as S from "../style/Chip.styles";
 
 interface ChipProps {
 	text: string;
