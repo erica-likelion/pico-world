@@ -1,5 +1,4 @@
 import * as S from "@/shared/style/ProfileButton.style";
-import { View } from "react-native";
 
 interface ProfileButtonProps {
 	logged?: boolean;
@@ -22,24 +21,22 @@ export const ProfileButton = ({
 	imageUrl,
 }: ProfileButtonProps) => {
 	return (
-		<View>
-			<S.Container>
-				{logged && <S.OuterBorder />}
+		<S.Container>
+			{logged && <S.OuterBorder />}
 
-				<S.Background $logged={logged}>
-					{logged && (
-						<S.Guard>
-							<S.Text>완료!</S.Text>
-						</S.Guard>
-					)}
+			<S.Background $logged={logged}>
+				{logged && (
+					<S.Guard>
+						<S.Text>완료!</S.Text>
+					</S.Guard>
+				)}
 
-					{imageUrl ? (
-						<S.ProfileImage source={{ uri: imageUrl }} />
-					) : (
-						<S.UserIcon />
-					)}
-				</S.Background>
-			</S.Container>
-		</View>
+				{imageUrl ? (
+					<S.ProfileImage source={{ uri: imageUrl }} />
+				) : (
+					<S.UserIcon />
+				)}
+			</S.Background>
+		</S.Container>
 	);
 };

@@ -1,20 +1,10 @@
 import * as S from "@/shared/style/Avatar.style";
-import { View } from "react-native";
-
-type AvatarSize = "large" | "medium" | "small" | "xsSmall" | "xxsSmall";
+import { AvatarSize, SIZE_MAP } from "@/shared/types";
 
 interface AvatarProps {
 	size?: AvatarSize;
 	imageUrl?: string;
 }
-
-const SIZE_MAP: Record<AvatarSize, { bg: number; icon: number }> = {
-	large: { bg: 64, icon: 48 },
-	medium: { bg: 48, icon: 36 },
-	small: { bg: 36, icon: 24 },
-	xsSmall: { bg: 24, icon: 18 },
-	xxsSmall: { bg: 18, icon: 16 },
-};
 
 /**
  * Avatar - 사용자 프로필 이미지나 기본 아이콘 표시
@@ -30,14 +20,12 @@ const SIZE_MAP: Record<AvatarSize, { bg: number; icon: number }> = {
 export const Avatar = ({ size = "small", imageUrl }: AvatarProps) => {
 	const { bg, icon } = SIZE_MAP[size];
 	return (
-		<View>
-			<S.Background $size={bg}>
-				{imageUrl ? (
-					<S.AvatarImage source={{ uri: imageUrl }} $size={bg} />
-				) : (
-					<S.UserIcon $size={icon} />
-				)}
-			</S.Background>
-		</View>
+		<S.Background $size={bg}>
+			{imageUrl ? (
+				<S.AvatarImage source={{ uri: imageUrl }} $size={bg} />
+			) : (
+				<S.UserIcon $size={icon} />
+			)}
+		</S.Background>
 	);
 };

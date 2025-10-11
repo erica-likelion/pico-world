@@ -27,6 +27,12 @@ const getBgColor = (
 	disabled?: boolean,
 	pressed?: boolean,
 ) => {
+	if (color === "white") {
+		if (disabled) return theme.grayscale.gray800;
+		if (pressed) return theme.grayscale.gray100;
+		return theme.grayscale.white;
+	}
+
 	if (color === "gray") {
 		if (disabled) return theme.grayscale.gray800;
 		if (pressed) return theme.grayscale.gray700;
@@ -40,16 +46,20 @@ const getBgColor = (
 
 	if (disabled) return theme.grayscale.gray800;
 	if (pressed) return theme.grayscale.gray100;
-	return theme.colors.background;
+	return theme.grayscale.white;
 };
 
 const getTextColor = (theme: Theme, color?: string, disabled?: boolean) => {
 	if (disabled) return theme.grayscale.gray600;
 
+	if (color === "white") {
+		return theme.grayscale.black;
+	}
+
 	if (color === "gray" || color === "black") {
 		return theme.grayscale.white;
 	}
-	return theme.colors.text;
+	return theme.grayscale.black;
 };
 
 const getText = (theme: Theme, size?: string) => {
@@ -64,16 +74,16 @@ const getText = (theme: Theme, size?: string) => {
 };
 
 export const Background = styled.View<ButtonProps>`
-	width: ${({ theme, $size }) => theme.rem(getSize($size).width)};
-	height: ${({ theme, $size }) => theme.rem(getSize($size).height)};
-	border-radius: ${({ theme }) => theme.rem(60)};
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background-color: ${({ theme, $color, $disabled, $pressed }) =>
+  width: ${({ theme, $size }) => theme.rem(getSize($size).width)};
+  height: ${({ theme, $size }) => theme.rem(getSize($size).height)};
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: ${({ theme, $color, $disabled, $pressed }) =>
 		getBgColor(theme, $color, $disabled, $pressed)};
-	border-width: ${({ $color }) => ($color === "black" ? "1px" : "0px")};
-	border-color: ${({ theme, $color, $disabled }) => {
+  border-width: ${({ $color }) => ($color === "black" ? "1px" : "0px")};
+  border-color: ${({ theme, $color, $disabled }) => {
 		if ($color === "black") {
 			return $disabled ? theme.grayscale.gray700 : theme.grayscale.gray400;
 		}
@@ -82,6 +92,7 @@ export const Background = styled.View<ButtonProps>`
 `;
 
 export const Text = styled.Text<ButtonProps>`
-	${({ theme, $size }) => getText(theme, $size)};
-	color: ${({ theme, $color, $disabled }) => getTextColor(theme, $color, $disabled)};
+  ${({ theme, $size }) => getText(theme, $size)};
+  color: ${({ theme, $color, $disabled }) =>
+		getTextColor(theme, $color, $disabled)};
 `;

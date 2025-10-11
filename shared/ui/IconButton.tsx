@@ -23,11 +23,11 @@ interface IconButtonProps {
  * IconButton
  * @param props - IconButton props
  * @param props.size - 버튼 크기 ("large" | "medium")
- * @param props.icon - 표시할 아이콘 (ReactNode)
- * @param props.iconColor - 아이콘 색상 (선택사항)
+ * @param props.icon - 표시할 아이콘
+ * @param props.iconColor - 아이콘 색상
  * @param props.color - 버튼 색상 ("default" | "happy")
- * @param props.disabled - 비활성화 상태 (선택사항)
- * @param props.onPress - 클릭 시 실행할 함수 (선택사항)
+ * @param props.disabled - 비활성화 상태
+ * @param props.onPress - 클릭 시 실행할 함수
  * @returns JSX.Element
  * @example
  * <IconButton size="large" icon={<BellIcon />} iconColor="white" onPress={() => {}} />

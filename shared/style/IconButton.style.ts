@@ -11,12 +11,10 @@ interface IconButtonProps {
 }
 
 const getSize = (size?: string) => {
-	switch (size) {
-		case "medium":
-			return 44;
-		default:
-			return 64;
+	if (size === "medium") {
+		return 44;
 	}
+	return 62;
 };
 
 const getBackgroundColor = (
@@ -32,20 +30,21 @@ const getBackgroundColor = (
 };
 
 export const Background = styled.View<IconButtonProps>`
-	width: ${({ theme, $size }) => theme.rem(getSize($size))};
-	height: ${({ theme, $size }) => theme.rem(getSize($size))};
-	border-radius: ${({ theme }) => theme.rem(100)};
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background-color: ${({ theme, $pressed, $color }) => getBackgroundColor(theme, $pressed, $color)};
-	overflow: hidden;
+  width: ${({ theme, $size }) => theme.rem(getSize($size))};
+  height: ${({ theme, $size }) => theme.rem(getSize($size))};
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: ${({ theme, $pressed, $color }) =>
+		getBackgroundColor(theme, $pressed, $color)};
+  overflow: hidden;
 `;
 
 export const IconContainer = styled.View<IconButtonProps>`
-	width: ${({ theme }) => theme.rem(24)};
-	height: ${({ theme }) => theme.rem(24)};
-	display: flex;
-	align-items: center;
-	justify-content: center;
+  width: ${({ theme }) => theme.rem(24)};
+  height: ${({ theme }) => theme.rem(24)};
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
