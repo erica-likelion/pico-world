@@ -1,5 +1,5 @@
+import * as S from "@/shared/style/Avatar.style";
 import { View } from "react-native";
-import * as S from "../style/Avatar.style";
 
 type AvatarSize = "large" | "medium" | "small" | "xsSmall" | "xxsSmall";
 

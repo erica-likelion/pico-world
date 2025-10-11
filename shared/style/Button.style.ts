@@ -1,5 +1,5 @@
+import { theme } from "@/shared/config/theme/theme";
 import styled from "styled-components/native";
-import { theme } from "../config/theme/theme";
 
 type Theme = typeof theme;
 

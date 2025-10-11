@@ -1,7 +1,7 @@
+import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
+import * as S from "@/shared/style/Button.style";
 import { useState } from "react";
 import { Animated, TouchableOpacity } from "react-native";
-import { usePressAnimation } from "../hooks/usePressAnimation";
-import * as S from "../style/Button.style";
 
 interface ButtonProps {
 	text: string;
