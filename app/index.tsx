@@ -6,11 +6,11 @@ const Container = styled.View`
   height: 100%;
   align-items: center;
   justify-content: center;
-  background-color: ${({ theme }) => theme.grayscale.gray500};
 `;
 
 const Title = styled.Text`
   ${({ theme }) => theme.typography.h3};
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 export default function Home() {
