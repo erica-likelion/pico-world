@@ -1,3 +1,4 @@
+import UserIconImage from "@/shared/assets/icons/user.png";
 import * as S from "@/shared/style/Avatar.style";
 import { AvatarSize, SIZE_MAP } from "@/shared/types";
 
@@ -21,11 +22,10 @@ export const Avatar = ({ size = "small", imageUrl }: AvatarProps) => {
 	const { bg, icon } = SIZE_MAP[size];
 	return (
 		<S.Background $size={bg}>
-			{imageUrl ? (
-				<S.AvatarImage source={{ uri: imageUrl }} $size={bg} />
-			) : (
-				<S.UserIcon $size={icon} />
-			)}
+			<S.AvatarImage
+				source={imageUrl ? { uri: imageUrl } : UserIconImage}
+				$size={imageUrl ? bg : icon}
+			/>
 		</S.Background>
 	);
 };

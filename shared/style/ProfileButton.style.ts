@@ -1,12 +1,5 @@
-import { UserIcon as UserIconComponent } from "@/shared/assets/icons/UserIcon";
-import { Image } from "react-native";
+import { Animated, Image, Pressable } from "react-native";
 import styled from "styled-components/native";
-
-export const UserIcon = styled(UserIconComponent).attrs(({ theme }) => ({
-	width: theme.rem(48),
-	height: theme.rem(48),
-	color: theme.grayscale.white,
-}))``;
 
 export const ProfileImage = styled(Image).attrs({
 	resizeMode: "cover",
@@ -16,7 +9,7 @@ export const ProfileImage = styled(Image).attrs({
   border-radius: 999px;
 `;
 
-export const Container = styled.View`
+export const Container = styled(Animated.createAnimatedComponent(Pressable))`
   width: ${({ theme }) => theme.rem(64)};
   height: ${({ theme }) => theme.rem(64)};
   border-radius: 999px;
@@ -25,7 +18,10 @@ export const Container = styled.View`
   background-color: ${({ theme }) => theme.grayscale.gray900};
 `;
 
-export const Background = styled.View<{ $logged: boolean }>`
+export const Background = styled.View<{
+	$logged: boolean;
+	$isDefault?: boolean;
+}>`
   position: relative;
   width: ${({ theme }) => theme.rem(64)};
   height: ${({ theme }) => theme.rem(64)};
@@ -37,12 +33,13 @@ export const Background = styled.View<{ $logged: boolean }>`
 		$logged ? theme.rem(2) : theme.rem(1)};
   border-color: ${({ theme, $logged }) =>
 		$logged ? theme.grayscale.gray900 : theme.grayscale.gray600};
+  padding: ${({ theme, $isDefault }) => ($isDefault ? theme.rem(8) : 0)};
 `;
 
 export const OuterBorder = styled.View`
   position: absolute;
-  width: ${({ theme }) => theme.rem(66)};
-  height: ${({ theme }) => theme.rem(66)};
+  width: ${({ theme }) => theme.rem(68)};
+  height: ${({ theme }) => theme.rem(68)};
   border-radius: 999px;
   border-width: ${({ theme }) => theme.rem(2)};
   border-color: ${({ theme }) => theme.colors.happy};

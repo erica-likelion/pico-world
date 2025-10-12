@@ -1,16 +1,7 @@
-import { UserIcon as UserIconComponent } from "@/shared/assets/icons/UserIcon";
 import { Image } from "react-native";
 import styled from "styled-components/native";
 
 type IconProps = { $size: number };
-
-export const UserIcon = styled(UserIconComponent).attrs<IconProps>(
-	({ $size, theme }) => ({
-		width: $size,
-		height: $size,
-		color: theme.grayscale.gray300,
-	}),
-)``;
 
 export const AvatarImage = styled(Image)<IconProps>`
   width: ${({ theme, $size }) => theme.rem($size)};
