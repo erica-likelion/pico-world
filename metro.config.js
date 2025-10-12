@@ -1,6 +1,5 @@
 // Learn more https://docs.expo.io/guides/customizing-metro
 const { getDefaultConfig } = require("expo/metro-config");
-const withStorybook = require("@storybook/react-native/metro/withStorybook");
 
 /** @type {import('expo/metro-config').MetroConfig} */
 const config = getDefaultConfig(__dirname);
@@ -16,4 +15,15 @@ config.resolver = {
 	sourceExts: [...config.resolver.sourceExts, "svg"],
 };
 
-module.exports = withStorybook(config);
+// Storybook은 개발 환경에서만 활성화
+if (process.env.NODE_ENV !== "production") {
+	try {
+		const withStorybook = require("@storybook/react-native/metro/withStorybook");
+		module.exports = withStorybook(config);
+	} catch (error) {
+		console.warn("Storybook not available, using default config");
+		module.exports = config;
+	}
+} else {
+	module.exports = config;
+}
