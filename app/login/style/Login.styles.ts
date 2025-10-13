@@ -52,7 +52,8 @@ export const EclipseWrap = styled.View`
 
 export const EclipseImage = styled.Image`
   position: absolute;
-  top: ${({ theme }) => theme.rem(130)};
-  left: -${({ theme }) => theme.rem(36)};
+  top: 50%;
+  left: 50%;
+  transform: translate(-225px, -242px);
   width: ${({ theme }) => theme.rem(450)};
 `;
