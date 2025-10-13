@@ -4,10 +4,11 @@ import {
 	type ReactElement,
 	type ReactNode,
 } from "react";
-import { TouchableOpacity } from "react-native";
+import { Animated, TouchableOpacity } from "react-native";
 import type { SvgProps } from "react-native-svg";
 import { useTheme } from "styled-components/native";
 import { useRouter } from "expo-router";
+import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
 import LeftIcon from "@/shared/assets/icons/left.svg";
 import * as S from "./TopNav.style";
 
@@ -52,16 +53,27 @@ export const TopNav = ({
 }: TopNavBarProps) => {
 	const router = useRouter();
 	const theme = useTheme();
+	const leftAnimation = usePressAnimation();
+	const rightAnimation = usePressAnimation();
 
 	return (
 		<S.Container $showBorder={showBorder}>
 			{leftIcon ? (
 				<>
 					<S.LeftSection>
-						<TouchableOpacity onPress={() => router.back()} activeOpacity={0.7}>
-							<S.IconContainer>
-								<LeftIcon color={theme.grayscale.white} />
-							</S.IconContainer>
+						<TouchableOpacity
+							onPress={() => router.back()}
+							onPressIn={leftAnimation.handlePressIn}
+							onPressOut={leftAnimation.handlePressOut}
+							activeOpacity={1}
+						>
+							<Animated.View
+								style={{ transform: [{ scale: leftAnimation.scale }] }}
+							>
+								<S.IconContainer>
+									<LeftIcon color={theme.grayscale.white} />
+								</S.IconContainer>
+							</Animated.View>
 						</TouchableOpacity>
 					</S.LeftSection>
 
@@ -79,14 +91,23 @@ export const TopNav = ({
 
 					<S.RightSection>
 						{rightIcon && (
-							<TouchableOpacity onPress={onRightPress} activeOpacity={0.7}>
-								<S.IconContainer>
-									{isValidElement(rightIcon)
-										? cloneElement(rightIcon as ReactElement<SvgProps>, {
-												color: theme.grayscale.white,
-											})
-										: rightIcon}
-								</S.IconContainer>
+							<TouchableOpacity
+								onPress={onRightPress}
+								onPressIn={rightAnimation.handlePressIn}
+								onPressOut={rightAnimation.handlePressOut}
+								activeOpacity={1}
+							>
+								<Animated.View
+									style={{ transform: [{ scale: rightAnimation.scale }] }}
+								>
+									<S.IconContainer>
+										{isValidElement(rightIcon)
+											? cloneElement(rightIcon as ReactElement<SvgProps>, {
+													color: theme.grayscale.white,
+												})
+											: rightIcon}
+									</S.IconContainer>
+								</Animated.View>
 							</TouchableOpacity>
 						)}
 					</S.RightSection>
@@ -95,14 +116,23 @@ export const TopNav = ({
 				<>
 					{title && <S.Title $hasLeftIcon={false}>{title}</S.Title>}
 					{rightIcon && (
-						<TouchableOpacity onPress={onRightPress} activeOpacity={0.7}>
-							<S.IconContainer>
-								{isValidElement(rightIcon)
-									? cloneElement(rightIcon as ReactElement<SvgProps>, {
-											color: theme.grayscale.white,
-										})
-									: rightIcon}
-							</S.IconContainer>
+						<TouchableOpacity
+							onPress={onRightPress}
+							onPressIn={rightAnimation.handlePressIn}
+							onPressOut={rightAnimation.handlePressOut}
+							activeOpacity={1}
+						>
+							<Animated.View
+								style={{ transform: [{ scale: rightAnimation.scale }] }}
+							>
+								<S.IconContainer>
+									{isValidElement(rightIcon)
+										? cloneElement(rightIcon as ReactElement<SvgProps>, {
+												color: theme.grayscale.white,
+											})
+										: rightIcon}
+								</S.IconContainer>
+							</Animated.View>
 						</TouchableOpacity>
 					)}
 				</>

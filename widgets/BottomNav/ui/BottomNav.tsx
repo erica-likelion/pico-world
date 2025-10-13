@@ -6,9 +6,10 @@ import {
 	type ReactNode,
 	useState,
 } from "react";
-import { TouchableOpacity } from "react-native";
+import { Animated, TouchableOpacity } from "react-native";
 import type { SvgProps } from "react-native-svg";
 import { useTheme } from "styled-components/native";
+import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
 // import { useNavigation, useRoute } from "@react-navigation/native";
 
 import HouseIcon from "@/shared/assets/icons/house.svg";
@@ -56,12 +57,51 @@ interface BottomNavBarProps {
  *   setActiveIndex={setActiveIndex}
  * />
  */
+// NavItem 컴포넌트 (usePressAnimation 사용)
+const NavItemComponent = ({
+	item,
+	index,
+	isActive,
+	onPress,
+}: {
+	item: NavItem;
+	index: number;
+	isActive: boolean;
+	onPress: () => void;
+}) => {
+	const theme = useTheme();
+	const { scale, handlePressIn, handlePressOut } = usePressAnimation();
+
+	return (
+		<TouchableOpacity
+			onPress={onPress}
+			onPressIn={handlePressIn}
+			onPressOut={handlePressOut}
+			activeOpacity={1}
+		>
+			<Animated.View style={{ transform: [{ scale }] }}>
+				<S.NavItem>
+					<S.IconContainer>
+						{isValidElement(item.icon)
+							? cloneElement(item.icon as ReactElement<SvgProps>, {
+									color: isActive
+										? theme.grayscale.white
+										: theme.grayscale.gray500,
+								})
+							: item.icon}
+					</S.IconContainer>
+					<S.Label $active={isActive}>{item.label}</S.Label>
+				</S.NavItem>
+			</Animated.View>
+		</TouchableOpacity>
+	);
+};
+
 export const BottomNav = ({
 	activeIndex: controlledActiveIndex,
 	setActiveIndex,
 }: BottomNavBarProps) => {
 	const [internalActiveIndex, setInternalActiveIndex] = useState(0);
-	const theme = useTheme();
 
 	// === 고급 네비게이션 기능 (주석 해제 시 사용) ===
 	// const navigation = useNavigation();
@@ -107,40 +147,13 @@ export const BottomNav = ({
 			{NAV_ITEMS.map((item, index) => {
 				const isActive = index === activeIndex;
 				return (
-					<TouchableOpacity
+					<NavItemComponent
 						key={`nav-${item.label}-${index}`}
+						item={item}
+						index={index}
+						isActive={isActive}
 						onPress={() => handlePress(index)}
-						activeOpacity={0.7}
-					>
-						<S.NavItem>
-							<S.IconContainer>
-								{/* active/inactive 아이콘 분리 기능 (activeIcon prop 사용 시) */}
-								{/* {isActive && item.activeIcon
-                  ? (isValidElement(item.activeIcon)
-                      ? cloneElement(item.activeIcon as ReactElement<SvgProps>, {
-                          color: theme.grayscale.white,
-                        })
-                      : item.activeIcon)
-                  : (isValidElement(item.icon)
-                      ? cloneElement(item.icon as ReactElement<SvgProps>, {
-                          color: isActive
-                            ? theme.grayscale.white
-                            : theme.grayscale.gray500,
-                        })
-                      : item.icon)} */}
-
-								{/* 기본 모드: 하나의 아이콘에 색상만 변경 */}
-								{isValidElement(item.icon)
-									? cloneElement(item.icon as ReactElement<SvgProps>, {
-											color: isActive
-												? theme.grayscale.white
-												: theme.grayscale.gray500,
-										})
-									: item.icon}
-							</S.IconContainer>
-							<S.Label $active={isActive}>{item.label}</S.Label>
-						</S.NavItem>
-					</TouchableOpacity>
+					/>
 				);
 			})}
 		</S.Container>
