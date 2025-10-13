@@ -1,6 +1,6 @@
-import { Pressable } from "react-native";
 import * as S from "@/features/login/style/LoginButton.styles";
 import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
+import { TouchableOpacity } from "react-native";
 
 export function LoginButton() {
 	const {
@@ -16,18 +16,28 @@ export function LoginButton() {
 
 	return (
 		<S.LoginButtonContainer>
-			<Pressable onPressIn={kakaoPressIn} onPressOut={kakaoPressOut}>
+			<TouchableOpacity
+				onPress={() => {}}
+				onPressIn={kakaoPressIn}
+				onPressOut={kakaoPressOut}
+				activeOpacity={1}
+			>
 				<S.KaKaoLoginButton style={{ transform: [{ scale: kakaoScale }] }}>
 					<S.KaKaoLogo />
 					<S.LoginButtonText isKakao>카카오로 계속하기</S.LoginButtonText>
 				</S.KaKaoLoginButton>
-			</Pressable>
-			<Pressable onPressIn={applePressIn} onPressOut={applePressOut}>
+			</TouchableOpacity>
+			<TouchableOpacity
+				onPress={() => {}}
+				onPressIn={applePressIn}
+				onPressOut={applePressOut}
+				activeOpacity={1}
+			>
 				<S.AppleLoginButton style={{ transform: [{ scale: appleScale }] }}>
 					<S.AppleLogo />
 					<S.LoginButtonText>Apple로 계속하기</S.LoginButtonText>
 				</S.AppleLoginButton>
-			</Pressable>
+			</TouchableOpacity>
 		</S.LoginButtonContainer>
 	);
 }
