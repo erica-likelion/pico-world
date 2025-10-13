@@ -2,16 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { fn } from "storybook/test";
-import { TopNav } from "@/widgets/TopNav/ui";
-
-const LeftIcon = () => (
-	<Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-		<Path
-			d="M14.293 4.29289C14.6835 3.90237 15.3165 3.90237 15.707 4.29289C16.0975 4.68342 16.0975 5.31643 15.707 5.70696L9.41405 11.9999L15.707 18.2929C16.0975 18.6834 16.0975 19.3164 15.707 19.707C15.3165 20.0975 14.6835 20.0975 14.293 19.707L7.29295 12.707C6.90243 12.3164 6.90243 11.6834 7.29295 11.2929L14.293 4.29289Z"
-			fill="white"
-		/>
-	</Svg>
-);
+import { TopNav } from "@/widgets/TopNav";
 
 const MenuIcon = () => (
 	<Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -46,7 +37,6 @@ const meta: Meta<typeof TopNav> = {
 		),
 	],
 	args: {
-		onLeftPress: fn(),
 		onRightPress: fn(),
 	},
 	argTypes: {
@@ -68,7 +58,6 @@ type Story = StoryObj<typeof TopNav>;
 export const Default: Story = {
 	args: {
 		title: "페이지 제목",
-		leftIcon: <LeftIcon />,
 		rightIcon: <MenuIcon />,
 		showBorder: true,
 	},
@@ -77,7 +66,6 @@ export const Default: Story = {
 export const WithoutBorder: Story = {
 	args: {
 		title: "페이지 제목",
-		leftIcon: <LeftIcon />,
 		rightIcon: <MenuIcon />,
 		showBorder: false,
 	},
@@ -98,26 +86,11 @@ export const AllVariants: Story = {
 				backgroundColor: "#000",
 			}}
 		>
-			<TopNav
-				title="홈"
-				leftIcon={<LeftIcon />}
-				rightIcon={<MenuIcon />}
-				showBorder
-			/>
-			<TopNav
-				title="설정"
-				leftIcon={<LeftIcon />}
-				rightIcon={<SettingIcon />}
-				showBorder
-			/>
+			<TopNav title="홈" rightIcon={<MenuIcon />} showBorder />
+			<TopNav title="설정" rightIcon={<SettingIcon />} showBorder />
 			<TopNav title="프로필" rightIcon={<SettingIcon />} showBorder />
-			<TopNav title="뒤로가기만" leftIcon={<LeftIcon />} showBorder />
-			<TopNav
-				title="보더 없음"
-				leftIcon={<LeftIcon />}
-				rightIcon={<MenuIcon />}
-				showBorder={false}
-			/>
+			<TopNav title="제목만" showBorder />
+			<TopNav title="보더 없음" rightIcon={<MenuIcon />} showBorder={false} />
 		</View>
 	),
 };
