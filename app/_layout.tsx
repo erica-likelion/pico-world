@@ -2,11 +2,10 @@ import { navigationTheme, theme } from "@/shared/config/theme/theme";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack, usePathname } from "expo-router";
+import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
-import { View } from "react-native";
 import "react-native-reanimated";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { ThemeProvider as StyledThemeProvider } from "styled-components/native";
@@ -42,19 +41,14 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-	const pathname = usePathname();
-	const isLogin = pathname.startsWith("/login");
-
-	const Layout = isLogin ? View : SafeAreaView;
-
 	return (
 		<SafeAreaProvider>
 			<StyledThemeProvider theme={theme}>
 				<ThemeProvider value={navigationTheme}>
-					<Layout style={{ flex: 1 }}>
+					<SafeAreaView style={{ flex: 1 }}>
 						<StatusBar style="light" />
 						<Stack screenOptions={{ headerShown: false }} />
-					</Layout>
+					</SafeAreaView>
 				</ThemeProvider>
 			</StyledThemeProvider>
 		</SafeAreaProvider>
