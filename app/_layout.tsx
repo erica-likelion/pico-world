@@ -1,4 +1,6 @@
 import { navigationTheme, theme } from "@/shared/config/theme/theme";
+import { BottomNav, useBottomNavStore } from "@/widgets/BottomNav";
+import { TopNav } from "@/widgets/TopNav";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
@@ -6,6 +8,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
+import { View } from "react-native";
 import "react-native-reanimated";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { ThemeProvider as StyledThemeProvider } from "styled-components/native";
@@ -41,13 +44,22 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
+	const { isVisible } = useBottomNavStore();
+
 	return (
 		<SafeAreaProvider>
 			<StyledThemeProvider theme={theme}>
 				<ThemeProvider value={navigationTheme}>
-					<SafeAreaView style={{ flex: 1 }}>
+					<SafeAreaView style={{ flex: 1, backgroundColor: "#000" }}>
 						<StatusBar style="light" />
-						<Stack screenOptions={{ headerShown: false }} />
+
+						<TopNav title="오매가몽" />
+
+						<View style={{ flex: 1 }}>
+							<Stack screenOptions={{ headerShown: false }} />
+						</View>
+
+						{isVisible && <BottomNav />}
 					</SafeAreaView>
 				</ThemeProvider>
 			</StyledThemeProvider>

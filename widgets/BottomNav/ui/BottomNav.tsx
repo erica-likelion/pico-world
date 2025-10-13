@@ -11,6 +11,12 @@ import type { SvgProps } from "react-native-svg";
 import { useTheme } from "styled-components/native";
 // import { useNavigation, useRoute } from "@react-navigation/native";
 
+import HouseIcon from "@/shared/assets/icons/house.svg";
+import QuotesIcon from "@/shared/assets/icons/quotes.svg";
+import UsersIcon from "@/shared/assets/icons/users.svg";
+import LayersIcon from "@/shared/assets/icons/layers.svg";
+import SettingIcon from "@/shared/assets/icons/setting.svg";
+
 export interface NavItem {
 	icon: ReactNode;
 	label: string;
@@ -20,64 +26,37 @@ export interface NavItem {
 	// activePaths?: string[]; // 이 탭을 active로 표시할 추가 경로들
 }
 
+const NAV_ITEMS: NavItem[] = [
+	{ icon: <HouseIcon />, label: "홈" },
+	{ icon: <QuotesIcon />, label: "기록" },
+	{ icon: <UsersIcon />, label: "친구" },
+	{ icon: <LayersIcon />, label: "리포트" },
+	{ icon: <SettingIcon />, label: "마이" },
+];
+
 interface BottomNavBarProps {
-	items: NavItem[];
 	activeIndex?: number;
 	setActiveIndex?: (index: number) => void;
 }
 
 /**
- * BottomNavBar - 하단 네비게이션 바
- * @param props - BottomNavBar props
- * @param props.items - 네비게이션 아이템 배열
+ * BottomNav - 하단 네비게이션 바
+ * @param props - BottomNav props
  * @param props.activeIndex - 활성화된 아이템 인덱스 (선택사항)
  * @param props.setActiveIndex - 인덱스 변경 시 실행할 함수 (선택사항)
  * @returns JSX.Element
  * @example
  * // 1. 기본 사용 (자동 상태 관리)
- * <BottomNavBar
- *   items={[
- *     { icon: <HomeIcon />, label: "홈" },
- *     { icon: <CalendarIcon />, label: "캘린더" }
- *   ]}
- * />
+ * <BottomNav />
  *
  * // 2. 외부 상태 관리
  * const [activeIndex, setActiveIndex] = useState(0);
- * <BottomNavBar
- *   items={[...]}
+ * <BottomNav
  *   activeIndex={activeIndex}
  *   setActiveIndex={setActiveIndex}
  * />
- *
- * // 3. React Navigation 연동 (주석 해제 후)
- * // <BottomNavBar
- * //   items={[
- * //     { icon: <HomeIcon />, label: "홈", route: "Home" },
- * //     { icon: <RecordIcon />, label: "기록", route: "Record" },
- * //     {
- * //       icon: <FriendsIcon />,
- * //       label: "친구",
- * //       route: "Friends",
- * //       activePaths: ["Friends", "FriendDetail"] // 친구 상세도 같은 탭으로
- * //     }
- * //   ]}
- * // />
- *
- * // 4. active/inactive 아이콘 분리 (주석 해제 후)
- * // <BottomNavBar
- * //   items={[
- * //     {
- * //       icon: <HomeIcon />,
- * //       activeIcon: <HomeFilledIcon />,
- * //       label: "홈",
- * //       route: "Home"
- * //     }
- * //   ]}
- * // />
  */
 export const BottomNav = ({
-	items,
 	activeIndex: controlledActiveIndex,
 	setActiveIndex,
 }: BottomNavBarProps) => {
@@ -125,7 +104,7 @@ export const BottomNav = ({
 
 	return (
 		<S.Container>
-			{items.map((item, index) => {
+			{NAV_ITEMS.map((item, index) => {
 				const isActive = index === activeIndex;
 				return (
 					<TouchableOpacity

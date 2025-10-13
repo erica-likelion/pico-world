@@ -2,7 +2,7 @@ import styled from "styled-components/native";
 
 export const Container = styled.View`
   display: flex;
-  width: ${({ theme }) => theme.rem(375)};
+  width: 100%;
   padding: ${({ theme }) =>
 		`${theme.rem(12)} ${theme.rem(24)} ${theme.rem(34)} ${theme.rem(24)}`};
   flex-direction: row;
