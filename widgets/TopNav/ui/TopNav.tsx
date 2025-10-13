@@ -7,7 +7,7 @@ import {
 import { TouchableOpacity } from "react-native";
 import type { SvgProps } from "react-native-svg";
 import { useTheme } from "styled-components/native";
-import * as S from "@/shared/style/TopNavBar.style";
+import * as S from "./TopNav.style";
 
 interface TopNavBarProps {
 	title?: string;
@@ -49,7 +49,7 @@ interface TopNavBarProps {
  *   onRightPress={() => {}}
  * />
  */
-export const TopNavBar = ({
+export const TopNav = ({
 	title,
 	leftIcon,
 	rightIcon,

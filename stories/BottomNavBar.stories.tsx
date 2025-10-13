@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
 import { View } from "react-native";
 import Svg, { Path } from "react-native-svg";
-import { BottomNavBar } from "../shared/ui/BottomNavBar";
+import { BottomNav } from "@/widgets/BottomNav/ui";
 
 const HouseIcon = () => (
 	<Svg width="18" height="19" viewBox="0 0 18 19" fill="none">
@@ -53,9 +53,9 @@ const SettingIcon = () => (
 	</Svg>
 );
 
-const meta: Meta<typeof BottomNavBar> = {
+const meta: Meta<typeof BottomNav> = {
 	title: "BottomNavBar",
-	component: BottomNavBar,
+	component: BottomNav,
 	decorators: [
 		(Story) => (
 			<View
@@ -84,7 +84,7 @@ const meta: Meta<typeof BottomNavBar> = {
 
 export default meta;
 
-type Story = StoryObj<typeof BottomNavBar>;
+type Story = StoryObj<typeof BottomNav>;
 
 export const Default: Story = {
 	args: {
@@ -96,7 +96,7 @@ export const Interactive: Story = {
 	render: () => {
 		const [activeIndex, setActiveIndex] = useState(0);
 		return (
-			<BottomNavBar
+			<BottomNav
 				items={[
 					{ icon: <HouseIcon />, label: "홈" },
 					{ icon: <QuotesIcon />, label: "기록" },

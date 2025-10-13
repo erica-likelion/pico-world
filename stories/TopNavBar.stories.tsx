@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { fn } from "storybook/test";
-import { TopNavBar } from "../shared/ui/TopNavBar";
+import { TopNav } from "@/widgets/TopNav/ui";
 
 const LeftIcon = () => (
 	<Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -35,9 +35,9 @@ const SettingIcon = () => (
 	</Svg>
 );
 
-const meta: Meta<typeof TopNavBar> = {
+const meta: Meta<typeof TopNav> = {
 	title: "TopNavBar",
-	component: TopNavBar,
+	component: TopNav,
 	decorators: [
 		(Story) => (
 			<View style={{ flex: 1, backgroundColor: "#000" }}>
@@ -63,7 +63,7 @@ const meta: Meta<typeof TopNavBar> = {
 
 export default meta;
 
-type Story = StoryObj<typeof TopNavBar>;
+type Story = StoryObj<typeof TopNav>;
 
 export const Default: Story = {
 	args: {
@@ -98,21 +98,21 @@ export const AllVariants: Story = {
 				backgroundColor: "#000",
 			}}
 		>
-			<TopNavBar
+			<TopNav
 				title="홈"
 				leftIcon={<LeftIcon />}
 				rightIcon={<MenuIcon />}
 				showBorder
 			/>
-			<TopNavBar
+			<TopNav
 				title="설정"
 				leftIcon={<LeftIcon />}
 				rightIcon={<SettingIcon />}
 				showBorder
 			/>
-			<TopNavBar title="프로필" rightIcon={<SettingIcon />} showBorder />
-			<TopNavBar title="뒤로가기만" leftIcon={<LeftIcon />} showBorder />
-			<TopNavBar
+			<TopNav title="프로필" rightIcon={<SettingIcon />} showBorder />
+			<TopNav title="뒤로가기만" leftIcon={<LeftIcon />} showBorder />
+			<TopNav
 				title="보더 없음"
 				leftIcon={<LeftIcon />}
 				rightIcon={<MenuIcon />}

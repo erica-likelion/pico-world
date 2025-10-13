@@ -1,4 +1,4 @@
-import * as S from "@/shared/style/BottomNavBar.style";
+import * as S from "./BottomNav.style";
 import {
 	cloneElement,
 	isValidElement,
@@ -76,7 +76,7 @@ interface BottomNavBarProps {
  * //   ]}
  * // />
  */
-export const BottomNavBar = ({
+export const BottomNav = ({
 	items,
 	activeIndex: controlledActiveIndex,
 	setActiveIndex,
