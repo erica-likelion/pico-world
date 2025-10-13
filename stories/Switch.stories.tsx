@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { useState } from "react";
 import { View } from "react-native";
 import { fn } from "storybook/test";
 import { Switch } from "../shared/ui/Switch";
@@ -40,17 +41,29 @@ export default meta;
 type Story = StoryObj<typeof Switch>;
 
 export const Default: Story = {
-	render: () => <Switch />,
+	render: () => {
+		const [value, setValue] = useState(false);
+		return <Switch value={value} onValueChange={setValue} />;
+	},
 };
 
 export const Active: Story = {
-	render: () => <Switch defaultValue={true} />,
+	render: () => {
+		const [value, setValue] = useState(true);
+		return <Switch value={value} onValueChange={setValue} />;
+	},
 };
 
 export const Disabled: Story = {
-	render: () => <Switch disabled />,
+	render: () => {
+		const [value, setValue] = useState(false);
+		return <Switch value={value} onValueChange={setValue} disabled />;
+	},
 };
 
 export const DisabledActive: Story = {
-	render: () => <Switch defaultValue={true} disabled />,
+	render: () => {
+		const [value, setValue] = useState(true);
+		return <Switch value={value} onValueChange={setValue} disabled />;
+	},
 };
