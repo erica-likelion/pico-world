@@ -1,11 +1,54 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
-import { View } from "react-native";
-import { BottomNav } from "@/widgets/BottomNav";
+import { View, Text } from "react-native";
 
-const meta: Meta<typeof BottomNav> = {
+const BottomNavPlaceholder = () => (
+	<View
+		style={{
+			width: "100%",
+			height: 90,
+			backgroundColor: "#000",
+			borderTopWidth: 1,
+			borderTopColor: "#444",
+			padding: 12,
+			flexDirection: "row",
+			justifyContent: "space-between",
+			alignItems: "center",
+		}}
+	>
+		{["홈", "기록", "친구", "리포트", "마이"].map((label, index) => (
+			<View
+				key={label}
+				style={{
+					alignItems: "center",
+					gap: 4,
+				}}
+			>
+				<View
+					style={{
+						width: 24,
+						height: 24,
+						backgroundColor: "#666",
+						borderRadius: 4,
+					}}
+				/>
+				<Text
+					style={{
+						color: index === 0 ? "#fff" : "#999",
+						fontSize: 12,
+						fontWeight: "500",
+					}}
+				>
+					{label}
+				</Text>
+			</View>
+		))}
+	</View>
+);
+
+const meta: Meta = {
 	title: "BottomNavBar",
-	component: BottomNav,
+	component: BottomNavPlaceholder,
 	decorators: [
 		(Story) => (
 			<View
@@ -15,29 +58,24 @@ const meta: Meta<typeof BottomNav> = {
 			</View>
 		),
 	],
-	argTypes: {
-		activeIndex: {
-			control: { type: "number", min: 0, max: 4 },
-			description: "활성화된 탭 인덱스",
-		},
-	},
 };
 
 export default meta;
 
-type Story = StoryObj<typeof BottomNav>;
+type Story = StoryObj;
 
-export const Default: Story = {
-	args: {
-		activeIndex: 0,
-	},
-};
+export const Default: Story = {};
 
-export const Interactive: Story = {
-	render: () => {
-		const [activeIndex, setActiveIndex] = useState(0);
-		return (
-			<BottomNav activeIndex={activeIndex} setActiveIndex={setActiveIndex} />
-		);
-	},
+export const Note: Story = {
+	render: () => (
+		<View style={{ padding: 20, backgroundColor: "#111", flex: 1 }}>
+			<Text style={{ color: "#999", fontSize: 14, marginBottom: 20 }}>
+				스토리북에서는 SVG transformer 이슈로 플레이스홀더를 보여줍니다.
+				{"\n\n"}
+				실제 컴포넌트 확인: widgets/BottomNav/ui/BottomNav.tsx
+			</Text>
+			<View style={{ flex: 1 }} />
+			<BottomNavPlaceholder />
+		</View>
+	),
 };
