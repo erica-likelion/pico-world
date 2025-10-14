@@ -6,7 +6,7 @@ export const TextInputContainer = styled.TextInput<{ height?: number }>`
   height: ${({ height, theme }) => theme.rem(height || 56)};
   padding: ${({ theme }) => theme.rem(16)};
   align-items: flex-start;
-  gap: 10px;
+  gap: ${({ theme }) => theme.rem(10)};
   border-radius: 20px;
 
   color: ${({ theme }) => theme.grayscale.gray50};

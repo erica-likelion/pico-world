@@ -7,7 +7,7 @@ export const ChipContainer = styled.View<{ selected: boolean }>`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 4px;
+  gap: ${({ theme }) => theme.rem(4)};
   height: ${({ theme }) => theme.rem(44)};
   border-radius: 40px;
   background-color: ${({ theme }) => theme.grayscale.gray800};
