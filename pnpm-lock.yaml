@@ -65,6 +65,9 @@ importers:
       react-native-svg:
         specifier: ^15.14.0
         version: 15.14.0(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+      react-native-typewriter-effect:
+        specifier: ^0.1.4
+        version: 0.1.4(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       react-native-web:
         specifier: ~0.21.0
         version: 0.21.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -4424,6 +4427,13 @@ packages:
 
   react-native-svg@15.14.0:
     resolution: {integrity: sha512-B3gYc7WztcOT4N54AtUutbe0Nuqqh/nkresY0fAXzUHYLsWuIu/yGiCCD3DKfAs6GLv5LFtWTu7N333Q+e3bkg==}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
+
+  react-native-typewriter-effect@0.1.4:
+    resolution: {integrity: sha512-/hCQ6rgQtpV9iNIHMBrx3KVJY2CoKxU0GExo/VvSjjm8wDJdw2Dy6pSh0ybzjJgN63PLflCET8OIJFQqP02Ylw==}
+    engines: {node: '>= 16.0.0'}
     peerDependencies:
       react: '*'
       react-native: '*'
@@ -10358,6 +10368,11 @@ snapshots:
       react: 19.1.0
       react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0)
       warn-once: 0.1.1
+
+  react-native-typewriter-effect@0.1.4(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0):
+    dependencies:
+      react: 19.1.0
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0)
 
   react-native-url-polyfill@2.0.0(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0)):
     dependencies:

@@ -1,3 +1,4 @@
+import { Animated } from "react-native";
 import styled from "styled-components/native";
 
 export const Container = styled.View`
@@ -33,6 +34,11 @@ export const BubbleWrapper = styled.View`
 `;
 
 export const Bubble = styled.Text`
+  ${({ theme }) => theme.typography.b3};
+  color: ${({ theme }) => theme.grayscale.white};
+`;
+
+export const Cursor = styled(Animated.Text)`
   ${({ theme }) => theme.typography.b3};
   color: ${({ theme }) => theme.grayscale.white};
 `;
