@@ -1,4 +1,6 @@
 import { navigationTheme, theme } from "@/shared/config/theme/theme";
+import { BottomNav, useBottomNavStore } from "@/widgets/BottomNav";
+import { TopNav } from "@/widgets/TopNav";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
@@ -42,6 +44,7 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
+	const { isVisible } = useBottomNavStore();
 	const pathname = usePathname();
 	const isLogin = pathname.startsWith("/login");
 
@@ -51,10 +54,17 @@ function RootLayoutNav() {
 		<SafeAreaProvider>
 			<StyledThemeProvider theme={theme}>
 				<ThemeProvider value={navigationTheme}>
-					<Layout style={{ flex: 1 }}>
+					<SafeAreaView style={{ flex: 1, backgroundColor: "#000" }}>
 						<StatusBar style="light" />
-						<Stack screenOptions={{ headerShown: false }} />
-					</Layout>
+
+						<TopNav title="오매가몽" />
+
+						<View style={{ flex: 1 }}>
+							<Stack screenOptions={{ headerShown: false }} />
+						</View>
+
+						{isVisible && <BottomNav />}
+					</SafeAreaView>
 				</ThemeProvider>
 			</StyledThemeProvider>
 		</SafeAreaProvider>
