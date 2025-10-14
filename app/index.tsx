@@ -1,3 +1,4 @@
+import { Link } from "expo-router";
 import styled from "styled-components/native";
 
 const Container = styled.View`
@@ -17,6 +18,9 @@ export default function Home() {
 	return (
 		<Container>
 			<Title>Hello Expo Router 👋</Title>
+			<Link href="/login" style={{ color: "blue" }}>
+				Go to Logindd
+			</Link>
 		</Container>
 	);
 }
