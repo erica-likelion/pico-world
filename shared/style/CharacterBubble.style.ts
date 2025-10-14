@@ -10,7 +10,7 @@ export const Container = styled.View`
 `;
 
 export const CharacterWrapper = styled.View`
-  width: 36px;
+  width: ${({ theme }) => theme.rem(36)};
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
