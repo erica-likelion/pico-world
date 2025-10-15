@@ -1,6 +1,5 @@
 import { navigationTheme, theme } from "@/shared/config/theme/theme";
 import { BottomNav, useBottomNavStore } from "@/widgets/BottomNav";
-import { TopNav } from "@/widgets/TopNav";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
@@ -54,17 +53,19 @@ function RootLayoutNav() {
 		<SafeAreaProvider>
 			<StyledThemeProvider theme={theme}>
 				<ThemeProvider value={navigationTheme}>
-					<SafeAreaView style={{ flex: 1, backgroundColor: "#000" }}>
+					<Layout
+						style={{
+							flex: 1,
+							backgroundColor: isLogin ? "transparent" : "black",
+						}}
+					>
 						<StatusBar style="light" />
-
-						<TopNav title="오매가몽" />
-
 						<View style={{ flex: 1 }}>
 							<Stack screenOptions={{ headerShown: false }} />
 						</View>
 
 						{isVisible && <BottomNav />}
-					</SafeAreaView>
+					</Layout>
 				</ThemeProvider>
 			</StyledThemeProvider>
 		</SafeAreaProvider>

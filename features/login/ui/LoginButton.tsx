@@ -1,8 +1,11 @@
 import * as S from "@/features/login/style/LoginButton.styles";
 import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
+import { useRouter } from "expo-router";
+
 import { TouchableOpacity } from "react-native";
 
 export function LoginButton() {
+	const router = useRouter();
 	const {
 		scale: kakaoScale,
 		handlePressIn: kakaoPressIn,
@@ -14,10 +17,17 @@ export function LoginButton() {
 		handlePressOut: applePressOut,
 	} = usePressAnimation();
 
+	const handleKakaoLogin = () => {
+		router.push("/onboarding");
+	};
+	const handleAppleLogin = () => {
+		router.push("/onboarding");
+	};
+
 	return (
 		<S.LoginButtonContainer>
 			<TouchableOpacity
-				onPress={() => {}}
+				onPress={handleKakaoLogin}
 				onPressIn={kakaoPressIn}
 				onPressOut={kakaoPressOut}
 				activeOpacity={1}
@@ -28,7 +38,7 @@ export function LoginButton() {
 				</S.KaKaoLoginButton>
 			</TouchableOpacity>
 			<TouchableOpacity
-				onPress={() => {}}
+				onPress={handleAppleLogin}
 				onPressIn={applePressIn}
 				onPressOut={applePressOut}
 				activeOpacity={1}
