@@ -1,3 +1,6 @@
+import LeftIcon from "@/shared/assets/icons/left.svg";
+import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
+import { useRouter } from "expo-router";
 import {
 	cloneElement,
 	isValidElement,
@@ -7,10 +10,7 @@ import {
 import { Animated, TouchableOpacity } from "react-native";
 import type { SvgProps } from "react-native-svg";
 import { useTheme } from "styled-components/native";
-import { useRouter } from "expo-router";
-import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
-import LeftIcon from "@/shared/assets/icons/left.svg";
-import * as S from "./TopNav.style";
+import * as S from "../style/TopNav.style";
 
 interface TopNavBarProps {
 	title?: string;
