@@ -1,7 +1,16 @@
 import * as S from "@/app/login/style/Login.styles";
 import { Circle, LoginButton } from "@/features/login/ui";
+import { useBottomNavStore } from "@/widgets/BottomNav";
+import { useEffect } from "react";
 
 export default function Login() {
+	const { show, hide } = useBottomNavStore();
+	useEffect(() => {
+		hide();
+		return () => {
+			show();
+		};
+	}, [hide, show]);
 	return (
 		<S.LoginContainer>
 			<S.BackgroundGradient

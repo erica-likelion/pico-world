@@ -1,8 +1,12 @@
 import * as S from "@/features/login/style/LoginButton.styles";
 import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
-import { TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
+
+import { Platform, TouchableOpacity } from "react-native";
 
 export function LoginButton() {
+	const ios = Platform.OS === "ios";
+	const router = useRouter();
 	const {
 		scale: kakaoScale,
 		handlePressIn: kakaoPressIn,
@@ -14,10 +18,17 @@ export function LoginButton() {
 		handlePressOut: applePressOut,
 	} = usePressAnimation();
 
+	const handleKakaoLogin = () => {
+		router.push("/onboarding");
+	};
+	const handleAppleLogin = () => {
+		router.push("/onboarding");
+	};
+
 	return (
 		<S.LoginButtonContainer>
 			<TouchableOpacity
-				onPress={() => {}}
+				onPress={handleKakaoLogin}
 				onPressIn={kakaoPressIn}
 				onPressOut={kakaoPressOut}
 				activeOpacity={1}
@@ -27,17 +38,19 @@ export function LoginButton() {
 					<S.LoginButtonText isKakao>카카오로 계속하기</S.LoginButtonText>
 				</S.KaKaoLoginButton>
 			</TouchableOpacity>
-			<TouchableOpacity
-				onPress={() => {}}
-				onPressIn={applePressIn}
-				onPressOut={applePressOut}
-				activeOpacity={1}
-			>
-				<S.AppleLoginButton style={{ transform: [{ scale: appleScale }] }}>
-					<S.AppleLogo />
-					<S.LoginButtonText>Apple로 계속하기</S.LoginButtonText>
-				</S.AppleLoginButton>
-			</TouchableOpacity>
+			{ios && (
+				<TouchableOpacity
+					onPress={handleAppleLogin}
+					onPressIn={applePressIn}
+					onPressOut={applePressOut}
+					activeOpacity={1}
+				>
+					<S.AppleLoginButton style={{ transform: [{ scale: appleScale }] }}>
+						<S.AppleLogo />
+						<S.LoginButtonText>Apple로 계속하기</S.LoginButtonText>
+					</S.AppleLoginButton>
+				</TouchableOpacity>
+			)}
 		</S.LoginButtonContainer>
 	);
 }

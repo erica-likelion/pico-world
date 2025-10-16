@@ -1,6 +1,5 @@
 export * from "./Avatar";
 export * from "./Button";
-export * from "./ButtonGroups";
 export * from "./CharacterBubble";
 export * from "./Chip";
 export * from "./Divider";
