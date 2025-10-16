@@ -1,1 +1,1 @@
-export * from "./useBottomNavStore";
+export * from "@/widgets/BottomNav/model/useBottomNavStore";

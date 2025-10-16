@@ -1,4 +1,4 @@
-import * as S from "./BottomNav.style";
+import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
 import {
 	cloneElement,
 	isValidElement,
@@ -9,14 +9,14 @@ import {
 import { Animated, TouchableOpacity } from "react-native";
 import type { SvgProps } from "react-native-svg";
 import { useTheme } from "styled-components/native";
-import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
+import * as S from "../style/BottomNav.style";
 // import { useNavigation, useRoute } from "@react-navigation/native";
 
 import HouseIcon from "@/shared/assets/icons/house.svg";
-import QuotesIcon from "@/shared/assets/icons/quotes.svg";
-import UsersIcon from "@/shared/assets/icons/users.svg";
 import LayersIcon from "@/shared/assets/icons/layers.svg";
+import QuotesIcon from "@/shared/assets/icons/quotes.svg";
 import SettingIcon from "@/shared/assets/icons/setting.svg";
+import UsersIcon from "@/shared/assets/icons/users.svg";
 
 export interface NavItem {
 	icon: ReactNode;
