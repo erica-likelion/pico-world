@@ -1,7 +1,7 @@
 import type { CharacterProps } from "@/entities/character/model/type";
 import { CharacterInfo } from "@/entities/character/ui";
 import { Button } from "@/shared/ui";
-import { useBottomNavStore } from "@/widgets/BottomNav";
+import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
