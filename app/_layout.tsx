@@ -1,5 +1,6 @@
 import { navigationTheme, theme } from "@/shared/config/theme/theme";
-import { BottomNav, useBottomNavStore } from "@/widgets/BottomNav";
+import { useBottomNavStore } from "@/widgets/BottomNav/model";
+import { BottomNav } from "@/widgets/BottomNav/ui";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";

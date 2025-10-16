@@ -1,5 +1,5 @@
 import { Circle, LoginBackground, LoginButton } from "@/features/login/ui";
-import { useBottomNavStore } from "@/widgets/BottomNav";
+import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { useEffect } from "react";
 import styled from "styled-components/native";
 
