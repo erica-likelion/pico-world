@@ -2,16 +2,6 @@ import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import styled from "styled-components/native";
 
-export const LoginContainer = styled.View`
-  display: flex;
-  position: relative;
-  width: 100%;
-  height: 100%;
-  padding-top: 101px;
-  padding-left: 16px;
-  padding-right: 16px;
-`;
-
 export const Title = styled.Text`
   color: ${({ theme }) => theme.grayscale.white};
   ${({ theme }) => theme.typography.h3};
