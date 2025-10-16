@@ -22,7 +22,6 @@ export default function Login() {
 			show();
 		};
 	}, [hide, show]);
-
 	return (
 		<Container>
 			<LoginBackground />
