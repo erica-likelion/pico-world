@@ -11,7 +11,7 @@ export const CharacterInfoContainer = styled(Animated.ScrollView).attrs(() => ({
 	pagingEnabled: true,
 }))`
   width: 100%;
-  height: ${({ theme }) => theme.rem(464)};
+  height: ${({ theme }) => theme.rem(433)};
   display: flex;
   flex-direction: row;
   padding-top: ${({ theme }) => theme.rem(104)};
@@ -20,6 +20,7 @@ export const CharacterInfoContainer = styled(Animated.ScrollView).attrs(() => ({
 export const CharacterWrapper = styled.View`
   width: ${screenWidth}px;
   align-items: center;
+  gap: ${({ theme }) => theme.rem(38)};
 `;
 
 export const SpeechBubbleContainer = styled.View`
@@ -28,7 +29,6 @@ export const SpeechBubbleContainer = styled.View`
   padding: ${({ theme }) => theme.rem(10)} ${({ theme }) => theme.rem(16)};
   justify-content: center;
   align-items: center;
-  gap: ${({ theme }) => theme.rem(10)};
   border-radius: 20px;
   background-color: ${({ theme }) => theme.grayscale.gray800};
 `;
@@ -45,6 +45,11 @@ export const Polygon = styled(PolygonIcon)`
   bottom: -${({ theme }) => theme.rem(13)};
 `;
 
+export const CharacterNameBox = styled.View`
+  gap: ${({ theme }) => theme.rem(8)};
+  align-items: center;
+`;
+
 export const CharacterImageView = styled.View`
   width: ${({ theme }) => theme.rem(213)};
   height: ${({ theme }) => theme.rem(213)};
@@ -53,7 +58,7 @@ export const CharacterImageView = styled.View`
   justify-content: center;
   border-radius: ${({ theme }) => theme.rem(106)};
   background-color: ${({ theme }) => theme.grayscale.gray900};
-  margin-top: ${({ theme }) => theme.rem(38)};
+  margin-top: ${({ theme }) => theme.rem(10)};
   margin-bottom: ${({ theme }) => theme.rem(10)};
 `;
 export const CharacterImage = styled.Image`
@@ -68,7 +73,6 @@ export const CharacterName = styled.Text`
 `;
 
 export const PersonalityContainer = styled.View`
-  margin-top: ${({ theme }) => theme.rem(47)};
   gap: ${({ theme }) => theme.rem(8)};
   flex-direction: row;
 `;

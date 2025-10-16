@@ -32,14 +32,15 @@ export function CharacterInfo({
 							<S.Polygon />
 						</S.SpeechBubbleContainer>
 
-						{/* 이미지 */}
-						<S.CharacterImageView>
-							<S.CharacterImage />
-						</S.CharacterImageView>
+						<S.CharacterNameBox>
+							{/* 이미지 */}
+							<S.CharacterImageView>
+								<S.CharacterImage />
+							</S.CharacterImageView>
 
-						{/* 이름 */}
-						<S.CharacterName>{character.name}</S.CharacterName>
-
+							{/* 이름 */}
+							<S.CharacterName>{character.name}</S.CharacterName>
+						</S.CharacterNameBox>
 						{/* 성격 */}
 						<S.PersonalityContainer>
 							{character.personality.map((trait) => (
