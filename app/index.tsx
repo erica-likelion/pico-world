@@ -21,6 +21,9 @@ export default function Home() {
 			<Link href="/login" style={{ color: "blue" }}>
 				Go to Logindd
 			</Link>
+			<Link href="/explore" style={{ color: "blue" }}>
+				Go to Explore
+			</Link>
 		</Container>
 	);
 }
