@@ -1,4 +1,6 @@
 import { navigationTheme, theme } from "@/shared/config/theme/theme";
+import { useBottomNavStore } from "@/widgets/BottomNav/model";
+import { BottomNav } from "@/widgets/BottomNav/ui";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
@@ -42,6 +44,7 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
+	const { isVisible } = useBottomNavStore();
 	const pathname = usePathname();
 	const isLogin = pathname.startsWith("/login");
 
@@ -51,9 +54,23 @@ function RootLayoutNav() {
 		<SafeAreaProvider>
 			<StyledThemeProvider theme={theme}>
 				<ThemeProvider value={navigationTheme}>
-					<Layout style={{ flex: 1 }}>
+					<Layout
+						style={{
+							flex: 1,
+							backgroundColor: isLogin ? "transparent" : "black",
+						}}
+					>
 						<StatusBar style="light" />
-						<Stack screenOptions={{ headerShown: false }} />
+						<View style={{ flex: 1 }}>
+							<Stack
+								screenOptions={{
+									headerShown: false,
+									animation: "slide_from_right",
+								}}
+							/>
+						</View>
+
+						{isVisible && <BottomNav />}
 					</Layout>
 				</ThemeProvider>
 			</StyledThemeProvider>
