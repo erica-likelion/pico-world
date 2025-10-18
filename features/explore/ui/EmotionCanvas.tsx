@@ -12,6 +12,7 @@ import {
 } from "react-native";
 
 interface TouchPoint {
+	id: string;
 	x: number;
 	y: number;
 	alpha: number;
@@ -37,13 +38,18 @@ export const EmotionCanvas = () => {
 		const { locationX: x, locationY: y } = event.nativeEvent;
 		isActiveRef.current = true;
 		setSelectedChip(null);
-		setTouchPoints([{ x, y, alpha: ALPHA_PER_TOUCH }]);
+		setTouchPoints([
+			{ id: Math.random().toString(), x, y, alpha: ALPHA_PER_TOUCH },
+		]);
 	}, []);
 
 	const handleTouchMove = useCallback((event: GestureResponderEvent) => {
 		if (!isActiveRef.current) return;
 		const { locationX: x, locationY: y } = event.nativeEvent;
-		setTouchPoints((prev) => [...prev, { x, y, alpha: ALPHA_PER_TOUCH }]);
+		setTouchPoints((prev) => [
+			...prev,
+			{ id: Math.random().toString(), x, y, alpha: ALPHA_PER_TOUCH },
+		]);
 	}, []);
 
 	const handleTouchEnd = useCallback(() => {
@@ -82,7 +88,7 @@ export const EmotionCanvas = () => {
 
 								return (
 									<Line
-										key={`line-${prevPoint.x}-${prevPoint.y}-${point.x}-${point.y}`}
+										key={`line-${point.id}`}
 										p1={{ x: prevPoint.x, y: prevPoint.y }}
 										p2={{ x: point.x, y: point.y }}
 										strokeWidth={BRUSH_SIZE}
@@ -95,7 +101,7 @@ export const EmotionCanvas = () => {
 
 							{touchPoints.map((point) => (
 								<Circle
-									key={`circle-${point.x}-${point.y}`}
+									key={`circle-${point.id}`}
 									cx={point.x}
 									cy={point.y}
 									r={BRUSH_SIZE / 2}
