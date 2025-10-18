@@ -20,7 +20,6 @@ export const NavItem = styled.View`
   flex-direction: column;
   align-items: center;
   gap: ${({ theme }) => theme.rem(4)};
-  flex-shrink: 0;
 `;
 
 export const IconContainer = styled.View`

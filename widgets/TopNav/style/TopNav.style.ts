@@ -7,14 +7,11 @@ interface ContainerProps {
 export const Container = styled.View<ContainerProps>`
   width: 100%;
   height: ${({ theme }) => theme.rem(44)};
-  background-color: ${({ theme }) => theme.grayscale.gray900};
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   padding: ${({ theme }) => `0 ${theme.rem(16)}`};
   gap: ${({ theme }) => theme.rem(17)};
-  border-bottom-width: ${({ $showBorder }) => ($showBorder ? "1px" : "0px")};
-  border-bottom-color: ${({ theme }) => theme.grayscale.gray700};
 `;
 
 export const LeftSection = styled.View`

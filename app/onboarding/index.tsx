@@ -41,14 +41,17 @@ const Character = [
 
 export default function Onboarding() {
 	const router = useRouter();
-	const { hide } = useBottomNavStore();
+	const { hide, show } = useBottomNavStore();
 	const [selectedCharacter, setSelectedCharacter] = useState<CharacterProps>(
 		Character[0],
 	);
 
 	useEffect(() => {
 		hide();
-	}, [hide]);
+		return () => {
+			show();
+		};
+	}, [hide, show]);
 	return (
 		<View style={{ flex: 1 }}>
 			<CharacterInfo
