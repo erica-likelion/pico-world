@@ -1,4 +1,5 @@
 import { CharacterDialog } from "@/entities/character/ui";
+import { ClickToJournal } from "@/features/home/ui";
 import BellIcon from "@/shared/assets/icons/bell.svg";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { TopNav } from "@/widgets/TopNav/ui";
@@ -16,6 +17,7 @@ export default function Home() {
 		<View style={{ flex: 1, alignItems: "center" }}>
 			<TopNav title="홈" rightIcon={<BellIcon />} />
 			<CharacterDialog />
+			<ClickToJournal />
 		</View>
 	);
 }

@@ -1,6 +1,7 @@
 import styled from "styled-components/native";
 
 export const DialogContainer = styled.View`
+  z-index: 4;
   display: flex;
   flex-direction: row;
   width: ${({ theme }) => theme.rem(343)};
