@@ -1,10 +1,10 @@
 import { CharacterDialog } from "@/entities/character/ui";
-import { ClickToJournal } from "@/features/home/ui";
+import { CalendarUI, ClickToJournal } from "@/features/home/ui";
 import BellIcon from "@/shared/assets/icons/bell.svg";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { TopNav } from "@/widgets/TopNav/ui";
 import { useEffect } from "react";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 
 export default function Home() {
 	const { show } = useBottomNavStore();
@@ -14,10 +14,13 @@ export default function Home() {
 	}, [show]);
 
 	return (
-		<View style={{ flex: 1, alignItems: "center" }}>
+		<View style={{ flex: 1 }}>
 			<TopNav title="홈" rightIcon={<BellIcon />} />
-			<CharacterDialog />
-			<ClickToJournal />
+			<ScrollView contentContainerStyle={{ alignItems: "center" }}>
+				<CharacterDialog />
+				<ClickToJournal />
+				<CalendarUI />
+			</ScrollView>
 		</View>
 	);
 }

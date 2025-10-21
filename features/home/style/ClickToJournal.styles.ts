@@ -57,6 +57,7 @@ export const CircleImageRight = styled.Image`
 export const CircleText = styled.Text`
   position: absolute;
   bottom: 21px;
+  z-index: 60;
   color: ${({ theme }) => theme.grayscale.white};
   ${({ theme }) => theme.typography["title3-medium"]};
 `;
