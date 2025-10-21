@@ -4,7 +4,7 @@ export const Container = styled.View`
   display: flex;
   width: 100%;
   padding: ${({ theme }) =>
-		`${theme.rem(12)} ${theme.rem(24)} ${theme.rem(34)} ${theme.rem(24)}`};
+		`${theme.rem(13)} ${theme.rem(24)} ${theme.rem(34)} ${theme.rem(24)}`};
   flex-direction: row;
   justify-content: space-between;
   align-items: center;

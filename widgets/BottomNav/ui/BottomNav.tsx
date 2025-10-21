@@ -1,16 +1,16 @@
 import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
+import * as S from "@/widgets/BottomNav/style/BottomNav.style";
+import { usePathname, useRouter, type Href } from "expo-router";
 import {
 	cloneElement,
 	isValidElement,
+	useState,
 	type ReactElement,
 	type ReactNode,
-	useState,
 } from "react";
 import { Animated, TouchableOpacity } from "react-native";
 import type { SvgProps } from "react-native-svg";
 import { useTheme } from "styled-components/native";
-import * as S from "../style/BottomNav.style";
-// import { useNavigation, useRoute } from "@react-navigation/native";
 
 import HouseIcon from "@/shared/assets/icons/house.svg";
 import LayersIcon from "@/shared/assets/icons/layers.svg";
@@ -21,18 +21,17 @@ import UsersIcon from "@/shared/assets/icons/users.svg";
 export interface NavItem {
 	icon: ReactNode;
 	label: string;
-	// === 고급 네비게이션 기능 (주석 해제 시 사용) ===
-	// route?: string; // 라우트 이름 (예: "Home", "Profile")
-	// activeIcon?: ReactNode; // active 상태일 때 표시할 아이콘 (optional)
-	// activePaths?: string[]; // 이 탭을 active로 표시할 추가 경로들
+	route?: string; // 라우트 이름 (예: "Home", "Profile")
+	activeIcon?: ReactNode; // active 상태일 때 표시할 아이콘 (optional)
+	activePaths?: string[]; // 이 탭을 active로 표시할 추가 경로들
 }
 
 const NAV_ITEMS: NavItem[] = [
-	{ icon: <HouseIcon />, label: "홈" },
-	{ icon: <QuotesIcon />, label: "기록" },
-	{ icon: <UsersIcon />, label: "친구" },
-	{ icon: <LayersIcon />, label: "리포트" },
-	{ icon: <SettingIcon />, label: "마이" },
+	{ icon: <HouseIcon />, label: "홈", route: "home" },
+	{ icon: <QuotesIcon />, label: "기록", route: "journal" },
+	{ icon: <UsersIcon />, label: "친구", route: "friends" },
+	{ icon: <LayersIcon />, label: "리포트", route: "report" },
+	{ icon: <SettingIcon />, label: "마이", route: "user" },
 ];
 
 interface BottomNavBarProps {
@@ -103,31 +102,31 @@ export const BottomNav = ({
 }: BottomNavBarProps) => {
 	const [internalActiveIndex, setInternalActiveIndex] = useState(0);
 
-	// === 고급 네비게이션 기능 (주석 해제 시 사용) ===
-	// const navigation = useNavigation();
-	// const route = useRoute();
+	const router = useRouter();
+	const pathname = usePathname();
 
 	// 🔽 현재 경로를 기반으로 activeIndex 자동 계산
-	// const autoActiveIndex = items.findIndex((item, index) => {
-	//   if (!item.route) return false;
-	//   const currentRouteName = route.name;
-	//
-	//   // 직접 매칭
-	//   if (currentRouteName === item.route) return true;
-	//
-	//   // activePaths 매칭 (여러 경로를 하나의 탭으로)
-	//   if (item.activePaths) {
-	//     return item.activePaths.some(path => currentRouteName.startsWith(path));
-	//   }
-	//
-	//   return false;
-	// });
+	const autoActiveIndex = NAV_ITEMS.findIndex((item) => {
+		if (!item.route) return false;
+
+		// 직접 매칭 (예: /home, /journal)
+		if (pathname === `/${item.route}`) return true;
+
+		// activePaths 매칭 (여러 경로를 하나의 탭으로)
+		if (item.activePaths) {
+			return item.activePaths.some((path) => pathname.startsWith(path));
+		}
+
+		// 하위 경로 매칭 (예: /journal/explore -> journal 탭 활성화)
+		if (pathname.startsWith(`/${item.route}/`)) return true;
+
+		return false;
+	});
 
 	// 🔽 자동 계산된 activeIndex 사용 (route 기능 활성화 시)
-	// const activeIndex = controlledActiveIndex ?? (autoActiveIndex !== -1 ? autoActiveIndex : internalActiveIndex);
-
-	// 기본 모드 (route 기능 비활성화)
-	const activeIndex = controlledActiveIndex ?? internalActiveIndex;
+	const activeIndex =
+		controlledActiveIndex ??
+		(autoActiveIndex !== -1 ? autoActiveIndex : internalActiveIndex);
 
 	const handlePress = (index: number) => {
 		setInternalActiveIndex(index);
@@ -135,11 +134,10 @@ export const BottomNav = ({
 			setActiveIndex(index);
 		}
 
-		// 🔽 라우트 네비게이션 (주석 해제 시 사용)
-		// const item = items[index];
-		// if (item.route) {
-		//   navigation.navigate(item.route);
-		// }
+		const item = NAV_ITEMS[index];
+		if (item.route) {
+			router.push(`/${item.route}` as Href);
+		}
 	};
 
 	return (
