@@ -1,20 +1,15 @@
 import PolygonIcon from "@/shared/assets/icons/polygon.svg";
 import { Dimensions } from "react-native";
-import Animated from "react-native-reanimated";
 import styled from "styled-components/native";
 
 const { width: screenWidth } = Dimensions.get("window");
 
-export const CharacterInfoContainer = styled(Animated.ScrollView).attrs(() => ({
-	horizontal: true,
-	showsHorizontalScrollIndicator: false,
-	pagingEnabled: true,
-}))`
+export const CharacterInfoContainer = styled.View`
   width: 100%;
-  height: ${({ theme }) => theme.rem(433)};
-  display: flex;
-  flex-direction: row;
+  align-items: center;
+  justify-content: center;
   padding-top: ${({ theme }) => theme.rem(104)};
+  gap: ${({ theme }) => theme.rem(38)};
 `;
 
 export const CharacterWrapper = styled.View`
@@ -50,24 +45,30 @@ export const CharacterNameBox = styled.View`
   align-items: center;
 `;
 
+export const ImageScroll = styled.ScrollView`
+  width: 100%;
+  height: ${({ theme }) => theme.rem(233)};
+`;
+
 export const CharacterImageView = styled.View`
-  width: ${({ theme }) => theme.rem(213)};
+  width: ${screenWidth}px;
   height: ${({ theme }) => theme.rem(213)};
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: ${({ theme }) => theme.rem(106)};
-  background-color: ${({ theme }) => theme.grayscale.gray900};
+
   margin-top: ${({ theme }) => theme.rem(10)};
   margin-bottom: ${({ theme }) => theme.rem(10)};
 `;
 export const CharacterImage = styled.Image`
-  width: 100%;
-  height: 100%;
+  width: ${({ theme }) => theme.rem(213)};
+  height: ${({ theme }) => theme.rem(213)};
+  border-radius: ${({ theme }) => theme.rem(106)};
+  background-color: ${({ theme }) => theme.grayscale.gray900};
 `;
 
 export const CharacterName = styled.Text`
-  margin-top: ${({ theme }) => theme.rem(8)};
+  margin-top: -${({ theme }) => theme.rem(30)};
   color: ${({ theme }) => theme.grayscale.white};
   ${({ theme }) => theme.typography.h3};
 `;

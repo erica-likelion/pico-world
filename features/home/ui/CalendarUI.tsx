@@ -85,19 +85,21 @@ export function CalendarUI() {
 	const [currentMonth, setCurrentMonth] = useState<string>("2025-10");
 	const dayColors: DateStyleMap = {
 		"2025-10-03": { bg: "#FF6F61", text: "#000000" },
+		"2025-10-08": { bg: "#8A2BE2", text: "#FFFFFF" },
 		"2025-10-07": { bg: "#FFD700", text: "#000000" },
 		"2025-10-15": { bg: "#1E90FF", text: "#FFFFFF" },
 		"2025-10-22": { bg: "#32CD32", text: "#FFFFFF" },
 	};
 
 	return (
-		<View style={{ marginTop: -35 }}>
+		<View style={{ marginTop: -35, width: "100%", paddingHorizontal: 20 }}>
 			<Calendar
 				current={currentMonth}
 				style={{
-					width: 303,
+					width: "100%",
 					borderRadius: 40,
-					paddingHorizontal: 20,
+					paddingLeft: 10,
+					paddingRight: 10,
 					paddingBottom: 19,
 					paddingTop: 10,
 				}}
