@@ -1,7 +1,8 @@
+import * as S from "@/features/home/style/CalendarUI.styles";
+import CalenderIcon from "@/shared/assets/icons/calendar.svg";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { Calendar } from "react-native-calendars";
-import { useTheme } from "styled-components";
 
 type DateStyleMap = {
 	[dateString: string]: {
@@ -79,10 +80,31 @@ const CustomDay = ({
 	);
 };
 
+const CustomHeader = ({ date }: { date: Date }) => {
+	const formatted = `${date.getFullYear()}. ${
+		date.getMonth() + 1
+	}. ${date.getDate()}`;
+	return (
+		<View
+			style={{
+				flexDirection: "row",
+				alignItems: "center",
+			}}
+		>
+			<S.TitleBox>
+				<TouchableOpacity>
+					<CalenderIcon width={18} height={18} color="#CECECE" />
+				</TouchableOpacity>
+				<S.TitleText>{formatted}</S.TitleText>
+			</S.TitleBox>
+		</View>
+	);
+};
+
 export function CalendarUI() {
-	const theme = useTheme();
 	const [selectedDate, setSelectedDate] = useState<string>("");
 	const [currentMonth, setCurrentMonth] = useState<string>("2025-10");
+	const [currentDate, setCurrentDate] = useState<Date>(new Date("2025-10-01"));
 	const dayColors: DateStyleMap = {
 		"2025-10-03": { bg: "#FF6F61", text: "#000000" },
 		"2025-10-08": { bg: "#8A2BE2", text: "#FFFFFF" },
@@ -95,6 +117,7 @@ export function CalendarUI() {
 		<View style={{ marginTop: -35, width: "100%", paddingHorizontal: 20 }}>
 			<Calendar
 				current={currentMonth}
+				renderHeader={() => <CustomHeader date={currentDate} />}
 				style={{
 					width: "100%",
 					borderRadius: 40,
@@ -116,6 +139,15 @@ export function CalendarUI() {
 				}}
 				onDayPress={(day) => {
 					setSelectedDate(day.dateString);
+					setCurrentDate(new Date(day.dateString));
+				}}
+				onMonthChange={(month) => {
+					const monthStr = `${month.year}-${String(month.month).padStart(
+						2,
+						"0",
+					)}`;
+					setCurrentMonth(monthStr);
+					setCurrentDate(new Date(`${monthStr}-01`));
 				}}
 				dayComponent={(props) => (
 					<CustomDay

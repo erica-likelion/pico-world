@@ -69,8 +69,8 @@ function RootLayoutNav() {
 								}}
 							/>
 						</View>
+						{isVisible && <BottomNav />}
 					</Layout>
-					{isVisible && <BottomNav />}
 				</ThemeProvider>
 			</StyledThemeProvider>
 		</SafeAreaProvider>

@@ -14,7 +14,7 @@ export default function Home() {
 	}, [show]);
 
 	return (
-		<View style={{ flex: 1 }}>
+		<View style={{ flex: 1, paddingBottom: 34 }}>
 			<TopNav title="홈" rightIcon={<BellIcon />} />
 			<ScrollView contentContainerStyle={{ alignItems: "center" }}>
 				<CharacterDialog />
