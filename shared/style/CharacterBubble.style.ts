@@ -7,6 +7,7 @@ export const Container = styled.View`
   gap: ${({ theme }) => theme.rem(8)};
   width: 100%;
   padding: ${({ theme }) => theme.rem(6)} 0;
+  z-index: 10;
 `;
 
 export const CharacterWrapper = styled.View`
@@ -20,7 +21,7 @@ export const CharacterWrapper = styled.View`
 `;
 
 export const Character = styled.Text`
-  ${({ theme }) => theme.typography["title4-bold"]};
+  ${({ theme }) => theme.typography["title4-medium"]};
   color: ${({ theme }) => theme.grayscale.white};
 `;
 

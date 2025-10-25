@@ -4,7 +4,7 @@ export const Container = styled.View`
   display: flex;
   width: 100%;
   padding: ${({ theme }) =>
-		`${theme.rem(12)} ${theme.rem(24)} ${theme.rem(34)} ${theme.rem(24)}`};
+		`${theme.rem(13)} ${theme.rem(24)} ${theme.rem(0)} ${theme.rem(24)}`};
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
@@ -20,7 +20,6 @@ export const NavItem = styled.View`
   flex-direction: column;
   align-items: center;
   gap: ${({ theme }) => theme.rem(4)};
-  flex-shrink: 0;
 `;
 
 export const IconContainer = styled.View`
