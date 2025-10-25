@@ -32,7 +32,7 @@ export function EmotionCard({
 					</TouchableOpacity>
 				</S.EditBox>
 			)}
-			<Svg width="313" height="190" style={{ position: "absolute" }}>
+			<Svg width="303" height="190" style={{ position: "absolute" }}>
 				<Defs>
 					<RadialGradient
 						id={gradientId}
@@ -45,7 +45,7 @@ export function EmotionCard({
 						<Stop offset="100%" stopColor={subColor} />
 					</RadialGradient>
 				</Defs>
-				<Rect width="313" height="190" fill={`url(#${gradientId})`} rx="999" />
+				<Rect width="303" height="190" fill={`url(#${gradientId})`} rx="999" />
 			</Svg>
 			<S.EmotionCardTextBox>
 				<S.EmotionCardText>{title}</S.EmotionCardText>

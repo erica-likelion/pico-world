@@ -20,11 +20,8 @@ export const CharacterNameBox = styled.View`
 `;
 
 export const CharacterName = styled.Text`
-  display: flex;
-  align-items: center;
-  justify-content: center;
   color: ${({ theme }) => theme.grayscale.white};
-  ${({ theme }) => theme.typography["title4-semibold"]};
+  ${({ theme }) => theme.typography["title4-medium"]};
 `;
 
 export const CharacterDialogBox = styled.View`

@@ -99,6 +99,9 @@ importers:
       '@react-native-async-storage/async-storage':
         specifier: ^2.2.0
         version: 2.2.0(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0))
+      '@react-native-community/blur':
+        specifier: ^4.4.1
+        version: 4.4.1(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       '@react-native-community/datetimepicker':
         specifier: ^8.4.5
         version: 8.4.5(expo@54.0.12)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -1575,6 +1578,12 @@ packages:
     resolution: {integrity: sha512-gvRvjR5JAaUZF8tv2Kcq/Gbt3JHwbKFYfmb445rhOj6NUMx3qPLixmDx5pZAyb9at1bYvJ4/eTUipU5aki45xw==}
     peerDependencies:
       react-native: ^0.0.0-0 || >=0.65 <1.0
+
+  '@react-native-community/blur@4.4.1':
+    resolution: {integrity: sha512-XBSsRiYxE/MOEln2ayunShfJtWztHwUxLFcSL20o+HNNRnuUDv+GXkF6FmM2zE8ZUfrnhQ/zeTqvnuDPGw6O8A==}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
 
   '@react-native-community/datetimepicker@8.4.5':
     resolution: {integrity: sha512-vvVOJAHjU8TFBzTUjQzANCL6C3pZSE2zjfutCATk790uz7ASEc2tOBD+EIG4BTelWtP2G9jqvXp2L7XGdhEBRg==}
@@ -7136,6 +7145,11 @@ snapshots:
   '@react-native-async-storage/async-storage@2.2.0(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0))':
     dependencies:
       merge-options: 3.0.4
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0)
+
+  '@react-native-community/blur@4.4.1(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)':
+    dependencies:
+      react: 19.1.0
       react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0)
 
   '@react-native-community/datetimepicker@8.4.5(expo@54.0.12)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)':

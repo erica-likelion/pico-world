@@ -4,7 +4,6 @@ import styled from "styled-components/native";
 export const EmotionCardContainer = styled.View<{ $subColor: string }>`
   position: relative;
   display: flex;
-  width: ${({ theme }) => theme.rem(343)};
   height: ${({ theme }) => theme.rem(193)};
   padding: ${({ theme }) => theme.rem(58.5)} 0;
   justify-content: center;
@@ -20,7 +19,7 @@ export const EditBox = styled.View`
   z-index: 10;
   top: ${({ theme }) => theme.rem(16)};
   left: ${({ theme }) => theme.rem(20)};
-  width: ${({ theme }) => theme.rem(303)};
+  width: 88%;
   height: ${({ theme }) => theme.rem(18)};
   align-items: center;
   justify-content: space-between;
@@ -34,7 +33,7 @@ export const EditDateBox = styled.View`
 
 export const EditDate = styled.Text`
   color: ${({ theme }) => theme.grayscale.white};
-  ${({ theme }) => theme.typography["title4-medium"]};
+  ${({ theme }) => theme.typography["title3-medium"]};
 `;
 
 export const EditTime = styled.Text`
