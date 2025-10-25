@@ -48,7 +48,6 @@ export function TodayHistory({
 						title={emotionTitle}
 						mainColor={mainColor}
 						subColor={subColor}
-						isEditor
 					/>
 					<S.HistoryText numberOfLines={4} ellipsizeMode="tail">
 						{historyText}
