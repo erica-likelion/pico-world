@@ -118,8 +118,8 @@ export const CharacterName = styled.Text`
   ${({ theme }) => theme.typography["title4-medium"]};
 `;
 
-export const CharacterText = styled.Text`
+export const CharacterText = styled.Text<{ $textColor: string }>`
   width: ${({ theme }) => theme.rem(232)};
-  color: ${({ theme }) => theme.grayscale.white};
+  color: ${({ $textColor }) => $textColor};
   ${({ theme }) => theme.typography.b3};
 `;

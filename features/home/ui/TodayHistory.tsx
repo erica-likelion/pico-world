@@ -8,6 +8,7 @@ interface TodayHistoryProps {
 	emotionTitle: string;
 	mainColor: string;
 	subColor: string;
+	textColor: string;
 	historyText: string;
 	AIComment: string;
 }
@@ -18,6 +19,7 @@ export function TodayHistory({
 	emotionTitle,
 	mainColor,
 	subColor,
+	textColor,
 	historyText,
 	AIComment,
 }: TodayHistoryProps) {
@@ -58,7 +60,7 @@ export function TodayHistory({
 					<S.CharacterNameBox>
 						<S.CharacterName>츠츠</S.CharacterName>
 					</S.CharacterNameBox>
-					<S.CharacterText>{AIComment}</S.CharacterText>
+					<S.CharacterText $textColor={textColor}>{AIComment}</S.CharacterText>
 				</S.CharacterCommentBox>
 			</S.TodayHistoryContainer>
 		</S.Begin>
