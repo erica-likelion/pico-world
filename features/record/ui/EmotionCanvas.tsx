@@ -1,6 +1,9 @@
-import { useEmotionAnalysis } from "@/features/explore/model/useEmotionAnalysis";
-import * as S from "@/features/explore/style/EmotionCanvas.style";
-import { EmotionResult } from "@/features/explore/ui/EmotionResult";
+import {
+	EmotionChip,
+	useEmotionAnalysis,
+} from "@/features/record/model/useEmotionAnalysis";
+import * as S from "@/features/record/style/EmotionCanvas.styles";
+import { EmotionResult } from "@/features/record/ui/EmotionResult";
 import { EmotionGradientCanvas } from "@/shared/ui/emotion";
 import { BlurMask, Circle, Group, Line } from "@shopify/react-native-skia";
 import React, { useCallback, useRef, useState } from "react";
@@ -18,12 +21,16 @@ interface TouchPoint {
 	alpha: number;
 }
 
+interface EmotionCanvasProps {
+	onProceed: (chip: EmotionChip) => void;
+}
+
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const BRUSH_SIZE = 60;
 const ALPHA_PER_TOUCH = 0.5;
 
-export const EmotionCanvas = () => {
+export const EmotionCanvas: React.FC<EmotionCanvasProps> = ({ onProceed }) => {
 	const [touchPoints, setTouchPoints] = useState<TouchPoint[]>([]);
 	const [canvasSize, setCanvasSize] = useState({
 		width: SCREEN_WIDTH,
@@ -120,6 +127,7 @@ export const EmotionCanvas = () => {
 					chips={analysis.chips}
 					selectedChip={selectedChip}
 					onChipSelect={setSelectedChip}
+					onProceed={onProceed}
 				/>
 			)}
 		</S.Container>

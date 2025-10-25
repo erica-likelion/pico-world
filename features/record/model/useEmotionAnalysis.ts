@@ -1,4 +1,4 @@
-import { getEmotionColors } from "@/features/explore/lib/getEmotionColors";
+import { getEmotionColors } from "@/features/record/lib/getEmotionColors";
 import {
 	EMOTION_WORD,
 	X_LEVELS,

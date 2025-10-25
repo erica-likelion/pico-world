@@ -17,7 +17,7 @@ export default function Journal() {
 	return (
 		<>
 			<TopNav title="기록" />
-			<TouchableOpacity onPress={() => router.push("/journal/explore")}>
+			<TouchableOpacity onPress={() => router.push("./record")}>
 				<Text style={{ color: "white" }}>감정 기록 ㄱㄱ</Text>
 			</TouchableOpacity>
 		</>
