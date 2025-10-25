@@ -16,14 +16,14 @@ const CustomDay = ({
 	state,
 	onPress,
 	dayColors = {},
-	selectedDate,
+	today,
 	setCurrentMonth,
 }: {
 	date?: { day: number; dateString: string; month: number; year: number };
 	state?: string;
 	onPress?: (date: any) => void;
 	dayColors?: DateStyleMap;
-	selectedDate?: string;
+	today: string;
 	setCurrentMonth: (monthString: string) => void;
 }) => {
 	if (!date) {
@@ -32,17 +32,17 @@ const CustomDay = ({
 
 	const DAY_SIZE = 38;
 
-	const isSelected = date.dateString === selectedDate;
+	const isToday = date.dateString === today;
 	const isDisabled = state === "disabled";
 
 	const customColor = dayColors[date.dateString];
-	const backgroundColor = isSelected
+	const backgroundColor = isToday
 		? "#191919"
 		: customColor?.bg
 			? customColor.bg
 			: "transparent";
 
-	const borderRadius = isSelected ? 10 : 40;
+	const borderRadius = isToday ? 10 : 40;
 
 	const handlePress = () => {
 		if (isDisabled) {
@@ -64,12 +64,13 @@ const CustomDay = ({
 				alignItems: "center",
 			}}
 			onPress={handlePress}
+			activeOpacity={0.8}
 		>
 			<Text
 				style={{
 					color: isDisabled
 						? "#525252"
-						: isSelected
+						: isToday
 							? "#FFFFFF"
 							: (customColor?.text ?? "#CECECE"),
 				}}
@@ -81,9 +82,7 @@ const CustomDay = ({
 };
 
 const CustomHeader = ({ date }: { date: Date }) => {
-	const formatted = `${date.getFullYear()}. ${
-		date.getMonth() + 1
-	}. ${date.getDate()}`;
+	const formatted = `${date.getFullYear()}년 ${date.getMonth() + 1}월`;
 	return (
 		<View
 			style={{
@@ -102,9 +101,9 @@ const CustomHeader = ({ date }: { date: Date }) => {
 };
 
 export function CalendarUI({ isTodayHistory }: { isTodayHistory: boolean }) {
-	const [selectedDate, setSelectedDate] = useState<string>("");
 	const [currentMonth, setCurrentMonth] = useState<string>("2025-10");
 	const [currentDate, setCurrentDate] = useState<Date>(new Date("2025-10-01"));
+	const today = new Date().toISOString().split("T")[0];
 	const dayColors: DateStyleMap = {
 		"2025-10-03": { bg: "#FF6F61", text: "#000000" },
 		"2025-10-08": { bg: "#8A2BE2", text: "#FFFFFF" },
@@ -143,7 +142,6 @@ export function CalendarUI({ isTodayHistory }: { isTodayHistory: boolean }) {
 					textSectionTitleColor: "#909090",
 				}}
 				onDayPress={(day) => {
-					setSelectedDate(day.dateString);
 					setCurrentDate(new Date(day.dateString));
 				}}
 				onMonthChange={(month) => {
@@ -158,7 +156,7 @@ export function CalendarUI({ isTodayHistory }: { isTodayHistory: boolean }) {
 					<CustomDay
 						{...props}
 						dayColors={dayColors}
-						selectedDate={selectedDate}
+						today={today}
 						setCurrentMonth={setCurrentMonth}
 					/>
 				)}

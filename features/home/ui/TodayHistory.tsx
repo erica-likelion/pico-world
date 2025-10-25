@@ -54,7 +54,7 @@ export function TodayHistory({
 						{historyText}
 					</S.HistoryText>
 				</S.MyHistoryBox>
-				<S.CharacterCommentBox>
+				<S.CharacterCommentBox $mainColor={mainColor}>
 					<S.InnerShadow />
 					<S.CharacterNameBox>
 						<S.CharacterName>츠츠</S.CharacterName>

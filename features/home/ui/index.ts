@@ -1,3 +1,3 @@
-export * from "./CalendarUI";
-export * from "./ClickToJournal";
-export * from "./TodayHistory";
+export * from "@/features/home/ui/CalendarUI";
+export * from "@/features/home/ui/ClickToJournal";
+export * from "@/features/home/ui/TodayHistory";

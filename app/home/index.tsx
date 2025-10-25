@@ -18,7 +18,6 @@ export default function Home() {
 		<View
 			style={{
 				flex: 1,
-				paddingBottom: 34,
 			}}
 		>
 			<TopNav title="홈" rightIcon={<BellIcon />} />
@@ -40,12 +39,14 @@ export default function Home() {
 						mainColor="#FF685B"
 						subColor="#F3E9DA"
 						historyText="오늘은 책상 앞에 앉아서 집중도 잘 되고 할 일도 다 하고 전체적으로 만족스러운 하루였따~오늘은 책상 앞에 앉아서 집중도 잘 되고 할 일도 다 하고 전체적으로 만족스러운 하루였따~오늘은 책상 앞에 앉아서 집중도 잘 되고 할 일도 다"
-						AIComment="흥, 드디어 사람 구실 좀 했네? 그래, 그런 날이 있어야 균형이 맞지. 너 오늘 꽤 괜찮았어, 인정해줄게."
+						AIComment="흥, 드디어 사람 구실 좀 했네? 그래, 그런 날이 있어야 균형이 맞지. 너 오늘 꽤 괜찮았어, 인정해줄게.너 오늘 꽤 괜찮았어, 인정해줄게.너 오늘 꽤 괜찮았어, 인정해줄게.너 오늘 꽤 괜찮았어, 인정해줄게."
 					/>
 				) : (
 					<ClickToJournal />
 				)}
-				<View style={{ width: "100%", paddingHorizontal: 16 }}>
+				<View
+					style={{ width: "100%", paddingHorizontal: 16, marginBottom: 34 }}
+				>
 					<CalendarUI isTodayHistory={isTodayHistory} />
 				</View>
 			</ScrollView>

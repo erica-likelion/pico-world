@@ -70,7 +70,7 @@ export const HistoryText = styled.Text`
   ${({ theme }) => theme.typography.b3};
 `;
 
-export const CharacterCommentBox = styled.View`
+export const CharacterCommentBox = styled.View<{ $mainColor: string }>`
   display: flex;
   flex-direction: row;
   width: ${({ theme }) => theme.rem(312)};
@@ -79,7 +79,7 @@ export const CharacterCommentBox = styled.View`
   align-items: flex-start;
   gap: ${({ theme }) => theme.rem(12)};
   border-radius: 0 0 34px 34px;
-  background: ${({ theme }) => theme.colors.happy};
+  background: ${({ $mainColor }) => $mainColor};
   margin-top: -${({ theme }) => theme.rem(32)};
   shadow-color: rgba(255, 255, 255);
   shadow-offset: {
@@ -108,7 +108,7 @@ export const InnerShadow = styled.View`
   top: 0;
   left: 0;
   right: 0;
-  height: ${({ theme }) => theme.rem(122)};
+  height: "100%";
   background-color: rgba(255, 255, 255, 0.3);
   opacity: 0.3;
 `;

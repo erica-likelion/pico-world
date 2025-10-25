@@ -7,6 +7,7 @@ export const Container = styled.View`
   gap: ${({ theme }) => theme.rem(8)};
   width: 100%;
   padding: ${({ theme }) => theme.rem(6)} 0;
+  z-index: 10;
 `;
 
 export const CharacterWrapper = styled.View`
