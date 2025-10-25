@@ -20,7 +20,7 @@ export const CharacterWrapper = styled.View`
 `;
 
 export const Character = styled.Text`
-  ${({ theme }) => theme.typography["title4-bold"]};
+  ${({ theme }) => theme.typography["title4-medium"]};
   color: ${({ theme }) => theme.grayscale.white};
 `;
 

@@ -7,6 +7,7 @@ export const TodayHistoryContainer = styled.View`
   flex-direction: column;
   align-items: center;
   align-self: stretch;
+  margin-top: ${({ theme }) => theme.rem(32)};
 `;
 
 export const MyHistoryBox = styled.View`

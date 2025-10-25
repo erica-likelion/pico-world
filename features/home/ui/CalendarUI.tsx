@@ -101,7 +101,7 @@ const CustomHeader = ({ date }: { date: Date }) => {
 	);
 };
 
-export function CalendarUI() {
+export function CalendarUI({ isTodayHistory }: { isTodayHistory: boolean }) {
 	const [selectedDate, setSelectedDate] = useState<string>("");
 	const [currentMonth, setCurrentMonth] = useState<string>("2025-10");
 	const [currentDate, setCurrentDate] = useState<Date>(new Date("2025-10-01"));
@@ -114,7 +114,12 @@ export function CalendarUI() {
 	};
 
 	return (
-		<View style={{ marginTop: -35, width: "100%", paddingHorizontal: 20 }}>
+		<View
+			style={[
+				{ width: "100%" },
+				isTodayHistory ? { marginTop: 32 } : { marginTop: -35 },
+			]}
+		>
 			<Calendar
 				current={currentMonth}
 				renderHeader={() => <CustomHeader date={currentDate} />}
