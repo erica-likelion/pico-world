@@ -1,6 +1,10 @@
 import MenuIconSvg from "@/shared/assets/icons/menu.svg";
 import styled from "styled-components/native";
 
+export const Begin = styled.View`
+  align-items: center;
+`;
+
 export const TodayHistoryContainer = styled.View`
   display: flex;
   width: ${({ theme }) => theme.rem(343)};

@@ -8,7 +8,7 @@ import { ScrollView, View } from "react-native";
 
 export default function Home() {
 	const { show } = useBottomNavStore();
-	const [isTodayHistory, setIsTodayHistory] = useState(false);
+	const [isTodayHistory, setIsTodayHistory] = useState(true);
 
 	useEffect(() => {
 		show();
@@ -19,7 +19,6 @@ export default function Home() {
 			style={{
 				flex: 1,
 				paddingBottom: 34,
-				overflow: "visible",
 			}}
 		>
 			<TopNav title="홈" rightIcon={<BellIcon />} />
