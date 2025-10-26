@@ -9,9 +9,5 @@ export default function Home() {
 		show();
 	}, [show]);
 
-	return (
-		<>
-			<TopNav title="홈" />
-		</>
-	);
+	return <TopNav title="홈" />;
 }

@@ -1,4 +1,5 @@
 import { getEmotionColors } from "@/features/record/lib/getEmotionColors";
+import type { EmotionChip } from "@/features/record/model/types";
 import {
 	EMOTION_WORD,
 	X_LEVELS,
@@ -33,16 +34,6 @@ interface EmotionCell {
 	subColor: string;
 }
 
-export interface EmotionChip {
-	label: string;
-	mainColor: string;
-	subColor: string;
-}
-
-export interface EmotionAnalysisResult {
-	chips: EmotionChip[];
-}
-
 function clamp(value: number, min: number, max: number) {
 	return Math.max(min, Math.min(max, value));
 }
@@ -68,7 +59,7 @@ function getEmotionWord(xLabel: XLabel, yLabel: YLabel) {
 export function useEmotionAnalysis(
 	touchPoints: TouchPoint[],
 	canvasSize: { width: number; height: number },
-): EmotionAnalysisResult | null {
+): EmotionChip[] | null {
 	return useMemo(() => {
 		if (touchPoints.length === 0) return null;
 
@@ -145,6 +136,6 @@ export function useEmotionAnalysis(
 			subColor: e.subColor,
 		}));
 
-		return { chips };
+		return chips;
 	}, [touchPoints, canvasSize]);
 }

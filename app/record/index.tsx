@@ -1,22 +1,17 @@
-import type { EmotionChip } from "@/features/record/model/useEmotionAnalysis";
-import { EmotionCanvas } from "@/features/record/ui/EmotionCanvas";
-import { EmotionComplete } from "@/features/record/ui/EmotionComplete";
-import { EmotionWrite } from "@/features/record/ui/EmotionWrite";
+import { useRecordFlow } from "@/features/record/model/useRecordFlow";
+import {
+	EmotionCanvas,
+	EmotionComplete,
+	EmotionWrite,
+} from "@/features/record/ui";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { TopNav } from "@/widgets/TopNav/ui";
 import { useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
-
-type Phase = "explore" | "write" | "complete";
+import { useCallback } from "react";
 
 export default function Record() {
 	const { hide, show } = useBottomNavStore();
-	const [phase, setPhase] = useState<Phase>("explore");
-	const [selectedEmotion, setSelectedEmotion] = useState<EmotionChip | null>(
-		null,
-	);
-	const [text, setText] = useState("");
-	const [isFriendOnly, setIsFriendOnly] = useState(false);
+	const recordFlow = useRecordFlow();
 
 	useFocusEffect(
 		useCallback(() => {
@@ -27,45 +22,42 @@ export default function Record() {
 		}, [hide, show]),
 	);
 
-	const handleProceedToWrite = (chip: EmotionChip) => {
-		setSelectedEmotion(chip);
-		setPhase("write");
+	const handleBack = () => {
+		if (recordFlow.phase === "write") {
+			recordFlow.handleBack();
+		}
 	};
 
-	const handleSave = async () => {
-		console.log("저장:", { emotion: selectedEmotion, text, isFriendOnly });
-		setPhase("complete");
-	};
-
-	if (phase === "explore") {
+	if (recordFlow.phase === "explore") {
 		return (
 			<>
 				<TopNav title="감정 기록하기" leftIcon={true} />
-				<EmotionCanvas onProceed={handleProceedToWrite} />
+				<EmotionCanvas onProceed={recordFlow.handleProceedToWrite} />
 			</>
 		);
 	}
 
-	if (phase === "write") {
+	if (recordFlow.phase === "write") {
 		return (
 			<>
-				<TopNav title="감정 기록하기" leftIcon={true} />
+				<TopNav
+					title="감정 기록하기"
+					leftIcon={true}
+					onLeftPress={handleBack}
+				/>
 				<EmotionWrite
-					selectedEmotion={selectedEmotion}
-					setText={setText}
-					isFriendOnly={isFriendOnly}
-					setIsFriendOnly={setIsFriendOnly}
-					OnSave={handleSave}
+					selectedEmotion={recordFlow.selectedEmotion}
+					text={recordFlow.text}
+					setText={recordFlow.setText}
+					isFriendOnly={recordFlow.isFriendOnly}
+					setIsFriendOnly={recordFlow.setIsFriendOnly}
+					OnSave={recordFlow.handleSave}
 				/>
 			</>
 		);
 	}
 
-	if (phase === "complete") {
-		return (
-			<>
-				<EmotionComplete selectedEmotion={selectedEmotion} />
-			</>
-		);
+	if (recordFlow.phase === "complete") {
+		return <EmotionComplete selectedEmotion={recordFlow.selectedEmotion} />;
 	}
 }
