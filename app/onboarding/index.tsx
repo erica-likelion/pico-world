@@ -20,7 +20,7 @@ const Character = [
 		image: "",
 	},
 	{
-		name: "동동",
+		name: "동동이",
 		speech: "어디에요? 누가 울렸어요. 나한테 말해줘요.",
 		personality: ["과보호", "연하", "집착"],
 		image: "",
@@ -41,14 +41,17 @@ const Character = [
 
 export default function Onboarding() {
 	const router = useRouter();
-	const { hide } = useBottomNavStore();
+	const { hide, show } = useBottomNavStore();
 	const [selectedCharacter, setSelectedCharacter] = useState<CharacterProps>(
 		Character[0],
 	);
 
 	useEffect(() => {
 		hide();
-	}, [hide]);
+		return () => {
+			show();
+		};
+	}, [hide, show]);
 	return (
 		<View style={{ flex: 1 }}>
 			<CharacterInfo

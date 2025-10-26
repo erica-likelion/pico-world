@@ -1,0 +1,166 @@
+import * as S from "@/features/home/style/CalendarUI.styles";
+import CalenderIcon from "@/shared/assets/icons/calendar.svg";
+import { useState } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
+import { Calendar } from "react-native-calendars";
+
+type DateStyleMap = {
+	[dateString: string]: {
+		bg?: string;
+		text?: string;
+	};
+};
+
+const CustomDay = ({
+	date,
+	state,
+	onPress,
+	dayColors = {},
+	today,
+	setCurrentMonth,
+}: {
+	date?: { day: number; dateString: string; month: number; year: number };
+	state?: string;
+	onPress?: (date: any) => void;
+	dayColors?: DateStyleMap;
+	today: string;
+	setCurrentMonth: (monthString: string) => void;
+}) => {
+	if (!date) {
+		return <View style={{ width: 38, height: 38 }} />;
+	}
+
+	const DAY_SIZE = 38;
+
+	const isToday = date.dateString === today;
+	const isDisabled = state === "disabled";
+
+	const customColor = dayColors[date.dateString];
+	const backgroundColor = isToday
+		? "#191919"
+		: customColor?.bg
+			? customColor.bg
+			: "transparent";
+
+	const borderRadius = isToday ? 10 : 40;
+
+	const handlePress = () => {
+		if (isDisabled) {
+			const clickedDate = new Date(date.dateString);
+			const newMonth = clickedDate.toISOString().slice(0, 7);
+			setCurrentMonth(newMonth);
+		}
+		onPress?.(date);
+	};
+
+	return (
+		<TouchableOpacity
+			style={{
+				width: DAY_SIZE,
+				height: DAY_SIZE,
+				backgroundColor,
+				borderRadius,
+				justifyContent: "center",
+				alignItems: "center",
+			}}
+			onPress={handlePress}
+			activeOpacity={0.8}
+		>
+			<Text
+				style={{
+					color: isDisabled
+						? "#525252"
+						: isToday
+							? "#FFFFFF"
+							: (customColor?.text ?? "#CECECE"),
+				}}
+			>
+				{date.day}
+			</Text>
+		</TouchableOpacity>
+	);
+};
+
+const CustomHeader = ({ date }: { date: Date }) => {
+	const formatted = `${date.getFullYear()}년 ${date.getMonth() + 1}월`;
+	return (
+		<View
+			style={{
+				flexDirection: "row",
+				alignItems: "center",
+			}}
+		>
+			<S.TitleBox>
+				<TouchableOpacity>
+					<CalenderIcon width={18} height={18} color="#CECECE" />
+				</TouchableOpacity>
+				<S.TitleText>{formatted}</S.TitleText>
+			</S.TitleBox>
+		</View>
+	);
+};
+
+export function CalendarUI({ isTodayHistory }: { isTodayHistory: boolean }) {
+	const [currentMonth, setCurrentMonth] = useState<string>("2025-10");
+	const [currentDate, setCurrentDate] = useState<Date>(new Date("2025-10-01"));
+	const today = new Date().toISOString().split("T")[0];
+	const dayColors: DateStyleMap = {
+		"2025-10-03": { bg: "#FF6F61", text: "#000000" },
+		"2025-10-08": { bg: "#8A2BE2", text: "#FFFFFF" },
+		"2025-10-07": { bg: "#FFD700", text: "#000000" },
+		"2025-10-15": { bg: "#1E90FF", text: "#FFFFFF" },
+		"2025-10-22": { bg: "#32CD32", text: "#FFFFFF" },
+	};
+
+	return (
+		<View
+			style={[
+				{ width: "100%" },
+				isTodayHistory ? { marginTop: 32 } : { marginTop: -35 },
+			]}
+		>
+			<Calendar
+				current={currentMonth}
+				renderHeader={() => <CustomHeader date={currentDate} />}
+				style={{
+					width: "100%",
+					borderRadius: 40,
+					paddingLeft: 10,
+					paddingRight: 10,
+					paddingBottom: 19,
+					paddingTop: 10,
+				}}
+				theme={{
+					backgroundColor: "transparent",
+					calendarBackground: "rgba(32, 32, 32)",
+					dayTextColor: "#CECECE",
+					todayTextColor: "#FFFFFF",
+					textDisabledColor: "#525252",
+					arrowColor: "#CECECE",
+					monthTextColor: "#CECECE",
+					indicatorColor: "#CECECE",
+					textSectionTitleColor: "#909090",
+				}}
+				onDayPress={(day) => {
+					setCurrentDate(new Date(day.dateString));
+				}}
+				onMonthChange={(month) => {
+					const monthStr = `${month.year}-${String(month.month).padStart(
+						2,
+						"0",
+					)}`;
+					setCurrentMonth(monthStr);
+					setCurrentDate(new Date(`${monthStr}-01`));
+				}}
+				dayComponent={(props) => (
+					<CustomDay
+						{...props}
+						dayColors={dayColors}
+						today={today}
+						setCurrentMonth={setCurrentMonth}
+					/>
+				)}
+			/>
+		</View>
+	);
+}
