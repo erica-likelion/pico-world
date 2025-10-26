@@ -51,7 +51,7 @@ export const ImageScroll = styled.ScrollView`
 `;
 
 export const CharacterImageView = styled.View`
-  width: ${screenWidth}px;
+  width: ${screenWidth * 0.68}px;
   height: ${({ theme }) => theme.rem(213)};
   display: flex;
   align-items: center;
@@ -61,10 +61,8 @@ export const CharacterImageView = styled.View`
   margin-bottom: ${({ theme }) => theme.rem(10)};
 `;
 export const CharacterImage = styled.Image`
-  width: ${({ theme }) => theme.rem(213)};
-  height: ${({ theme }) => theme.rem(213)};
-  border-radius: ${({ theme }) => theme.rem(106)};
-  background-color: ${({ theme }) => theme.grayscale.gray900};
+  width: ${({ theme }) => theme.rem(280)};
+  height: ${({ theme }) => theme.rem(280)};
 `;
 
 export const CharacterName = styled.Text`

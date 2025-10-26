@@ -8,6 +8,8 @@ import {
 } from "react-native";
 
 const { width: screenWidth } = Dimensions.get("window");
+const itemWidth = screenWidth * 0.68;
+const sliderPadding = (screenWidth - itemWidth) / 2;
 
 interface CharacterInfoProps {
 	characters: CharacterProps[];
@@ -22,7 +24,7 @@ export function CharacterInfo({
 
 	const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
 		const x = e.nativeEvent.contentOffset.x;
-		const index = Math.round(x / screenWidth);
+		const index = Math.round(x / itemWidth);
 
 		if (characters[index]) {
 			setCurrentIndex(index);
@@ -43,14 +45,18 @@ export function CharacterInfo({
 			{/* 이미지 스크롤 */}
 			<S.ImageScroll
 				horizontal
-				pagingEnabled
 				showsHorizontalScrollIndicator={false}
 				onScroll={handleScroll}
 				scrollEventThrottle={16}
+				snapToInterval={itemWidth}
+				decelerationRate="fast"
+				contentContainerStyle={{
+					paddingHorizontal: sliderPadding,
+				}}
 			>
 				{characters.map((character) => (
 					<S.CharacterImageView key={character.name}>
-						<S.CharacterImage source={{ uri: character.image }} />
+						<S.CharacterImage source={character.image} />
 					</S.CharacterImageView>
 				))}
 			</S.ImageScroll>
