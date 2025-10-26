@@ -31,7 +31,7 @@ const NAV_ITEMS: NavItem[] = [
 	{ icon: <QuotesIcon />, label: "기록", route: "journal" },
 	{ icon: <UsersIcon />, label: "친구", route: "friends" },
 	{ icon: <LayersIcon />, label: "리포트", route: "report" },
-	{ icon: <SettingIcon />, label: "마이", route: "user" },
+	{ icon: <SettingIcon />, label: "마이", route: "my" },
 ];
 
 interface BottomNavBarProps {
