@@ -1,9 +1,12 @@
 import * as S from "@/features/my/style/MyPageSelect.styles";
+import { LogoutModal, WithdrawModal } from "@/features/my/ui";
 import { Avatar, Divider } from "@/shared/ui";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 
 export function MyPageSelect() {
+	const [isLoginModalVisible, setLoginModalVisible] = useState(false);
+	const [isWithdrawModalVisible, setWithdrawModalVisible] = useState(false);
 	const router = useRouter();
 	const menuItems = [
 		{
@@ -21,13 +24,13 @@ export function MyPageSelect() {
 		{
 			label: "로그아웃",
 			onPress: () => {
-				console.log("로그아웃 클릭");
+				setLoginModalVisible(true);
 			},
 		},
 		{
 			label: "계정 탈퇴",
 			onPress: () => {
-				console.log("계정 탈퇴 클릭");
+				setWithdrawModalVisible(true);
 			},
 		},
 	];
@@ -47,6 +50,26 @@ export function MyPageSelect() {
 					</S.TextBox>
 				</React.Fragment>
 			))}
+			{isLoginModalVisible && (
+				<LogoutModal
+					isVisible={isLoginModalVisible}
+					onConfirm={() => {
+						setLoginModalVisible(false);
+						console.log("로그아웃 클릭");
+					}}
+					onCancel={() => setLoginModalVisible(false)}
+				/>
+			)}
+			{isWithdrawModalVisible && (
+				<WithdrawModal
+					isVisible={isWithdrawModalVisible}
+					onConfirm={() => {
+						setWithdrawModalVisible(false);
+						console.log("회원탈퇴 클릭");
+					}}
+					onCancel={() => setWithdrawModalVisible(false)}
+				/>
+			)}
 		</S.MyPageSelectWrapper>
 	);
 }

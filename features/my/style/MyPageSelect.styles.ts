@@ -1,13 +1,5 @@
 import styled from "styled-components/native";
 
-export const MyPageSelectContainer = styled.View`
-  width: 100%;
-  padding: ${({ theme }) => theme.rem(0)} ${({ theme }) => theme.rem(16)}
-    ${({ theme }) => theme.rem(203)} ${({ theme }) => theme.rem(16)};
-  flex-direction: column;
-  align-items: center;
-`;
-
 export const MyPageSelectWrapper = styled.View`
   padding: ${({ theme }) => theme.rem(16)} 0;
   flex-direction: column;
