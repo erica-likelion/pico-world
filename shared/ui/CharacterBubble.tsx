@@ -1,11 +1,22 @@
 import * as S from "@/shared/style/CharacterBubble.style";
+import type { ImageSourcePropType } from "react-native";
 import TypeWriter from "react-native-typewriter-effect";
 
+type CharacterName = "츠츠" | "루루" | "동동" | "티티" | "파파";
+
 interface CharacterBubbleProps {
-	character: string;
+	character: CharacterName;
 	message: string;
 	enableTypewriter?: boolean;
 }
+
+const characterImages: Record<CharacterName, ImageSourcePropType> = {
+	츠츠: require("@/shared/assets/images/characters/chch.png"),
+	루루: require("@/shared/assets/images/characters/lulu.png"),
+	동동: require("@/shared/assets/images/characters/dongdong.png"),
+	티티: require("@/shared/assets/images/characters/tt.png"),
+	파파: require("@/shared/assets/images/characters/papa.png"),
+};
 
 /**
  * CharacterBubble - TypeWriter 라이브러리를 사용한 채팅 버블 컴포넌트
@@ -24,10 +35,12 @@ export const CharacterBubble = ({
 	message,
 	enableTypewriter = false,
 }: CharacterBubbleProps) => {
+	const src = characterImages[character] ?? characterImages["츠츠"];
+
 	return (
 		<S.Container>
 			<S.CharacterWrapper>
-				<S.Character>{character}</S.Character>
+				<S.CharacterImage source={src} resizeMode="contain" />
 			</S.CharacterWrapper>
 			<S.BubbleWrapper>
 				<S.Bubble>

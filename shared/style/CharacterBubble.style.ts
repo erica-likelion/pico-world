@@ -20,9 +20,9 @@ export const CharacterWrapper = styled.View`
   background-color: ${({ theme }) => theme.grayscale.gray900};
 `;
 
-export const Character = styled.Text`
-  ${({ theme }) => theme.typography["title4-medium"]};
-  color: ${({ theme }) => theme.grayscale.white};
+export const CharacterImage = styled.Image`
+  width: 100%;
+  height: 100%;
 `;
 
 export const BubbleWrapper = styled.View`
