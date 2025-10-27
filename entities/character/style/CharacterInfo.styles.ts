@@ -61,8 +61,16 @@ export const CharacterImageView = styled.View`
   margin-bottom: ${({ theme }) => theme.rem(10)};
 `;
 export const CharacterImage = styled.Image`
-  width: ${({ theme }) => theme.rem(280)};
-  height: ${({ theme }) => theme.rem(280)};
+  width: ${({ theme }) => theme.rem(160)};
+  height: ${({ theme }) => theme.rem(160)};
+  shadow-color: rgba(255, 203, 186, 0.5);
+  shadow-offset: 0px 0px;
+  shadow-opacity: 1;
+  shadow-radius: 30px;
+
+  /* Android 전용 그림자 */
+  elevation: 8;
+  overflow: visible;
 `;
 
 export const CharacterName = styled.Text`

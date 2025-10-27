@@ -1,5 +1,6 @@
 import * as S from "@/features/my/style/MyPageSelect.styles";
-import { LogoutModal, WithdrawModal } from "@/features/my/ui";
+import { LogoutModal } from "@/features/my/ui/LogoutModal";
+import { WithdrawModal } from "@/features/my/ui/WithdrawModal";
 import { Avatar, Divider } from "@/shared/ui";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
