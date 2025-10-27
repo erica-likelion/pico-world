@@ -11,7 +11,7 @@ interface EmotionWriteProps {
 	setText?: (text: string) => void;
 	isFriendOnly: boolean;
 	setIsFriendOnly: (value: boolean) => void;
-	OnSave?: () => void;
+	OnSave: () => void;
 }
 
 export const EmotionWrite: React.FC<EmotionWriteProps> = ({
