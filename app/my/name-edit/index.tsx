@@ -2,10 +2,11 @@ import { Button, TextInput } from "@/shared/ui";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { TopNav } from "@/widgets/TopNav/ui";
 import { useRouter } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 
 export default function NameEdit() {
+	const [name, setName] = useState("피코");
 	const { show, hide } = useBottomNavStore();
 	const router = useRouter();
 	useEffect(() => {
@@ -16,8 +17,12 @@ export default function NameEdit() {
 	}, [show, hide]);
 	return (
 		<>
-			<TopNav title="이름 수정" />
-			<TextInput placeholder="이름을 입력하세요." />
+			<TopNav title="이름 수정" leftIcon />
+			<TextInput
+				placeholder="이름을 입력하세요."
+				value={name}
+				onChangeText={setName}
+			/>
 			<View
 				style={{
 					position: "absolute",
@@ -27,10 +32,11 @@ export default function NameEdit() {
 				}}
 			>
 				<Button
-					text="저장"
+					text="수정하기"
 					onPress={() => {
 						router.push("/my");
 					}}
+					disabled={name.trim() === ""}
 				/>
 			</View>
 		</>

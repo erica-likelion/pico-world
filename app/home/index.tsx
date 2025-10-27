@@ -8,7 +8,7 @@ import { ScrollView, View } from "react-native";
 
 export default function Home() {
 	const { show } = useBottomNavStore();
-	const [isTodayHistory, setIsTodayHistory] = useState(true);
+	const [isTodayHistory, setIsTodayHistory] = useState(false);
 
 	useEffect(() => {
 		show();
