@@ -1,18 +1,17 @@
 import * as S from "@/features/report/style/MonthlyEmotion.styles";
 import RightIcon from "@/shared/assets/icons/right.svg";
 import { theme } from "@/shared/config/theme/theme";
+import type { EmotionChip } from "@/shared/types/emotion";
 import { TouchableOpacity } from "react-native";
 
 interface MonthlyEmotionProps {
-	mainColor: string;
-	subColor: string;
+	emotion: Pick<EmotionChip, "mainColor" | "subColor">;
 	description: string;
 	onPress: () => void;
 }
 
 export const MonthlyEmotion: React.FC<MonthlyEmotionProps> = ({
-	mainColor,
-	subColor,
+	emotion,
 	description,
 	onPress,
 }) => {
@@ -24,7 +23,7 @@ export const MonthlyEmotion: React.FC<MonthlyEmotionProps> = ({
 					<RightIcon width={18} height={18} color={theme.grayscale.gray200} />
 				</TouchableOpacity>
 			</S.TopWrapper>
-			<S.EmotionBox mainColor={mainColor} subColor={subColor} />
+			<S.EmotionBox mainColor={emotion.mainColor} subColor={emotion.subColor} />
 			<S.Description>{description}</S.Description>
 		</S.Container>
 	);

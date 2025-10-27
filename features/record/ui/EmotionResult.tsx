@@ -1,6 +1,6 @@
-import type { EmotionChip } from "@/features/record/model/types";
 import * as S from "@/features/record/style/EmotionResult.styles";
 import RightIcon from "@/shared/assets/icons/right.svg";
+import { EmotionChip } from "@/shared/types";
 import { Chip, IconButton } from "@/shared/ui";
 import React from "react";
 
@@ -24,7 +24,7 @@ export const EmotionResult: React.FC<EmotionResultProps> = ({
 					{chips.map((c, idx) => (
 						<Chip
 							key={`${c.label}-${idx}`}
-							text={c.label}
+							text={c.label ?? ""}
 							selected={selectedChip === idx}
 							setSelected={() => {
 								onChipSelect(selectedChip === idx ? null : idx);

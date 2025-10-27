@@ -1,7 +1,7 @@
-import type { EmotionChip } from "@/features/record/model/types";
 import { useEmotionAnalysis } from "@/features/record/model/useEmotionAnalysis";
 import * as S from "@/features/record/style/EmotionCanvas.styles";
 import { EmotionResult } from "@/features/record/ui/EmotionResult";
+import type { EmotionChip } from "@/shared/types";
 import { EmotionGradientCanvas } from "@/shared/ui/emotion";
 import { BlurMask, Circle, Group, Line } from "@shopify/react-native-skia";
 import React, { useCallback, useRef, useState } from "react";
@@ -122,7 +122,7 @@ export const EmotionCanvas: React.FC<EmotionCanvasProps> = ({ onProceed }) => {
 
 			{analysis && (
 				<EmotionResult
-					chips={analysis}
+					chips={analysis.chips}
 					selectedChip={selectedChip}
 					onChipSelect={setSelectedChip}
 					onProceed={onProceed}

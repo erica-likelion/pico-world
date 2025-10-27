@@ -1,5 +1,6 @@
+import { EmotionChip } from "@/shared/types";
+
 import { getEmotionColors } from "@/features/record/lib/getEmotionColors";
-import type { EmotionChip } from "@/features/record/model/types";
 import {
 	EMOTION_WORD,
 	X_LEVELS,
@@ -59,7 +60,7 @@ function getEmotionWord(xLabel: XLabel, yLabel: YLabel) {
 export function useEmotionAnalysis(
 	touchPoints: TouchPoint[],
 	canvasSize: { width: number; height: number },
-): EmotionChip[] | null {
+): { chips: EmotionChip[] } | null {
 	return useMemo(() => {
 		if (touchPoints.length === 0) return null;
 
@@ -136,6 +137,6 @@ export function useEmotionAnalysis(
 			subColor: e.subColor,
 		}));
 
-		return chips;
+		return { chips };
 	}, [touchPoints, canvasSize]);
 }

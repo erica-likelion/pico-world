@@ -1,5 +1,5 @@
+import type { EmotionChip } from "@/shared/types/emotion";
 import { useState } from "react";
-import type { EmotionChip } from "./types";
 
 type Phase = "explore" | "write" | "complete";
 
