@@ -15,6 +15,7 @@ import * as S from "../style/TopNav.style";
 interface TopNavBarProps {
 	title?: string;
 	leftIcon?: boolean;
+	onLeftPress?: () => void;
 	rightIcon?: ReactNode;
 	onRightPress?: () => void;
 	showBorder?: boolean;
@@ -27,6 +28,7 @@ interface TopNavBarProps {
  * @param props.leftIcon - 뒤로가기 버튼 표시 여부 (true일 때 자동으로 router.back() 실행)
  * @param props.rightIcon - 오른쪽 아이콘
  * @param props.onRightPress - 오른쪽 아이콘 클릭 시 실행할 함수
+ * @param props.onLeftPress - 뒤로가기 버튼 클릭 시 실행할 함수
  * @param props.showBorder - 하단 보더 표시 여부
  * @returns JSX.Element
  * @example
@@ -47,6 +49,7 @@ interface TopNavBarProps {
 export const TopNav = ({
 	title,
 	leftIcon = false,
+	onLeftPress,
 	rightIcon,
 	onRightPress,
 	showBorder = true,
@@ -62,7 +65,7 @@ export const TopNav = ({
 				<>
 					<S.LeftSection>
 						<TouchableOpacity
-							onPress={() => router.back()}
+							onPress={onLeftPress || (() => router.back())}
 							onPressIn={leftAnimation.handlePressIn}
 							onPressOut={leftAnimation.handlePressOut}
 							activeOpacity={1}

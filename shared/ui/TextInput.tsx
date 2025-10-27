@@ -22,12 +22,16 @@ interface TextInputProps {
 	height?: number;
 	placeholder: string;
 	multiline?: boolean;
+	value?: string;
+	onChangeText?: (text: string) => void;
 }
 
 export function TextInput({
 	height,
 	placeholder,
 	multiline = false,
+	value,
+	onChangeText,
 }: TextInputProps) {
 	const theme = useTheme();
 
@@ -37,6 +41,8 @@ export function TextInput({
 			height={height}
 			placeholder={placeholder}
 			placeholderTextColor={theme.grayscale.gray400}
+			value={value}
+			onChangeText={onChangeText}
 		/>
 	);
 }
