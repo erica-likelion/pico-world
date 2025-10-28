@@ -59,6 +59,9 @@ importers:
       react-native-calendars:
         specifier: ^1.1313.0
         version: 1.1313.0(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+      react-native-modal:
+        specifier: 14.0.0-rc.1
+        version: 14.0.0-rc.1(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       react-native-reanimated:
         specifier: ~4.1.0
         version: 4.1.2(@babel/core@7.28.4)(react-native-worklets@0.5.1(@babel/core@7.28.4)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -4421,6 +4424,9 @@ packages:
   react-is@19.2.0:
     resolution: {integrity: sha512-x3Ax3kNSMIIkyVYhWPyO09bu0uttcAIoecO/um/rKGQ4EltYWVYtyiGkS/3xMynrbVQdS69Jhlv8FXUEZehlzA==}
 
+  react-native-animatable@1.4.0:
+    resolution: {integrity: sha512-DZwaDVWm2NBvBxf7I0wXKXLKb/TxDnkV53sWhCvei1pRyTX3MVFpkvdYBknNBqPrxYuAIlPxEp7gJOidIauUkw==}
+
   react-native-calendars@1.1313.0:
     resolution: {integrity: sha512-YQ7Vg57rBRVymolamYDTxZ0lPOELTDHQbTukTWdxR47aRBYJwKI6ocRbwcY5gYgyDwNgJS4uLGu5AvmYS74LYQ==}
     engines: {node: '>=18'}
@@ -4442,6 +4448,12 @@ packages:
     peerDependencies:
       '@react-native-community/datetimepicker': '>=6.7.0'
       react-native: '>=0.65.0'
+
+  react-native-modal@14.0.0-rc.1:
+    resolution: {integrity: sha512-v5pvGyx1FlmBzdHyPqBsYQyS2mIJhVmuXyNo5EarIzxicKhuoul6XasXMviGcXboEUT0dTYWs88/VendojPiVw==}
+    peerDependencies:
+      react: '*'
+      react-native: '>=0.70.0'
 
   react-native-reanimated@4.1.2:
     resolution: {integrity: sha512-qzmQiFrvjm62pRBcj97QI9Xckc3EjgHQoY1F2yjktd0kpjhoyePeuTEXjYRCAVIy7IV/1cfeSup34+zFThFoHQ==}
@@ -10391,6 +10403,10 @@ snapshots:
 
   react-is@19.2.0: {}
 
+  react-native-animatable@1.4.0:
+    dependencies:
+      prop-types: 15.8.1
+
   react-native-calendars@1.1313.0(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0):
     dependencies:
       hoist-non-react-statics: 3.3.2
@@ -10425,6 +10441,12 @@ snapshots:
       '@react-native-community/datetimepicker': 8.4.5(expo@54.0.12)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       prop-types: 15.8.1
       react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0)
+
+  react-native-modal@14.0.0-rc.1(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0):
+    dependencies:
+      react: 19.1.0
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0)
+      react-native-animatable: 1.4.0
 
   react-native-reanimated@4.1.2(@babel/core@7.28.4)(react-native-worklets@0.5.1(@babel/core@7.28.4)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0):
     dependencies:
