@@ -1,5 +1,5 @@
 import * as S from "@/features/record/style/EmotionComplete.styles";
-import { EmotionChip } from "@/shared/types";
+import type { EmotionChip } from "@/shared/types";
 import { CharacterBubble } from "@/shared/ui/CharacterBubble";
 import { EmotionCard } from "@/shared/ui/EmotionCard";
 import { useRouter, type Href } from "expo-router";

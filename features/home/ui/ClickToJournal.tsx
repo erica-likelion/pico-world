@@ -1,7 +1,7 @@
 import * as S from "@/features/home/style/ClickToJournal.styles";
 import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
 import { PlusButton } from "@/shared/ui";
-import React, { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Animated, Pressable } from "react-native";
 import {
 	Easing,
@@ -50,44 +50,91 @@ const AnimatedPlusingEffect = () => {
 	);
 };
 
-export function ClickToJournal() {
-	const { scale, handlePressIn, handlePressOut } = usePressAnimation();
+interface ClickToJournalProps {
+	date: string;
+}
 
+export function ClickToJournal({ date }: ClickToJournalProps) {
+	const { scale, handlePressIn, handlePressOut } = usePressAnimation();
+	const fadeInAnim = useRef(new Animated.Value(0)).current;
+	const slideUpAnim = useRef(new Animated.Value(50)).current;
+	const scaleAnim = useRef(new Animated.Value(0.9)).current;
 	const animatedStyle = {
 		transform: [{ scale }],
 	};
 
+	useEffect(() => {
+		if (!date) return;
+		fadeInAnim.setValue(0);
+		slideUpAnim.setValue(50);
+		scaleAnim.setValue(0.9);
+
+		//등장 애니메이션
+		Animated.parallel([
+			Animated.timing(fadeInAnim, {
+				toValue: 1,
+				duration: 600,
+				easing: Easing.out(Easing.cubic),
+				useNativeDriver: true,
+			}),
+			Animated.timing(slideUpAnim, {
+				toValue: 0,
+				duration: 600,
+				easing: Easing.out(Easing.back(3)),
+				useNativeDriver: true,
+			}),
+			Animated.timing(scaleAnim, {
+				toValue: 1,
+				duration: 600,
+				easing: Easing.out(Easing.back(12)),
+				useNativeDriver: true,
+			}),
+		]).start();
+		console.log("ClickToJournal date:", date);
+	}, [date, fadeInAnim, scaleAnim, slideUpAnim]); // date나 emotion이 바뀔 때마다 애니메이션 재실행
+
 	return (
-		<S.CircleOut>
-			<S.CircleIn>
-				<AnimatedPlusingEffect />
-				<S.CircleImageLeft
-					source={require("@/shared/assets/images/circle-left.png")}
-				/>
-				<S.CircleImageCenter
-					source={require("@/shared/assets/images/circle-black.png")}
-				/>
-				<S.CircleImageRight
-					source={require("@/shared/assets/images/circle-right.png")}
-				/>
-				<S.CircleText>오늘의 감정 기록하기</S.CircleText>
-				<Pressable
-					onPressIn={handlePressIn}
-					onPressOut={handlePressOut}
-					style={{ zIndex: 40, alignItems: "center", justifyContent: "center" }}
-				>
-					<Animated.View
+		<Animated.View
+			style={{
+				opacity: fadeInAnim,
+				transform: [{ translateY: slideUpAnim }, { scale: scaleAnim }],
+			}}
+		>
+			<S.CircleOut>
+				<S.CircleIn>
+					<AnimatedPlusingEffect />
+					<S.CircleImageLeft
+						source={require("@/shared/assets/images/circle-left.png")}
+					/>
+					<S.CircleImageCenter
+						source={require("@/shared/assets/images/circle-black.png")}
+					/>
+					<S.CircleImageRight
+						source={require("@/shared/assets/images/circle-right.png")}
+					/>
+					<S.CircleText>감정 기록하기</S.CircleText>
+					<Pressable
+						onPressIn={handlePressIn}
+						onPressOut={handlePressOut}
 						style={{
-							...animatedStyle,
+							zIndex: 40,
 							alignItems: "center",
 							justifyContent: "center",
 						}}
 					>
-						<PlusButton />
-						<S.PlusIcon />
-					</Animated.View>
-				</Pressable>
-			</S.CircleIn>
-		</S.CircleOut>
+						<Animated.View
+							style={{
+								...animatedStyle,
+								alignItems: "center",
+								justifyContent: "center",
+							}}
+						>
+							<PlusButton />
+							<S.PlusIcon />
+						</Animated.View>
+					</Pressable>
+				</S.CircleIn>
+			</S.CircleOut>
+		</Animated.View>
 	);
 }

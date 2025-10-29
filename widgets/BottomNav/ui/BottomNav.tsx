@@ -31,7 +31,7 @@ const NAV_ITEMS: NavItem[] = [
 	{ icon: <QuotesIcon />, label: "기록", route: "journal" },
 	{ icon: <UsersIcon />, label: "친구", route: "friends" },
 	{ icon: <LayersIcon />, label: "리포트", route: "report" },
-	{ icon: <SettingIcon />, label: "마이", route: "user" },
+	{ icon: <SettingIcon />, label: "마이", route: "my" },
 ];
 
 interface BottomNavBarProps {
@@ -59,12 +59,10 @@ interface BottomNavBarProps {
 // NavItem 컴포넌트 (usePressAnimation 사용)
 const NavItemComponent = ({
 	item,
-	index,
 	isActive,
 	onPress,
 }: {
 	item: NavItem;
-	index: number;
 	isActive: boolean;
 	onPress: () => void;
 }) => {
@@ -148,7 +146,6 @@ export const BottomNav = ({
 					<NavItemComponent
 						key={`nav-${item.label}-${index}`}
 						item={item}
-						index={index}
 						isActive={isActive}
 						onPress={() => handlePress(index)}
 					/>

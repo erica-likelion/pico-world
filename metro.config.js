@@ -20,7 +20,7 @@ if (process.env.NODE_ENV !== "production") {
 	try {
 		const withStorybook = require("@storybook/react-native/metro/withStorybook");
 		module.exports = withStorybook(config);
-	} catch (error) {
+	} catch (_error) {
 		console.warn("Storybook not available, using default config");
 		module.exports = config;
 	}

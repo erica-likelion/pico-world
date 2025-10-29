@@ -4,7 +4,8 @@ import { EmotionResult } from "@/features/record/ui/EmotionResult";
 import type { EmotionChip } from "@/shared/types";
 import { EmotionGradientCanvas } from "@/shared/ui/emotion";
 import { BlurMask, Circle, Group, Line } from "@shopify/react-native-skia";
-import React, { useCallback, useRef, useState } from "react";
+import type React from "react";
+import { useCallback, useRef, useState } from "react";
 import {
 	Dimensions,
 	StyleSheet,

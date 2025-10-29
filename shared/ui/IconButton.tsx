@@ -3,12 +3,12 @@ import * as S from "@/shared/style/IconButton.style";
 import {
 	cloneElement,
 	isValidElement,
-	ReactElement,
-	ReactNode,
+	type ReactElement,
+	type ReactNode,
 	useState,
 } from "react";
 import { Animated, TouchableOpacity } from "react-native";
-import { SvgProps } from "react-native-svg";
+import type { SvgProps } from "react-native-svg";
 
 interface IconButtonProps {
 	size?: "large" | "medium";

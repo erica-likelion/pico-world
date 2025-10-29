@@ -1,6 +1,6 @@
 import UserIconImage from "@/shared/assets/icons/user.png";
 import * as S from "@/shared/style/Avatar.style";
-import { AvatarSize, SIZE_MAP } from "@/shared/types";
+import { type AvatarSize, SIZE_MAP } from "@/shared/types";
 
 interface AvatarProps {
 	size?: AvatarSize;

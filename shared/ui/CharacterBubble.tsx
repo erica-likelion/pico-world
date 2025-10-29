@@ -35,7 +35,7 @@ export const CharacterBubble = ({
 	message,
 	enableTypewriter = false,
 }: CharacterBubbleProps) => {
-	const src = characterImages[character] ?? characterImages["츠츠"];
+	const src = characterImages[character] ?? characterImages.츠츠;
 
 	return (
 		<S.Container>

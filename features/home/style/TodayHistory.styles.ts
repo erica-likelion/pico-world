@@ -113,9 +113,9 @@ export const InnerShadow = styled.View`
   opacity: 0.3;
 `;
 
-export const CharacterName = styled.Text`
-  color: ${({ theme }) => theme.grayscale.white};
-  ${({ theme }) => theme.typography["title4-medium"]};
+export const CharacterImage = styled.Image`
+  width: 100%;
+  height: 100%;
 `;
 
 export const CharacterText = styled.Text<{ $textColor: string }>`

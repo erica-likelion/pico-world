@@ -1,8 +1,8 @@
+import { getEmotionColorByDate } from "@/features/home/model/emotionRecords";
 import * as S from "@/features/home/style/CalendarUI.styles";
-import CalenderIcon from "@/shared/assets/icons/calendar.svg";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import { Calendar } from "react-native-calendars";
+import { Calendar, type DateData } from "react-native-calendars";
 
 type DateStyleMap = {
 	[dateString: string]: {
@@ -17,14 +17,18 @@ const CustomDay = ({
 	onPress,
 	dayColors = {},
 	today,
-	setCurrentMonth,
 }: {
-	date?: { day: number; dateString: string; month: number; year: number };
+	date?: {
+		day: number;
+		dateString: string;
+		month: number;
+		year: number;
+		timestamp: number;
+	};
 	state?: string;
-	onPress?: (date: any) => void;
+	onPress?: (date: DateData) => void;
 	dayColors?: DateStyleMap;
 	today: string;
-	setCurrentMonth: (monthString: string) => void;
 }) => {
 	if (!date) {
 		return <View style={{ width: 38, height: 38 }} />;
@@ -34,6 +38,9 @@ const CustomDay = ({
 
 	const isToday = date.dateString === today;
 	const isDisabled = state === "disabled";
+
+	const isFuture =
+		new Date(date.dateString).getTime() > new Date(today).getTime();
 
 	const customColor = dayColors[date.dateString];
 	const backgroundColor = isToday
@@ -45,16 +52,13 @@ const CustomDay = ({
 	const borderRadius = isToday ? 10 : 40;
 
 	const handlePress = () => {
-		if (isDisabled) {
-			const clickedDate = new Date(date.dateString);
-			const newMonth = clickedDate.toISOString().slice(0, 7);
-			setCurrentMonth(newMonth);
-		}
+		if (isDisabled || isFuture) return;
 		onPress?.(date);
 	};
 
 	return (
 		<TouchableOpacity
+			disabled={isFuture}
 			style={{
 				width: DAY_SIZE,
 				height: DAY_SIZE,
@@ -91,26 +95,37 @@ const CustomHeader = ({ date }: { date: Date }) => {
 			}}
 		>
 			<S.TitleBox>
-				<TouchableOpacity>
-					<CalenderIcon width={18} height={18} color="#CECECE" />
-				</TouchableOpacity>
 				<S.TitleText>{formatted}</S.TitleText>
 			</S.TitleBox>
 		</View>
 	);
 };
 
-export function CalendarUI({ isTodayHistory }: { isTodayHistory: boolean }) {
+interface CalendarUIProps {
+	isTodayHistory: boolean;
+	onDateSelect?: (dateString: string) => void;
+}
+
+export function CalendarUI({ isTodayHistory, onDateSelect }: CalendarUIProps) {
 	const [currentMonth, setCurrentMonth] = useState<string>("2025-10");
 	const [currentDate, setCurrentDate] = useState<Date>(new Date("2025-10-01"));
 	const today = new Date().toISOString().split("T")[0];
-	const dayColors: DateStyleMap = {
-		"2025-10-03": { bg: "#FF6F61", text: "#000000" },
-		"2025-10-08": { bg: "#8A2BE2", text: "#FFFFFF" },
-		"2025-10-07": { bg: "#FFD700", text: "#000000" },
-		"2025-10-15": { bg: "#1E90FF", text: "#FFFFFF" },
-		"2025-10-22": { bg: "#32CD32", text: "#FFFFFF" },
-	};
+
+	// 동적으로 감정 기록이 있는 날짜의 색상을 가져옴
+	const dayColors: DateStyleMap = {};
+	const emotionDates = [
+		"2025-10-03",
+		"2025-10-07",
+		"2025-10-08",
+		"2025-10-15",
+		"2025-10-22",
+	];
+	emotionDates.forEach((date) => {
+		const colors = getEmotionColorByDate(date);
+		if (colors.bg) {
+			dayColors[date] = colors;
+		}
+	});
 
 	return (
 		<View
@@ -143,6 +158,7 @@ export function CalendarUI({ isTodayHistory }: { isTodayHistory: boolean }) {
 				}}
 				onDayPress={(day) => {
 					setCurrentDate(new Date(day.dateString));
+					onDateSelect?.(day.dateString);
 				}}
 				onMonthChange={(month) => {
 					const monthStr = `${month.year}-${String(month.month).padStart(
@@ -153,12 +169,7 @@ export function CalendarUI({ isTodayHistory }: { isTodayHistory: boolean }) {
 					setCurrentDate(new Date(`${monthStr}-01`));
 				}}
 				dayComponent={(props) => (
-					<CustomDay
-						{...props}
-						dayColors={dayColors}
-						today={today}
-						setCurrentMonth={setCurrentMonth}
-					/>
+					<CustomDay {...props} dayColors={dayColors} today={today} />
 				)}
 			/>
 		</View>

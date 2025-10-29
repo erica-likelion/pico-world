@@ -1,6 +1,6 @@
 import { useSkiaFont } from "@/shared/utils/skiaFont";
 import { Circle, Line, Text } from "@shopify/react-native-skia";
-import React from "react";
+import type React from "react";
 import { Dimensions } from "react-native";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
