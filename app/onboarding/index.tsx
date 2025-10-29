@@ -2,7 +2,7 @@ import type { CharacterProps } from "@/entities/character/model/type";
 import { CharacterInfo } from "@/entities/character/ui";
 import { Button } from "@/shared/ui";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 
@@ -47,6 +47,7 @@ const Character = [
 export default function Onboarding() {
 	const router = useRouter();
 	const { hide, show } = useBottomNavStore();
+	const { from } = useLocalSearchParams();
 	const [selectedCharacter, setSelectedCharacter] = useState<CharacterProps>(
 		Character[0],
 	);
@@ -75,7 +76,7 @@ export default function Onboarding() {
 				<Button
 					text={`${selectedCharacter.name}(이)랑 시작하기`}
 					onPress={() => {
-						router.push("/home");
+						from === "my" ? router.back() : router.push("/home");
 					}}
 				/>
 			</View>
