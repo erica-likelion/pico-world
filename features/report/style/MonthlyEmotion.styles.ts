@@ -7,7 +7,6 @@ export const Container = styled.View`
   padding: ${({ theme }) => theme.rem(20)};
   background: rgba(32, 32, 32, 0.6);
   border-radius: 40px;
-  backdrop-filter: blur(17.5px);
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
