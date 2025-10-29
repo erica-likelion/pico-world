@@ -1,4 +1,4 @@
-import type { EmotionChip } from "@/shared/types/emotion";
+import type { EmotionChip } from "@/shared/types";
 import { useState } from "react";
 
 type Phase = "explore" | "write" | "complete";

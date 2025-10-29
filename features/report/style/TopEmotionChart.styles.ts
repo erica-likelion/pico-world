@@ -3,7 +3,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import styled from "styled-components/native";
 
 export const Container = styled.View`
-  width: 100%;
   padding: ${({ theme }) => theme.rem(20)};
   background: rgba(32, 32, 32, 0.6);
   border-radius: 40px;
@@ -12,31 +11,18 @@ export const Container = styled.View`
   justify-content: flex-start;
   align-items: flex-start;
   gap: ${({ theme }) => theme.rem(16)};
-  display: inline-flex;
-  margin-top: ${({ theme }) => theme.rem(16)};
-`;
-
-export const TopWrapper = styled.View`
-  width: 100%;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-export const Title = styled.Text`
-  ${({ theme }) => theme.typography["title3-semibold"]};
-  color: ${({ theme }) => theme.grayscale.gray200};
+  margin-horizontal: ${({ theme }) => theme.rem(16)};
 `;
 
 export const Label = styled.Text`
-  ${({ theme }) => theme.typography["title3-medium"]};
+  ${({ theme }) => theme.typography["title2-medium"]};
   color: ${({ theme }) => theme.grayscale.gray50};
 `;
 
 export const EmotionWrapper = styled.View`
   width: 100%;
   flex-direction: column;
-  gap: ${({ theme }) => theme.rem(4)};
+  gap: ${({ theme }) => theme.rem(16)};
 `;
 
 export const EmotionList = styled.View`

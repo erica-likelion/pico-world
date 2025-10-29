@@ -1,10 +1,6 @@
+import { EmotionChip } from "@/shared/types";
 import { LinearGradient } from "expo-linear-gradient";
 import styled from "styled-components/native";
-
-interface EmotionBoxProps {
-	mainColor: string;
-	subColor: string;
-}
 
 export const Container = styled.View`
   width: 100%;
@@ -32,7 +28,7 @@ export const Title = styled.Text`
   color: ${({ theme }) => theme.grayscale.gray200};
 `;
 
-export const EmotionBox = styled(LinearGradient).attrs<EmotionBoxProps>(
+export const EmotionBox = styled(LinearGradient).attrs<EmotionChip>(
 	(props) => ({
 		colors: [props.mainColor, props.subColor],
 		start: { x: 0, y: 0 },
@@ -42,7 +38,7 @@ export const EmotionBox = styled(LinearGradient).attrs<EmotionBoxProps>(
   width: 100%;
   height: ${({ theme }) => theme.rem(54)};
   border-radius: 16px;
-` as React.ComponentType<EmotionBoxProps>;
+` as React.ComponentType<EmotionChip>;
 
 export const Description = styled.Text`
   ${({ theme }) => theme.typography["title2-medium"]};

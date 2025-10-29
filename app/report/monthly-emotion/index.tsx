@@ -1,11 +1,11 @@
-import { Text } from "react-native";
+import { MonthlyEmotionChart } from "@/features/report/ui";
+import { TopNav } from "@/widgets/TopNav/ui";
 
-export default function MonthlyEmotion() {
+export default function MonthlyEmotionPage() {
 	return (
 		<>
-			<Text style={{ fontWeight: "bold", fontSize: 18, color: "#fff" }}>
-				Monthly Emotion
-			</Text>
+			<TopNav title="저번 달과 상태 비교" leftIcon={true} />
+			<MonthlyEmotionChart thisMonthEmotion="안심" lastMonthEmotion="근심" />
 		</>
 	);
 }
