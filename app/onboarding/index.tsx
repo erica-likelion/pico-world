@@ -20,7 +20,7 @@ const Character = [
 		image: require("@/shared/assets/images/lulu.png"),
 	},
 	{
-		name: "동동이",
+		name: "동동",
 		speech: "어디에요? 누가 울렸어요. 나한테 말해줘요.",
 		personality: ["과보호", "연하", "집착"],
 		image: require("@/shared/assets/images/dongdong.png"),
@@ -68,7 +68,7 @@ export default function Onboarding() {
 				}}
 			>
 				<Button
-					text={`${selectedCharacter.name}와 시작하기`}
+					text={`${selectedCharacter.name}(이)랑 시작하기`}
 					onPress={() => {
 						router.push("/home");
 					}}
