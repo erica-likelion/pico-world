@@ -1,4 +1,4 @@
-import { EmotionChip } from "@/shared/types";
+import type { EmotionChip } from "@/shared/types";
 
 import { getEmotionColors } from "@/features/record/lib/getEmotionColors";
 import {

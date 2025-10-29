@@ -1,7 +1,7 @@
 import * as S from "@/features/report/style/TopEmotion.styles";
 import RightIcon from "@/shared/assets/icons/right.svg";
 import { theme } from "@/shared/config/theme/theme";
-import { EmotionChip } from "@/shared/types";
+import type { EmotionChip } from "@/shared/types";
 import { TouchableOpacity } from "react-native";
 
 interface TopEmotionProps {

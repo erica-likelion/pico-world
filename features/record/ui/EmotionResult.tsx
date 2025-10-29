@@ -1,6 +1,6 @@
 import * as S from "@/features/record/style/EmotionResult.styles";
 import RightIcon from "@/shared/assets/icons/right.svg";
-import { EmotionChip } from "@/shared/types";
+import type { EmotionChip } from "@/shared/types";
 import { Chip, IconButton } from "@/shared/ui";
 import type React from "react";
 

@@ -1,5 +1,5 @@
 import * as S from "@/features/report/style/TopEmotionChart.styles";
-import { EmotionChip } from "@/shared/types";
+import type { EmotionChip } from "@/shared/types";
 
 interface TopEmotionChartProps {
 	emotionChip: EmotionChip[];
