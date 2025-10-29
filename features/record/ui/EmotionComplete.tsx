@@ -1,4 +1,4 @@
-import { EmotionChip } from "@/features/record/model/types";
+import type { EmotionChip } from "@/features/record/model/types";
 import * as S from "@/features/record/style/EmotionComplete.styles";
 import { CharacterBubble } from "@/shared/ui/CharacterBubble";
 import { EmotionCard } from "@/shared/ui/EmotionCard";

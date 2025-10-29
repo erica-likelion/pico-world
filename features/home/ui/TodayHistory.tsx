@@ -1,6 +1,7 @@
 import * as S from "@/features/home/style/TodayHistory.styles";
 import { EmotionCard } from "@/shared/ui/EmotionCard";
 import { BlurView } from "expo-blur";
+import { TouchableOpacity } from "react-native";
 
 interface TodayHistoryProps {
 	date: string;
@@ -23,6 +24,22 @@ export function TodayHistory({
 	historyText,
 	AIComment,
 }: TodayHistoryProps) {
+	//   const [isPopoverVisible, setIsPopoverVisible] = useState(false);
+
+	const handleMenuPress = () => {
+		// setIsPopoverVisible(!isPopoverVisible);
+		// console.log("Menu pressed", isPopoverVisible);
+	};
+
+	// const handleEditSelect = () => {
+	// 	setIsPopoverVisible(false);
+	// 	router.push({ pathname: "/home", params: { id: "1" } });
+	// };
+
+	// const handleDeleteSelect = () => {
+	// 	setIsPopoverVisible(false);
+	// 	console.log("Delete selected");
+	// };
 	return (
 		<S.Begin>
 			<S.TodayHistoryContainer>
@@ -44,7 +61,9 @@ export function TodayHistory({
 							<S.EditDate>{date}</S.EditDate>
 							<S.EditTime>{time}</S.EditTime>
 						</S.EditDateBox>
-						<S.MenuIcon />
+						<TouchableOpacity onPress={handleMenuPress} activeOpacity={0.8}>
+							<S.MenuIcon />
+						</TouchableOpacity>
 					</S.EditBox>
 					<EmotionCard
 						title={emotionTitle}

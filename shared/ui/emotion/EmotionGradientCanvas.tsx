@@ -7,7 +7,7 @@ import {
 	SweepGradient,
 	vec,
 } from "@shopify/react-native-skia";
-import React from "react";
+import type React from "react";
 import { StyleSheet } from "react-native";
 
 interface EmotionGradientCanvasProps {

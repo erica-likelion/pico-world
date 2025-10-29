@@ -59,12 +59,10 @@ interface BottomNavBarProps {
 // NavItem 컴포넌트 (usePressAnimation 사용)
 const NavItemComponent = ({
 	item,
-	index,
 	isActive,
 	onPress,
 }: {
 	item: NavItem;
-	index: number;
 	isActive: boolean;
 	onPress: () => void;
 }) => {
@@ -148,7 +146,6 @@ export const BottomNav = ({
 					<NavItemComponent
 						key={`nav-${item.label}-${index}`}
 						item={item}
-						index={index}
 						isActive={isActive}
 						onPress={() => handlePress(index)}
 					/>

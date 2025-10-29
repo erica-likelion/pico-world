@@ -3,8 +3,8 @@ import * as S from "@/entities/character/style/CharacterInfo.styles";
 import { useState } from "react";
 import {
 	Dimensions,
-	NativeScrollEvent,
-	NativeSyntheticEvent,
+	type NativeScrollEvent,
+	type NativeSyntheticEvent,
 } from "react-native";
 
 const { width: screenWidth } = Dimensions.get("window");
