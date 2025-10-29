@@ -13,7 +13,7 @@ export function MyPageSelect() {
 		{
 			label: "AI 캐릭터 수정",
 			onPress: () => {
-				router.push("/onboarding");
+				router.push({ pathname: "/onboarding", params: { from: "my" } });
 			},
 		},
 		{

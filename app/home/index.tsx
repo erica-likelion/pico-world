@@ -1,5 +1,7 @@
+import { getEmotionRecordByDate } from "@/features/home/model/emotionRecords";
 import { CalendarUI, ClickToJournal, TodayHistory } from "@/features/home/ui";
 import BellIcon from "@/shared/assets/icons/bell.svg";
+import AIImageSrc from "@/shared/assets/images/chch.png";
 import { CharacterBubble } from "@/shared/ui";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { TopNav } from "@/widgets/TopNav/ui";
@@ -8,11 +10,24 @@ import { ScrollView, View } from "react-native";
 
 export default function Home() {
 	const { show } = useBottomNavStore();
-	const [isTodayHistory, setIsTodayHistory] = useState(false);
+	const [selectedDate, setSelectedDate] = useState<string>(
+		new Date().toISOString().split("T")[0],
+	);
+	const [selectedRecord, setSelectedRecord] = useState(
+		getEmotionRecordByDate(new Date().toISOString().split("T")[0]),
+	);
 
 	useEffect(() => {
 		show();
 	}, [show]);
+
+	const handleDateSelect = (dateString: string) => {
+		setSelectedDate(dateString);
+		const record = getEmotionRecordByDate(dateString);
+		setSelectedRecord(record);
+	};
+
+	const isTodayHistory = selectedRecord !== null;
 
 	return (
 		<View
@@ -28,27 +43,31 @@ export default function Home() {
 				<View style={{ width: "100%", paddingHorizontal: 16 }}>
 					<CharacterBubble
 						character="츠츠"
-						message="오늘은 이미 기록했어. 내일 다시 오던지 말던지."
+						message={
+							isTodayHistory
+								? `너의 기록을 보고 있어. 나름 괜찮네.`
+								: `기록이 없네. 뭐 했는지 기억도 안 나나?`
+						}
 					/>
 				</View>
-				{isTodayHistory ? (
+				{isTodayHistory && selectedRecord ? (
 					<TodayHistory
-						date="2025. 10. 6"
-						time="오후 3:45"
-						emotionTitle="만족스러운"
-						mainColor="#FF685B"
-						subColor="#F3E9DA"
-						textColor="#FFFFFF"
-						historyText="오늘은 책상 앞에 앉아서 집중도 잘 되고 할 일도 다 하고 전체적으로 만족스러운 하루였따~오늘은 책상 앞에 앉아서 집중도 잘 되고 할 일도 다 하고 전체적으로 만족스러운 하루였따~오늘은 책상 앞에 앉아서 집중도 잘 되고 할 일도 다"
-						AIComment="흥, 드디어 사람 구실 좀 했네? 그래, 그런 날이 있어야 균형이 맞지. 너 오늘 꽤 괜찮았어, 인정해줄게.너 오늘 꽤 괜찮았어, 인정해줄게.너 오늘 꽤 괜찮았어, 인정해줄게.너 오늘 꽤 괜찮았어, 인정해줄게."
+						date={selectedRecord.date.replace(/-/g, ". ")}
+						time={selectedRecord.time}
+						emotion={selectedRecord.emotion}
+						text={selectedRecord.text}
+						AIImage={AIImageSrc}
 					/>
 				) : (
-					<ClickToJournal />
+					<ClickToJournal date={selectedDate} />
 				)}
 				<View
 					style={{ width: "100%", paddingHorizontal: 16, marginBottom: 34 }}
 				>
-					<CalendarUI isTodayHistory={isTodayHistory} />
+					<CalendarUI
+						isTodayHistory={isTodayHistory}
+						onDateSelect={handleDateSelect}
+					/>
 				</View>
 			</ScrollView>
 		</View>

@@ -60,10 +60,10 @@ export const CharacterImageView = styled.View`
   margin-top: ${({ theme }) => theme.rem(10)};
   margin-bottom: ${({ theme }) => theme.rem(10)};
 `;
-export const CharacterImage = styled.Image`
+export const CharacterImage = styled.Image<{ boxShadow: string }>`
   width: ${({ theme }) => theme.rem(160)};
   height: ${({ theme }) => theme.rem(160)};
-  shadow-color: rgba(255, 203, 186, 0.5);
+  shadow-color: ${({ boxShadow }) => boxShadow};
   shadow-offset: 0px 0px;
   shadow-opacity: 1;
   shadow-radius: 30px;

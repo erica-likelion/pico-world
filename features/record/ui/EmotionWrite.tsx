@@ -3,7 +3,7 @@ import * as S from "@/features/record/style/EmotionWrite.styles";
 import { Button, Switch, TextInput } from "@/shared/ui";
 import { CharacterBubble } from "@/shared/ui/CharacterBubble";
 import { EmotionCard } from "@/shared/ui/EmotionCard";
-import React from "react";
+import type React from "react";
 
 interface EmotionWriteProps {
 	selectedEmotion: EmotionChip | null;

@@ -3,8 +3,8 @@ import * as S from "@/entities/character/style/CharacterInfo.styles";
 import { useState } from "react";
 import {
 	Dimensions,
-	NativeScrollEvent,
-	NativeSyntheticEvent,
+	type NativeScrollEvent,
+	type NativeSyntheticEvent,
 } from "react-native";
 
 const { width: screenWidth } = Dimensions.get("window");
@@ -56,7 +56,10 @@ export function CharacterInfo({
 			>
 				{characters.map((character) => (
 					<S.CharacterImageView key={character.name}>
-						<S.CharacterImage source={character.image} />
+						<S.CharacterImage
+							source={character.image}
+							boxShadow={character.boxShadow}
+						/>
 					</S.CharacterImageView>
 				))}
 			</S.ImageScroll>

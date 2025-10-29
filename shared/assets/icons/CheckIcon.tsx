@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import { Path, Svg } from "react-native-svg";
 
 interface CheckIconProps {

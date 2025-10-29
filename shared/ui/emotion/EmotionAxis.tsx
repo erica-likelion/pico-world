@@ -1,5 +1,6 @@
 import { Circle, Line, Text, matchFont } from "@shopify/react-native-skia";
-import React, { useMemo } from "react";
+import type React from "react";
+import { useMemo } from "react";
 import { Dimensions } from "react-native";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
