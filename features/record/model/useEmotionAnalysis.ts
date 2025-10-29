@@ -1,6 +1,7 @@
 import { getEmotionColors } from "@/features/record/lib/getEmotionColors";
 import type { EmotionChip } from "@/features/record/model/types";
 import {
+	BASE_COLORS,
 	EMOTION_WORD,
 	X_LEVELS,
 	Y_LEVELS,
@@ -107,6 +108,7 @@ export function useEmotionAnalysis(
 			label: e.word,
 			mainColor: e.mainColor,
 			subColor: e.subColor,
+			textColor: e.mainColor === BASE_COLORS.comfort ? "#000000" : "#FFFFFF",
 		}));
 		return { chips };
 	}, [touchPoints, canvasSize]);

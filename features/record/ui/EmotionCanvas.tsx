@@ -123,7 +123,7 @@ export const EmotionCanvas: React.FC<EmotionCanvasProps> = ({ onProceed }) => {
 
 			{analysis && (
 				<EmotionResult
-					chips={analysis}
+					chips={analysis.chips}
 					selectedChip={selectedChip}
 					onChipSelect={setSelectedChip}
 					onProceed={onProceed}
