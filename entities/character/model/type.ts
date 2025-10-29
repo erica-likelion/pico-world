@@ -5,4 +5,5 @@ export interface CharacterProps {
 	speech: string;
 	personality: string[];
 	image: ImageSourcePropType;
+	boxShadow: string;
 }
