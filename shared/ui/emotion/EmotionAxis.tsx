@@ -1,6 +1,6 @@
-import { Circle, Line, Text, matchFont } from "@shopify/react-native-skia";
+import { useSkiaFont } from "@/shared/utils/skiaFont";
+import { Circle, Line, Text } from "@shopify/react-native-skia";
 import type React from "react";
-import { useMemo } from "react";
 import { Dimensions } from "react-native";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -25,13 +25,7 @@ export const EmotionAxis: React.FC<EmotionAxisProps> = ({
 	width = SCREEN_WIDTH,
 	height = SCREEN_HEIGHT,
 }) => {
-	const font = useMemo(() => {
-		return matchFont({
-			fontFamily: "Pretendard",
-			fontSize: FONT_SIZE,
-			fontWeight: "600",
-		});
-	}, []);
+	const font = useSkiaFont();
 
 	const centerX = width / 2;
 	const centerY = height / 2;

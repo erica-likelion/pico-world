@@ -1,5 +1,6 @@
 export interface EmotionChip {
-	label: string;
+	label?: string;
 	mainColor: string;
 	subColor: string;
+	count?: number;
 }
