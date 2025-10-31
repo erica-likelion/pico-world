@@ -58,7 +58,7 @@ export const EmotionComplete: React.FC<EmotionCompleteProps> = ({
 					<EmotionCard
 						mainColor={selectedEmotion.mainColor}
 						subColor={selectedEmotion.subColor}
-						title={selectedEmotion.label}
+						title={selectedEmotion.label ?? ""}
 					/>
 				</Animated.View>
 			)}

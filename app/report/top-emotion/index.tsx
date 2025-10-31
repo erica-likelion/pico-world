@@ -4,6 +4,7 @@ import { TopNav } from "@/widgets/TopNav/ui";
 
 export default function TopEmotionPage() {
 	useHideBottomNav();
+
 	return (
 		<>
 			<TopNav title="제일 많았던 상태" leftIcon={true} />
