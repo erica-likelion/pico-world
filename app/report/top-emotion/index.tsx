@@ -1,20 +1,9 @@
 import { TopEmotionChart } from "@/features/report/ui/TopEmotionChart";
-import { useBottomNavStore } from "@/widgets/BottomNav/model";
+import { useHideBottomNav } from "@/shared/hooks/useHideBottomNav";
 import { TopNav } from "@/widgets/TopNav/ui";
-import { useFocusEffect } from "expo-router";
-import { useCallback } from "react";
 
 export default function TopEmotionPage() {
-	const { hide, show } = useBottomNavStore();
-
-	useFocusEffect(
-		useCallback(() => {
-			hide();
-			return () => {
-				show();
-			};
-		}, [hide, show]),
-	);
+	useHideBottomNav();
 	return (
 		<>
 			<TopNav title="제일 많았던 상태" leftIcon={true} />
