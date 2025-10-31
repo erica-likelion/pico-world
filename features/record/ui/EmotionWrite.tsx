@@ -34,7 +34,7 @@ export const EmotionWrite: React.FC<EmotionWriteProps> = ({
 					<EmotionCard
 						mainColor={selectedEmotion.mainColor}
 						subColor={selectedEmotion.subColor}
-						title={selectedEmotion.label}
+						title={selectedEmotion.label || ""}
 					/>
 				)}
 				<TextInput
