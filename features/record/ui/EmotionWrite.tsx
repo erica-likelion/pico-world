@@ -1,5 +1,5 @@
-import type { EmotionChip } from "@/features/record/model/types";
 import * as S from "@/features/record/style/EmotionWrite.styles";
+import type { EmotionChip } from "@/shared/types";
 import { Button, Switch, TextInput } from "@/shared/ui";
 import { CharacterBubble } from "@/shared/ui/CharacterBubble";
 import { EmotionCard } from "@/shared/ui/EmotionCard";

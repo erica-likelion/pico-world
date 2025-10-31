@@ -1,7 +1,7 @@
-import type { EmotionChip } from "@/features/record/model/types";
 import { useEmotionAnalysis } from "@/features/record/model/useEmotionAnalysis";
 import * as S from "@/features/record/style/EmotionCanvas.styles";
 import { EmotionResult } from "@/features/record/ui/EmotionResult";
+import type { EmotionChip } from "@/shared/types";
 import { EmotionGradientCanvas } from "@/shared/ui/emotion";
 import { BlurMask, Circle, Group, Line } from "@shopify/react-native-skia";
 import type React from "react";

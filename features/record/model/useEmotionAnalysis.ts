@@ -1,5 +1,5 @@
 import { getEmotionColors } from "@/features/record/lib/getEmotionColors";
-import type { EmotionChip } from "@/features/record/model/types";
+import type { EmotionChip } from "@/shared/types";
 import {
 	BASE_COLORS,
 	EMOTION_WORD,

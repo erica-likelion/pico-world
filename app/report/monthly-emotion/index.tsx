@@ -5,7 +5,7 @@ export default function MonthlyEmotionPage() {
 	return (
 		<>
 			<TopNav title="저번 달과 상태 비교" leftIcon={true} />
-			<MonthlyEmotionChart thisMonthEmotion="기쁨" lastMonthEmotion="담담" />
+			<MonthlyEmotionChart thisMonthEmotion="기쁜" lastMonthEmotion="담담한" />
 		</>
 	);
 }

@@ -1,4 +1,4 @@
-import type { EmotionChip } from "@/features/record/model/types";
+import type { EmotionChip } from "@/shared/types/emotion";
 
 export interface EmotionRecord {
 	id: string;
