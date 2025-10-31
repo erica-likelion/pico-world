@@ -1,6 +1,6 @@
-import { getEmotionCoordinate } from "@/features/report/lib/emotionCoordinates";
 import * as S from "@/features/report/style/MonthlyEmotionChart.styles";
 import { EmotionGradientCanvas } from "@/shared/ui/emotion/EmotionGradientCanvas";
+import { getEmotionCoordinate } from "@/shared/utils/emotionCoordinates";
 import { useSkiaFont } from "@/shared/utils/skiaFont";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { BlurMask, Circle, Group, Text } from "@shopify/react-native-skia";
