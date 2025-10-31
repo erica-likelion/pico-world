@@ -4,23 +4,12 @@ import {
 	EmotionComplete,
 	EmotionWrite,
 } from "@/features/record/ui";
-import { useBottomNavStore } from "@/widgets/BottomNav/model";
+import { useHideBottomNav } from "@/shared/hooks/useHideBottomNav";
 import { TopNav } from "@/widgets/TopNav/ui";
-import { useFocusEffect } from "expo-router";
-import { useCallback } from "react";
 
 export default function Record() {
-	const { hide, show } = useBottomNavStore();
 	const recordFlow = useRecordFlow();
-
-	useFocusEffect(
-		useCallback(() => {
-			hide();
-			return () => {
-				show();
-			};
-		}, [hide, show]),
-	);
+	useHideBottomNav();
 
 	const handleBack = () => {
 		if (recordFlow.phase === "write") {

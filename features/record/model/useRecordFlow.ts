@@ -17,7 +17,12 @@ export function useRecordFlow() {
 	};
 
 	const handleSave = async () => {
-		console.log({ emotion: selectedEmotion, text, isFriendOnly });
+		console.log({
+			emotion: selectedEmotion,
+			text,
+			isFriendOnly,
+			textColor: selectedEmotion?.textColor,
+		});
 		setPhase("complete");
 	};
 

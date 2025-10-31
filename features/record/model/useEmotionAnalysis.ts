@@ -1,7 +1,7 @@
-import type { EmotionChip } from "@/shared/types";
-
 import { getEmotionColors } from "@/features/record/lib/getEmotionColors";
+import type { EmotionChip } from "@/shared/types";
 import {
+	BASE_COLORS,
 	EMOTION_WORD,
 	X_LEVELS,
 	Y_LEVELS,
@@ -10,9 +10,9 @@ import {
 } from "@/shared/utils/emotion";
 import { useMemo } from "react";
 
-const BIN_SIZE = 40;
 const MIN_DENSITY_RATIO = 0.1;
 const MAX_CHIP_COUNT = 15;
+const NUM_CELLS = 7;
 
 interface TouchPoint {
 	x: number;
@@ -22,12 +22,6 @@ interface TouchPoint {
 
 interface EmotionCell {
 	sum: number;
-	xMin: number;
-	xMax: number;
-	yMin: number;
-	yMax: number;
-	cx: number;
-	cy: number;
 	xLabel: XLabel;
 	yLabel: YLabel;
 	word: string;
@@ -39,23 +33,12 @@ function clamp(value: number, min: number, max: number) {
 	return Math.max(min, Math.min(max, value));
 }
 
-function findEmotionIndex(
-	value: number,
-	maxAbs: number,
-	levels: readonly string[],
-) {
-	const normalized = (value + maxAbs) / (2 * maxAbs);
-	let idx = Math.floor(normalized * levels.length);
-	if (idx >= levels.length) idx = levels.length - 1;
-	return idx;
-}
-
 function getEmotionWord(xLabel: XLabel, yLabel: YLabel) {
 	return EMOTION_WORD[xLabel][yLabel];
 }
 
 /**
- * 40px로 분할해 각 셀의 터치 밀도 계산 후 상위 감정 추출
+ * 7x7 칸 구조에 맞춰 각 터치 포인트를 해당 칸에 매핑하여 감정 분석
  */
 export function useEmotionAnalysis(
 	touchPoints: TouchPoint[],
@@ -69,74 +52,64 @@ export function useEmotionAnalysis(
 		const maxX = cx;
 		const maxY = cy;
 
-		const bins = new Map<string, EmotionCell>();
+		const cells = new Map<string, EmotionCell>();
 		let globalMax = 0;
 
 		for (const p of touchPoints) {
 			const rx = clamp(p.x - cx, -maxX, maxX);
 			const ry = clamp(p.y - cy, -maxY, maxY);
 
-			const bx0 = Math.floor(rx / BIN_SIZE) * BIN_SIZE;
-			const by0 = Math.floor(ry / BIN_SIZE) * BIN_SIZE;
-			const key = `${bx0},${by0}`;
+			const normalizedX = (rx + maxX) / (2 * maxX);
+			const normalizedY = (-ry + maxY) / (2 * maxY);
 
-			let entry = bins.get(key);
+			const xi = clamp(
+				Math.floor(normalizedX * NUM_CELLS),
+				0,
+				X_LEVELS.length - 1,
+			);
+			const yi = clamp(
+				Math.floor(normalizedY * NUM_CELLS),
+				0,
+				Y_LEVELS.length - 1,
+			);
 
-			if (!entry) {
-				const midX = bx0 + BIN_SIZE / 2;
-				const midY = by0 + BIN_SIZE / 2;
+			const key = `${xi},${yi}`;
+			let cell = cells.get(key);
 
-				const xi = findEmotionIndex(midX, maxX, X_LEVELS);
-				const yi = findEmotionIndex(-midY, maxY, Y_LEVELS);
-
-				if (
-					xi < 0 ||
-					xi >= X_LEVELS.length ||
-					yi < 0 ||
-					yi >= Y_LEVELS.length
-				) {
-					continue;
-				}
-
+			if (!cell) {
 				const xLabel = X_LEVELS[xi] as XLabel;
 				const yLabel = Y_LEVELS[yi] as YLabel;
-				const emotionWord = getEmotionWord(xLabel, yLabel);
 				const { main, sub } = getEmotionColors(xLabel, yLabel);
 
-				entry = {
+				cell = {
 					sum: 0,
-					xMin: bx0,
-					xMax: bx0 + BIN_SIZE,
-					yMin: by0,
-					yMax: by0 + BIN_SIZE,
-					cx: midX,
-					cy: midY,
 					xLabel,
 					yLabel,
-					word: emotionWord,
+					word: getEmotionWord(xLabel, yLabel),
 					mainColor: main,
 					subColor: sub,
 				};
-				bins.set(key, entry);
+				cells.set(key, cell);
 			}
 
-			entry.sum += p.alpha;
-			if (entry.sum > globalMax) globalMax = entry.sum;
+			cell.sum += p.alpha;
+			if (cell.sum > globalMax) globalMax = cell.sum;
 		}
 
-		if (bins.size === 0) return null;
+		if (cells.size === 0) return null;
 
 		const minEmotionDensity = globalMax * MIN_DENSITY_RATIO;
-		const filteredEmotions = Array.from(bins.values()).filter(
+		const filteredEmotions = Array.from(cells.values()).filter(
 			(e) => e.sum >= minEmotionDensity,
 		);
+
 		filteredEmotions.sort((a, b) => b.sum - a.sum);
 		const chips = filteredEmotions.slice(0, MAX_CHIP_COUNT).map((e) => ({
 			label: e.word,
 			mainColor: e.mainColor,
 			subColor: e.subColor,
+			textColor: e.mainColor === BASE_COLORS.comfort ? "#000000" : "#FFFFFF",
 		}));
-
 		return { chips };
 	}, [touchPoints, canvasSize]);
 }

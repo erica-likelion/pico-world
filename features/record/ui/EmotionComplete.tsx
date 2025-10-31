@@ -53,7 +53,7 @@ export const EmotionComplete: React.FC<EmotionCompleteProps> = ({
 			<Animated.View style={{ opacity: fade2 }}>
 				<S.Title>작성 완료!</S.Title>
 			</Animated.View>
-			{selectedEmotion && (
+			{selectedEmotion?.label && (
 				<Animated.View style={{ opacity: fade1, width: "100%" }}>
 					<EmotionCard
 						mainColor={selectedEmotion.mainColor}
