@@ -1,0 +1,42 @@
+import styled from "styled-components/native";
+
+export const JournalHeaderContainer = styled.View`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: ${({ theme }) => theme.rem(18)};
+  padding-left: ${({ theme }) => theme.rem(20)};
+  padding-right: ${({ theme }) => theme.rem(20)};
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const JournalDateBox = styled.View`
+  display: flex;
+  width: ${({ theme }) => theme.rem(197.5)};
+  align-items: center;
+  justify-content: flex-start;
+  gap: ${({ theme }) => theme.rem(6)};
+  flex-shrink: 0;
+  flex-direction: row;
+`;
+
+export const JournalEditDate = styled.Text`
+  color: ${({ theme }) => theme.grayscale.white};
+  font-family: "Pretendard-Medium";
+  font-size: ${({ theme }) => theme.rem(14)};
+  font-weight: 500;
+  line-height: ${({ theme }) => theme.rem(16)};
+  letter-spacing: ${({ theme }) => theme.rem(-0.28)};
+  text-align: left;
+`;
+
+export const JournalEditTime = styled.Text`
+  color: ${({ theme }) => theme.grayscale.white};
+  font-family: "Pretendard-Medium";
+  font-size: ${({ theme }) => theme.rem(12)};
+  font-weight: 500;
+  line-height: ${({ theme }) => theme.rem(16)};
+  letter-spacing: ${({ theme }) => theme.rem(-0.24)};
+  text-align: left;
+`;
