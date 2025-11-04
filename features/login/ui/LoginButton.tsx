@@ -53,10 +53,10 @@ export function LoginButton() {
 	const handleKakaoLogin = async () => {
 		try {
 			const token = await KakaoLogin.login();
+			console.log("Kakao token:", token);
 			kakaoLoginMutate({
-				authorizationCode: token.accessToken,
 				kakaoAccessToken: token.accessToken,
-				redirectUri: "",
+				device: Platform.OS,
 			});
 		} catch (error) {
 			console.error("Kakao login error", error);
@@ -75,7 +75,6 @@ export function LoginButton() {
 			if (credential.identityToken) {
 				appleLoginMutate({
 					identity_token: credential.identityToken,
-					authorization_code: credential.authorizationCode,
 					device: Platform.OS,
 				});
 			}
@@ -83,7 +82,6 @@ export function LoginButton() {
 			if (e.code === "ERR_REQUEST_CANCELED") {
 				console.log("Apple login cancelled");
 			} else {
-				// handle other errors
 				console.error("Apple login error", e);
 			}
 		}

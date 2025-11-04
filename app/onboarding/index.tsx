@@ -1,7 +1,9 @@
 import type { CharacterProps } from "@/entities/character/model/type";
 import { CharacterInfo } from "@/entities/character/ui";
+import { axiosInstance } from "@/shared/api/axios";
 import { Button } from "@/shared/ui";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
+import { useMutation } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
@@ -51,6 +53,9 @@ export default function Onboarding() {
 	const [selectedCharacter, setSelectedCharacter] = useState<CharacterProps>(
 		Character[0],
 	);
+	const sele = Character.findIndex(
+		(char) => char.name === selectedCharacter.name,
+	);
 
 	useEffect(() => {
 		hide();
@@ -58,6 +63,45 @@ export default function Onboarding() {
 			show();
 		};
 	}, [hide, show]);
+
+	const { mutate: selectMutate } = useMutation({
+		mutationFn: async (characterId: number) => {
+			await axiosInstance.post("/api/v1/characters/select", {
+				characterId: characterId,
+			});
+		},
+		onSuccess: () => {
+			router.push("/home");
+		},
+	});
+
+	const { mutate: reSelectMutate } = useMutation({
+		mutationFn: async (characterId: number) => {
+			await axiosInstance.put("/api/v1/users/me/character", {
+				characterId: characterId,
+			});
+		},
+		onSuccess: () => {
+			router.back();
+		},
+	});
+
+	const handleSelectCharacter = async () => {
+		if (from === "my") {
+			try {
+				reSelectMutate(sele);
+			} catch (e) {
+				console.log(e);
+			}
+		} else {
+			try {
+				selectMutate(sele);
+			} catch (e) {
+				console.log(e);
+			}
+		}
+	};
+
 	return (
 		<View style={{ flex: 1 }}>
 			<CharacterInfo
@@ -75,9 +119,7 @@ export default function Onboarding() {
 			>
 				<Button
 					text={`${selectedCharacter.name}(이)랑 시작하기`}
-					onPress={() => {
-						from === "my" ? router.back() : router.push("/home");
-					}}
+					onPress={handleSelectCharacter}
 				/>
 			</View>
 		</View>

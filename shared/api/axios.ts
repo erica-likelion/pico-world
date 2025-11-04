@@ -8,7 +8,7 @@ import axios, {
 import { router } from "expo-router";
 
 export const instance = axios.create({
-	baseURL: process.env.EXPO_PUBLIC_API_URL || "http://localhost:3000/api",
+	baseURL: process.env.EXPO_PUBLIC_API_URL,
 	timeout: 1000 * 60 * 5,
 });
 

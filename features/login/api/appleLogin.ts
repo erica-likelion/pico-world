@@ -1,10 +1,8 @@
 import { axiosInstance } from "@/shared/api/axios";
-import { ApiResponse } from "@/shared/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface AppleLoginRequest {
 	identity_token: string;
-	authorization_code: string | null;
 	device?: string;
 	pushToken?: string;
 }
@@ -18,9 +16,12 @@ interface AppleLoginResponse {
 export const appleLogin = async (
 	params: AppleLoginRequest,
 ): Promise<boolean> => {
-	const response: ApiResponse<AppleLoginResponse> = await axiosInstance.post(
+	const response = await axiosInstance.post<AppleLoginResponse>(
 		"/api/v1/auth/apple/login",
 		params,
+		{
+			headers: { Authorization: "" }, // 로그인 요청엔 기존 토큰 제거
+		},
 	);
 
 	const { accessToken, refreshToken, isOnboardingNeeded } = response.data;
