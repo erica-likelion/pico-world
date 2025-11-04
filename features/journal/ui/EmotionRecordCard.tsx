@@ -77,7 +77,16 @@ export const EmotionRecordCard = ({
 
 			{/* 상단 날짜/시간/메뉴 */}
 			{showDate && (
-				<View style={{ width: "100%", zIndex: 10 }}>
+				<View
+					style={{
+						position: "absolute",
+						top: 18,
+						left: 0,
+						right: 0,
+						width: "100%",
+						zIndex: 10,
+					}}
+				>
 					<JournalS.JournalHeaderContainer>
 						<JournalS.JournalDateBox>
 							<JournalS.JournalEditDate
