@@ -23,7 +23,7 @@ export const EmotionResult: React.FC<EmotionResultProps> = ({
 				<S.ChipsScrollView>
 					{chips.map((c, idx) => (
 						<Chip
-							key={`${c.label ?? ""}-${idx}`}
+							key={`${c.mainColor}-${idx}`}
 							text={c.label ?? ""}
 							selected={selectedChip === idx}
 							setSelected={() => {
