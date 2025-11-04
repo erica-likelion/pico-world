@@ -23,20 +23,20 @@ export const JournalDateBox = styled.View`
 
 export const JournalEditDate = styled.Text`
   color: ${({ theme }) => theme.grayscale.white};
+  text-align: center;
   font-family: "Pretendard-Medium";
   font-size: ${({ theme }) => theme.rem(14)};
   font-weight: 500;
   line-height: ${({ theme }) => theme.rem(16)};
   letter-spacing: ${({ theme }) => theme.rem(-0.28)};
-  text-align: left;
 `;
 
 export const JournalEditTime = styled.Text`
   color: ${({ theme }) => theme.grayscale.white};
+  text-align: center;
   font-family: "Pretendard-Medium";
   font-size: ${({ theme }) => theme.rem(12)};
   font-weight: 500;
   line-height: ${({ theme }) => theme.rem(16)};
   letter-spacing: ${({ theme }) => theme.rem(-0.24)};
-  text-align: left;
 `;

@@ -9,11 +9,17 @@ import { Defs, RadialGradient, Rect, Stop, Svg } from "react-native-svg";
 interface EmotionRecordCardProps {
 	record: EmotionRecord;
 	onMenuPress?: () => void;
+	showDate?: boolean;
+	dateTextColor?: string;
+	timeTextColor?: string;
 }
 
 export const EmotionRecordCard = ({
 	record,
 	onMenuPress,
+	showDate = true,
+	dateTextColor,
+	timeTextColor,
 }: EmotionRecordCardProps) => {
 	const formattedDate = record.date.replace(/-/g, ". ");
 	const gradientId = useId();
@@ -29,16 +35,15 @@ export const EmotionRecordCard = ({
 		<View
 			style={{
 				display: "flex",
-				paddingTop: 17,
-				paddingBottom: 59,
-				flexDirection: "column",
+				height: 193,
+				paddingTop: 59,
+				paddingBottom: 58,
+				justifyContent: "center",
 				alignItems: "center",
-				gap: 24,
 				alignSelf: "stretch",
 				borderRadius: 32,
 				position: "relative",
 				overflow: "hidden",
-				minHeight: 193,
 			}}
 			onLayout={(event: LayoutChangeEvent) => {
 				const { width, height } = event.nativeEvent.layout;
@@ -71,17 +76,33 @@ export const EmotionRecordCard = ({
 			</Svg>
 
 			{/* 상단 날짜/시간/메뉴 */}
-			<View style={{ width: "100%", zIndex: 10 }}>
-				<JournalS.JournalHeaderContainer>
-					<JournalS.JournalDateBox>
-						<JournalS.JournalEditDate>{formattedDate}</JournalS.JournalEditDate>
-						<JournalS.JournalEditTime>{record.time}</JournalS.JournalEditTime>
-					</JournalS.JournalDateBox>
-					<TouchableOpacity onPress={handleMenuPress} activeOpacity={0.8}>
-						<MenuIcon width={18} height={18} color="rgba(255, 255, 255, 0.7)" />
-					</TouchableOpacity>
-				</JournalS.JournalHeaderContainer>
-			</View>
+			{showDate && (
+				<View style={{ width: "100%", zIndex: 10 }}>
+					<JournalS.JournalHeaderContainer>
+						<JournalS.JournalDateBox>
+							<JournalS.JournalEditDate
+								style={dateTextColor ? { color: dateTextColor } : undefined}
+							>
+								{formattedDate}
+							</JournalS.JournalEditDate>
+							<JournalS.JournalEditTime
+								style={timeTextColor ? { color: timeTextColor } : undefined}
+							>
+								{record.time}
+							</JournalS.JournalEditTime>
+						</JournalS.JournalDateBox>
+						{onMenuPress && (
+							<TouchableOpacity onPress={handleMenuPress} activeOpacity={0.8}>
+								<MenuIcon
+									width={18}
+									height={18}
+									color="rgba(255, 255, 255, 0.7)"
+								/>
+							</TouchableOpacity>
+						)}
+					</JournalS.JournalHeaderContainer>
+				</View>
+			)}
 
 			{/* 감정 레이블 */}
 			<EmotionCardStyles.EmotionCardTextBox>
