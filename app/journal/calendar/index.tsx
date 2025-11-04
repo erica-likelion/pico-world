@@ -1,14 +1,13 @@
 import { CalendarUI } from "@/features/journal/ui";
 import { TopNav } from "@/widgets/TopNav/ui";
-import { useRouter } from "expo-router";
+import { useRouter, type Href } from "expo-router";
 import { ScrollView, View } from "react-native";
 
 export default function JournalCalendar() {
 	const router = useRouter();
 
 	const handleDateSelect = (dateString: string) => {
-		// TODO: 날짜 선택 시 처리 로직
-		console.log("Selected date:", dateString);
+		router.push(`/journal/calendar/detail?date=${dateString}` as Href);
 	};
 
 	return (
