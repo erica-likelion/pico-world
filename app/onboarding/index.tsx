@@ -80,7 +80,6 @@ export default function Onboarding() {
 
 	const { mutate: reSelectMutate } = useMutation({
 		mutationFn: async (characterId: number) => {
-			console.log("Re-selecting character with ID:", characterId);
 			await axiosInstance.put("/api/v1/users/me/character", {
 				characterId: characterId,
 			});

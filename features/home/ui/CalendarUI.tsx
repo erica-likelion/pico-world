@@ -107,9 +107,12 @@ interface CalendarUIProps {
 }
 
 export function CalendarUI({ isTodayHistory, onDateSelect }: CalendarUIProps) {
-	const [currentMonth, setCurrentMonth] = useState<string>("2025-10");
-	const [currentDate, setCurrentDate] = useState<Date>(new Date("2025-10-01"));
 	const today = new Date().toISOString().split("T")[0];
+	const currentDateObj = new Date(today);
+	const [currentMonth, setCurrentMonth] = useState<string>(
+		today.slice(0, 7), // ✅ 현재 달 (예: "2025-11")
+	);
+	const [currentDate, setCurrentDate] = useState<Date>(currentDateObj);
 
 	// 동적으로 감정 기록이 있는 날짜의 색상을 가져옴
 	const dayColors: DateStyleMap = {};

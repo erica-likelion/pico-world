@@ -16,7 +16,6 @@ interface AppleLoginResponse {
 export const appleLogin = async (
 	params: AppleLoginRequest,
 ): Promise<boolean> => {
-	console.log("appleLogin params:", params);
 	const response = await axiosInstance.post<AppleLoginResponse>(
 		"/api/v1/auth/apple/login",
 		params,
