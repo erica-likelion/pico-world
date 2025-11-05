@@ -22,7 +22,6 @@ export default function Onboarding() {
 
 	const { mutate: selectMutate } = useMutation({
 		mutationFn: async (characterId: number) => {
-			console.log("Selecting character with ID:", characterId);
 			await axiosInstance.post("/api/v1/characters/select", {
 				characterId: characterId,
 			});
