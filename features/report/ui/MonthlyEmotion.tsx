@@ -1,7 +1,7 @@
 import * as S from "@/features/report/style/MonthlyEmotion.styles";
 import RightIcon from "@/shared/assets/icons/right.svg";
 import { theme } from "@/shared/config/theme/theme";
-import type { EmotionChip } from "@/shared/types/emotion";
+import type { EmotionChip } from "@/shared/types";
 import { TouchableOpacity } from "react-native";
 
 interface MonthlyEmotionProps {
