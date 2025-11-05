@@ -25,7 +25,6 @@ export const kakaoLogin = async (
 	);
 
 	const { accessToken, refreshToken, isOnboardingNeeded } = response.data;
-	console.log("Kakao login response:", response.data);
 
 	await AsyncStorage.setItem("accessToken", accessToken);
 	await AsyncStorage.setItem("refreshToken", refreshToken);

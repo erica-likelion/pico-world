@@ -16,11 +16,10 @@ export const instance = axios.create({
 instance.interceptors.request.use(
 	async (config) => {
 		const token = await AsyncStorage.getItem("accessToken");
-
 		if (token) {
 			config.headers.Authorization = `Bearer ${token}`;
 		}
-
+		console.log("Request config:", config.headers.Authorization);
 		return config;
 	},
 	(error) => {

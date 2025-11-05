@@ -53,9 +53,8 @@ export default function Onboarding() {
 	const [selectedCharacter, setSelectedCharacter] = useState<CharacterProps>(
 		Character[0],
 	);
-	const sele = Character.findIndex(
-		(char) => char.name === selectedCharacter.name,
-	);
+	const sele =
+		Character.findIndex((char) => char.name === selectedCharacter.name) + 1;
 
 	useEffect(() => {
 		hide();
@@ -66,6 +65,7 @@ export default function Onboarding() {
 
 	const { mutate: selectMutate } = useMutation({
 		mutationFn: async (characterId: number) => {
+			console.log("Selecting character with ID:", characterId);
 			await axiosInstance.post("/api/v1/characters/select", {
 				characterId: characterId,
 			});
@@ -73,10 +73,14 @@ export default function Onboarding() {
 		onSuccess: () => {
 			router.push("/home");
 		},
+		onError: (error) => {
+			console.log(error);
+		},
 	});
 
 	const { mutate: reSelectMutate } = useMutation({
 		mutationFn: async (characterId: number) => {
+			console.log("Re-selecting character with ID:", characterId);
 			await axiosInstance.put("/api/v1/users/me/character", {
 				characterId: characterId,
 			});
