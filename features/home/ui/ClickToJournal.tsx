@@ -1,6 +1,7 @@
 import * as S from "@/features/home/style/ClickToJournal.styles";
 import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
 import { PlusButton } from "@/shared/ui";
+import { useRouter } from "expo-router";
 import { useEffect, useRef } from "react";
 import { Animated, Pressable } from "react-native";
 import {
@@ -55,6 +56,7 @@ interface ClickToJournalProps {
 }
 
 export function ClickToJournal({ date }: ClickToJournalProps) {
+	const router = useRouter();
 	const { scale, handlePressIn, handlePressOut } = usePressAnimation();
 	const fadeInAnim = useRef(new Animated.Value(0)).current;
 	const slideUpAnim = useRef(new Animated.Value(50)).current;
@@ -115,6 +117,7 @@ export function ClickToJournal({ date }: ClickToJournalProps) {
 					<Pressable
 						onPressIn={handlePressIn}
 						onPressOut={handlePressOut}
+						onPress={() => router.push("/record")}
 						style={{
 							zIndex: 40,
 							alignItems: "center",

@@ -1,11 +1,10 @@
-import { getEmotionCoordinate } from "@/features/report/lib/emotionCoordinates";
 import * as S from "@/features/report/style/MonthlyEmotionChart.styles";
+import { useHideBottomNav } from "@/shared/hooks/useHideBottomNav";
 import { EmotionGradientCanvas } from "@/shared/ui/emotion/EmotionGradientCanvas";
+import { getEmotionCoordinate } from "@/shared/utils/emotionCoordinates";
 import { useSkiaFont } from "@/shared/utils/skiaFont";
-import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { BlurMask, Circle, Group, Text } from "@shopify/react-native-skia";
-import { useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -19,20 +18,12 @@ export const MonthlyEmotionChart: React.FC<MonthlyEmotionChartProps> = ({
 	thisMonthEmotion,
 	lastMonthEmotion,
 }) => {
-	const { hide, show } = useBottomNavStore();
+	useHideBottomNav();
 	const [canvasSize, setCanvasSize] = useState({
 		width: SCREEN_WIDTH,
 		height: SCREEN_HEIGHT,
 	});
 	const font = useSkiaFont();
-	useFocusEffect(
-		useCallback(() => {
-			hide();
-			return () => {
-				show();
-			};
-		}, [hide, show]),
-	);
 
 	const isSameEmotion = thisMonthEmotion === lastMonthEmotion;
 
