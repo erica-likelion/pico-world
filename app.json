@@ -15,7 +15,7 @@
 		},
 		"ios": {
 			"supportsTablet": true,
-			"bundleIdentifier": "com.whddnjs960.omegamon",
+			"bundleIdentifier": "com.picoworld.app",
 			"usesAppleSignIn": true,
 			"entitlements": {
 				"com.apple.developer.applesignin": ["Default"]
