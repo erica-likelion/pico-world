@@ -92,7 +92,6 @@ export function ClickToJournal({ date }: ClickToJournalProps) {
 				useNativeDriver: true,
 			}),
 		]).start();
-		console.log("ClickToJournal date:", date);
 	}, [date, fadeInAnim, scaleAnim, slideUpAnim]); // date나 emotion이 바뀔 때마다 애니메이션 재실행
 
 	return (

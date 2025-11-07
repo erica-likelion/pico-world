@@ -1,6 +1,7 @@
 import { navigationTheme, theme } from "@/shared/config/theme/theme";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { BottomNav } from "@/widgets/BottomNav/ui";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
@@ -16,6 +17,8 @@ import { ThemeProvider as StyledThemeProvider } from "styled-components/native";
 export { ErrorBoundary } from "expo-router";
 
 SplashScreen.preventAutoHideAsync();
+
+const queryClient = new QueryClient();
 
 export default function RootLayout() {
 	const [loaded, error] = useFonts({
@@ -40,7 +43,11 @@ export default function RootLayout() {
 		return null;
 	}
 
-	return <RootLayoutNav />;
+	return (
+		<QueryClientProvider client={queryClient}>
+			<RootLayoutNav />
+		</QueryClientProvider>
+	);
 }
 
 function RootLayoutNav() {
