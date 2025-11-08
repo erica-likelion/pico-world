@@ -2,13 +2,13 @@ import DeleteIcon from "@/shared/assets/icons/delete.svg";
 import EditIcon from "@/shared/assets/icons/edit.svg";
 import { theme } from "@/shared/config/theme/theme";
 import * as S from "@/shared/style/MenuBottomSheet.styles";
-import { Divider } from "@/shared/ui";
+import { Divider } from "@/shared/ui/Divider";
 import {
 	CustomBottomSheet,
 	type BottomSheetRef,
 } from "@/shared/ui/bottomSheet/CustomBottomSheet";
 import DeleteModal from "@/shared/ui/modal/DeleteModal";
-import React, { useState } from "react";
+import { useState } from "react";
 
 interface MenuBottomSheetProps {
 	bottomSheetRef: BottomSheetRef;

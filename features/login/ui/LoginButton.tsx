@@ -5,6 +5,7 @@ import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
 import * as KakaoLogin from "@react-native-seoul/kakao-login";
 import { useMutation } from "@tanstack/react-query";
 import * as AppleAuthentication from "expo-apple-authentication";
+import { CodedError } from "expo-modules-core";
 import { useRouter } from "expo-router";
 import { Platform, TouchableOpacity } from "react-native";
 
@@ -77,8 +78,8 @@ export function LoginButton() {
 					device: Platform.OS,
 				});
 			}
-		} catch (e: any) {
-			if (e.code === "ERR_REQUEST_CANCELED") {
+		} catch (e: unknown) {
+			if (e instanceof CodedError && e.code === "ERR_REQUEST_CANCELED") {
 				console.log("Apple login cancelled");
 			} else {
 				console.error("Apple login error", e);

@@ -6,7 +6,7 @@ import { CharacterBubble, MenuBottomSheet } from "@/shared/ui";
 import { formatDate } from "@/shared/utils/date";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { TopNav } from "@/widgets/TopNav/ui";
-import BottomSheet from "@gorhom/bottom-sheet";
+import type BottomSheet from "@gorhom/bottom-sheet";
 import { useEffect, useRef, useState } from "react";
 import { ScrollView, View } from "react-native";
 
