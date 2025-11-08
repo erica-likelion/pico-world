@@ -1,5 +1,6 @@
 export const grayscale = {
 	black: "#000000",
+	gray950: "#101010",
 	gray900: "#191919",
 	gray800: "#202020",
 	gray700: "#353535",
