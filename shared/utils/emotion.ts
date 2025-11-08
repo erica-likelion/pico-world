@@ -84,7 +84,7 @@ export const EMOTION_WORD: Record<XLabel, Record<YLabel, string>> = {
 		"극도로 행복한": "황홀한",
 	},
 	"완전 편안한": {
-		"매우 우울한": "차분한",
+		"매우 우울한": "무기력한",
 		우울한: "온전한",
 		"조금 우울한": "가벼운",
 		"조금 행복한": "편안한",
