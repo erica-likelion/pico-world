@@ -1,3 +1,4 @@
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { sendFcmToken } from "@/shared/api/notification";
 import { registerForPushNotificationsAsync } from "@/shared/config/notification";
 import { navigationTheme, theme } from "@/shared/config/theme/theme";
@@ -37,7 +38,9 @@ export default function RootLayout() {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<GestureHandlerRootView style={{ flex: 1 }}>
-				<RootLayoutNav />
+				<BottomSheetModalProvider>
+					<RootLayoutNav />
+				</BottomSheetModalProvider>
 			</GestureHandlerRootView>
 		</QueryClientProvider>
 	);

@@ -1,33 +1,29 @@
 import { theme } from "@/shared/config/theme/theme";
-import BottomSheet, {
+import {
 	BottomSheetBackdrop,
+	BottomSheetModal,
 	BottomSheetView,
 	type BottomSheetBackdropProps,
-	type BottomSheetProps,
+	type BottomSheetModalProps,
 } from "@gorhom/bottom-sheet";
 import type { ReactNode, RefObject } from "react";
-import { useCallback, useEffect, useState } from "react";
-export type BottomSheetRef = RefObject<BottomSheet | null>;
+import { useCallback } from "react";
+import { ThemeProvider as StyledThemeProvider } from "styled-components/native";
+export type BottomSheetRef = RefObject<BottomSheetModal | null>;
 
-interface CustomBottomSheetProps extends Omit<BottomSheetProps, "children"> {
+interface CustomBottomSheetProps
+	extends Omit<BottomSheetModalProps, "children" | "snapPoints"> {
 	bottomSheetRef: BottomSheetRef;
 	children: ReactNode;
 	snapPoints?: Array<string | number>;
-	initialIndex?: number;
 }
 
 export function CustomBottomSheet({
 	bottomSheetRef,
 	children,
 	snapPoints,
-	initialIndex = -1,
+	...props
 }: CustomBottomSheetProps) {
-	const [currentIndex, setCurrentIndex] = useState<number>(initialIndex);
-
-	useEffect(() => {
-		setCurrentIndex(initialIndex);
-	}, [initialIndex]);
-
 	const renderBackdrop = useCallback(
 		(backdropProps: BottomSheetBackdropProps) => (
 			<BottomSheetBackdrop
@@ -41,13 +37,11 @@ export function CustomBottomSheet({
 	);
 
 	return (
-		<BottomSheet
+		<BottomSheetModal
 			ref={bottomSheetRef}
-			index={currentIndex}
 			snapPoints={snapPoints}
 			backdropComponent={renderBackdrop}
 			enablePanDownToClose
-			enableDynamicSizing={false}
 			backgroundStyle={{
 				backgroundColor: theme.grayscale.gray950,
 				borderTopLeftRadius: 36,
@@ -61,8 +55,11 @@ export function CustomBottomSheet({
 			handleStyle={{
 				paddingTop: 16,
 			}}
+			{...props}
 		>
-			<BottomSheetView style={{ flex: 1 }}>{children}</BottomSheetView>
-		</BottomSheet>
+			<StyledThemeProvider theme={theme}>
+				<BottomSheetView style={{ flex: 1 }}>{children}</BottomSheetView>
+			</StyledThemeProvider>
+		</BottomSheetModal>
 	);
 }
