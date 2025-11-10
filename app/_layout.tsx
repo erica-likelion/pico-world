@@ -1,3 +1,5 @@
+import { sendFcmToken } from "@/shared/api/notification";
+import { registerForPushNotificationsAsync } from "@/shared/config/notification";
 import { navigationTheme, theme } from "@/shared/config/theme/theme";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { BottomNav } from "@/widgets/BottomNav/ui";
@@ -22,6 +24,30 @@ SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
+	useEffect(() => {
+		const setupNotifications = async () => {
+			const token = await registerForPushNotificationsAsync();
+			if (token) {
+				await sendFcmToken(token);
+			}
+		};
+		setupNotifications();
+	}, []);
+
+	return (
+		<QueryClientProvider client={queryClient}>
+			<GestureHandlerRootView style={{ flex: 1 }}>
+				<RootLayoutNav />
+			</GestureHandlerRootView>
+		</QueryClientProvider>
+	);
+}
+
+function RootLayoutNav() {
+	const { isVisible } = useBottomNavStore();
+	const pathname = usePathname();
+	const isLogin = pathname.startsWith("/login");
+
 	const [loaded, error] = useFonts({
 		"Pretendard-Bold": require("@/shared/assets/fonts/Pretendard-Bold.ttf"),
 		"Pretendard-SemiBold": require("@/shared/assets/fonts/Pretendard-SemiBold.ttf"),
@@ -43,20 +69,6 @@ export default function RootLayout() {
 	if (!loaded) {
 		return null;
 	}
-
-	return (
-		<QueryClientProvider client={queryClient}>
-			<GestureHandlerRootView style={{ flex: 1 }}>
-				<RootLayoutNav />
-			</GestureHandlerRootView>
-		</QueryClientProvider>
-	);
-}
-
-function RootLayoutNav() {
-	const { isVisible } = useBottomNavStore();
-	const pathname = usePathname();
-	const isLogin = pathname.startsWith("/login");
 
 	const Layout = isLogin ? View : SafeAreaView;
 
