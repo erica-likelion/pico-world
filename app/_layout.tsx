@@ -1,10 +1,8 @@
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { sendFcmToken } from "@/shared/api/notification";
-import { registerForPushNotificationsAsync } from "@/shared/config/notification";
 import { navigationTheme, theme } from "@/shared/config/theme/theme";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { BottomNav } from "@/widgets/BottomNav/ui";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { ThemeProvider } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
@@ -25,16 +23,6 @@ SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
-	useEffect(() => {
-		const setupNotifications = async () => {
-			const token = await registerForPushNotificationsAsync();
-			if (token) {
-				await sendFcmToken(token);
-			}
-		};
-		setupNotifications();
-	}, []);
-
 	return (
 		<QueryClientProvider client={queryClient}>
 			<GestureHandlerRootView style={{ flex: 1 }}>

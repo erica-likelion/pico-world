@@ -1,4 +1,6 @@
 import { axiosInstance } from "@/shared/api/axios";
+import { sendFcmToken } from "@/shared/api/notification";
+import { registerForPushNotificationsAsync } from "@/shared/config/notification";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface KakaoLoginRequest {
@@ -28,6 +30,16 @@ export const kakaoLogin = async (
 
 	await AsyncStorage.setItem("accessToken", accessToken);
 	await AsyncStorage.setItem("refreshToken", refreshToken);
+
+	const setupNotifications = async () => {
+		const token = await registerForPushNotificationsAsync();
+		if (token) {
+			await sendFcmToken(token);
+		}
+	};
+	setupNotifications();
+
+	console.log(accessToken);
 
 	return isOnboardingNeeded;
 };
