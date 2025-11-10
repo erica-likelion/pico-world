@@ -1,15 +1,16 @@
 import { navigationTheme, theme } from "@/shared/config/theme/theme";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { BottomNav } from "@/widgets/BottomNav/ui";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { ThemeProvider } from "@react-navigation/native";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
 import { Stack, usePathname } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { ThemeProvider as StyledThemeProvider } from "styled-components/native";
@@ -45,7 +46,9 @@ export default function RootLayout() {
 
 	return (
 		<QueryClientProvider client={queryClient}>
-			<RootLayoutNav />
+			<GestureHandlerRootView style={{ flex: 1 }}>
+				<RootLayoutNav />
+			</GestureHandlerRootView>
 		</QueryClientProvider>
 	);
 }

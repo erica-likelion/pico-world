@@ -16,6 +16,7 @@ interface TodayHistoryProps extends Partial<EmotionRecord> {
 	historyText?: string;
 	AIImage?: ImageSourcePropType;
 	AIComment?: string;
+	onMenuPress: () => void;
 }
 
 // AI 코멘트 생성 함수
@@ -45,6 +46,7 @@ export function TodayHistory({
 	historyText,
 	AIImage,
 	AIComment,
+	onMenuPress,
 }: TodayHistoryProps) {
 	// 애니메이션 값들
 	const fadeInAnim = useRef(new Animated.Value(0)).current;
@@ -122,7 +124,7 @@ export function TodayHistory({
 	]); // date나 emotion이 바뀔 때마다 애니메이션 재실행
 
 	const handleMenuPress = () => {
-		//todo: 메뉴 기능 구현
+		onMenuPress();
 	};
 
 	return (

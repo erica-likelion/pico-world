@@ -27,3 +27,9 @@ if (process.env.NODE_ENV !== "production") {
 } else {
 	module.exports = config;
 }
+
+const {
+	wrapWithReanimatedMetroConfig,
+} = require("react-native-reanimated/metro-config");
+
+module.exports = wrapWithReanimatedMetroConfig(config);

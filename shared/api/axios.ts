@@ -1,4 +1,4 @@
-import { ApiResponse } from "@/shared/types";
+import type { ApiResponse } from "@/shared/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios, {
 	type AxiosError,
@@ -52,7 +52,7 @@ instance.interceptors.response.use(
 
 					originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 					return instance(originalRequest);
-				} catch (refreshError) {
+				} catch (_refreshError) {
 					// 토큰 갱신 실패 시 AsyncStorage를 비우고 로그인 페이지로 리디렉션합니다.
 					await AsyncStorage.multiRemove(["accessToken", "refreshToken"]);
 					// TODO: 로그인 페이지로 리디렉션 하는 로직 추가

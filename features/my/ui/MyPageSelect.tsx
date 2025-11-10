@@ -1,4 +1,4 @@
-import { getUserInfo, UserInfo } from "@/features/my/api/MyInfo";
+import { getUserInfo, type UserInfo } from "@/features/my/api/MyInfo";
 import { withdraw } from "@/features/my/api/Withdraw";
 import * as S from "@/features/my/style/MyPageSelect.styles";
 import { LogoutModal } from "@/features/my/ui/LogoutModal";
