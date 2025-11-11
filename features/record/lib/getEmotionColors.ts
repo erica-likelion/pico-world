@@ -52,10 +52,10 @@ export function getEmotionColors(
 			main: xColor,
 			sub: yColor,
 		};
-	} else {
-		return {
-			main: yColor,
-			sub: xColor,
-		};
 	}
+
+	return {
+		main: yColor,
+		sub: xColor,
+	};
 }
