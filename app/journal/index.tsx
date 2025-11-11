@@ -1,12 +1,12 @@
+import { EmotionRecordList } from "@/features/journal/ui";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { TopNav } from "@/widgets/TopNav/ui";
-import { useFocusEffect, useRouter } from "expo-router";
+import { useFocusEffect } from "expo-router";
 import { useCallback } from "react";
-import { Text, TouchableOpacity } from "react-native";
+import { View } from "react-native";
 
 export default function Journal() {
 	const { show } = useBottomNavStore();
-	const router = useRouter();
 
 	useFocusEffect(
 		useCallback(() => {
@@ -15,11 +15,9 @@ export default function Journal() {
 	);
 
 	return (
-		<>
+		<View style={{ flex: 1 }}>
 			<TopNav title="기록" />
-			<TouchableOpacity onPress={() => router.push("../record")}>
-				<Text style={{ color: "white" }}>감정 기록 ㄱㄱ</Text>
-			</TouchableOpacity>
-		</>
+			<EmotionRecordList />
+		</View>
 	);
 }
