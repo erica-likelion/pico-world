@@ -1,7 +1,12 @@
+import { appleLogin } from "@/features/login/api/appleLogin";
+import { kakaoLogin } from "@/features/login/api/kakaoLogin";
 import * as S from "@/features/login/style/LoginButton.styles";
 import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
+import * as KakaoLogin from "@react-native-seoul/kakao-login";
+import { useMutation } from "@tanstack/react-query";
+import * as AppleAuthentication from "expo-apple-authentication";
+import { CodedError } from "expo-modules-core";
 import { useRouter } from "expo-router";
-
 import { Platform, TouchableOpacity } from "react-native";
 
 export function LoginButton() {
@@ -18,11 +23,68 @@ export function LoginButton() {
 		handlePressOut: applePressOut,
 	} = usePressAnimation();
 
-	const handleKakaoLogin = () => {
-		router.push("/onboarding");
+	const { mutate: kakaoLoginMutate } = useMutation({
+		mutationFn: kakaoLogin,
+		onSuccess: (isOnboardingNeeded) => {
+			if (isOnboardingNeeded) {
+				router.push("/onboarding");
+			} else {
+				router.push("/home");
+			}
+		},
+		onError: (error) => {
+			console.error("Kakao login error", error);
+		},
+	});
+
+	const { mutate: appleLoginMutate } = useMutation({
+		mutationFn: appleLogin,
+		onSuccess: (isOnboardingNeeded) => {
+			if (isOnboardingNeeded) {
+				router.push("/onboarding");
+			} else {
+				router.push("/home");
+			}
+		},
+		onError: (error) => {
+			console.error("Apple login error", error);
+		},
+	});
+
+	const handleKakaoLogin = async () => {
+		try {
+			const token = await KakaoLogin.login();
+			kakaoLoginMutate({
+				kakaoAccessToken: token.accessToken,
+				device: Platform.OS,
+			});
+		} catch (error) {
+			console.error("Kakao login error", error);
+		}
 	};
-	const handleAppleLogin = () => {
-		router.push("/onboarding");
+
+	const handleAppleLogin = async () => {
+		try {
+			const credential = await AppleAuthentication.signInAsync({
+				requestedScopes: [
+					AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+					AppleAuthentication.AppleAuthenticationScope.EMAIL,
+				],
+			});
+
+			if (credential.identityToken) {
+				appleLoginMutate({
+					identity_token: credential.identityToken,
+					device: Platform.OS,
+				});
+			}
+		} catch (e: unknown) {
+			if (e instanceof CodedError && e.code === "ERR_REQUEST_CANCELED") {
+				console.log("Apple login cancelled");
+			} else {
+				console.error("Apple login error", e);
+			}
+		}
 	};
 
 	return (

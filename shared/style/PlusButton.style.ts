@@ -1,6 +1,6 @@
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
-import Animated from "react-native";
+import { Animated } from "react-native";
 import styled from "styled-components/native";
 
 export const OuterWrapper = styled(Animated.View).attrs(({ style }) => ({
