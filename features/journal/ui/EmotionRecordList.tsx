@@ -1,12 +1,14 @@
 import { getAllEmotionRecords } from "@/features/journal/model/emotionRecords";
 import { EmotionRecordCard } from "@/features/journal/ui/EmotionRecordCard";
 import { Button } from "@/shared/ui/Button";
+import { useRouter, type Href } from "expo-router";
 import { useMemo, useRef } from "react";
 import { ScrollView, Text, View } from "react-native";
 
 export const EmotionRecordList = () => {
 	const records = useMemo(() => getAllEmotionRecords(), []);
 	const scrollViewRef = useRef<ScrollView>(null);
+	const router = useRouter();
 
 	const scrollToTop = () => {
 		scrollViewRef.current?.scrollTo({ y: 0, animated: true });
@@ -35,9 +37,10 @@ export const EmotionRecordList = () => {
 				<View key={record.id} style={{ width: "100%", marginBottom: 16 }}>
 					<EmotionRecordCard
 						record={record}
-						onMenuPress={() => {
-							// TODO: 메뉴 기능 구현
-						}}
+						onPress={() =>
+							router.push(`/journal/detail?date=${record.date}` as Href)
+						}
+						onMenuPress={() => {}}
 					/>
 				</View>
 			))}

@@ -6,7 +6,7 @@ import { TopNav } from "@/widgets/TopNav/ui";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ScrollView, View } from "react-native";
 
-export default function JournalCalendarDetail() {
+export default function JournalDetail() {
 	const router = useRouter();
 	const { date } = useLocalSearchParams<{ date: string }>();
 

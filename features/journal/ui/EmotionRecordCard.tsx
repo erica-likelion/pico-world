@@ -12,6 +12,7 @@ interface EmotionRecordCardProps {
 	showDate?: boolean;
 	dateTextColor?: string;
 	timeTextColor?: string;
+	onPress?: () => void;
 }
 
 export const EmotionRecordCard = ({
@@ -20,6 +21,7 @@ export const EmotionRecordCard = ({
 	showDate = true,
 	dateTextColor,
 	timeTextColor,
+	onPress,
 }: EmotionRecordCardProps) => {
 	const formattedDate = record.date.replace(/-/g, ". ");
 	const gradientId = useId();
@@ -32,7 +34,10 @@ export const EmotionRecordCard = ({
 	};
 
 	return (
-		<View
+		<TouchableOpacity
+			activeOpacity={0.9}
+			disabled={!onPress}
+			onPress={onPress}
 			style={{
 				display: "flex",
 				height: 193,
@@ -119,6 +124,6 @@ export const EmotionRecordCard = ({
 					{record.emotion.label}
 				</EmotionCardStyles.EmotionCardText>
 			</EmotionCardStyles.EmotionCardTextBox>
-		</View>
+		</TouchableOpacity>
 	);
 };
