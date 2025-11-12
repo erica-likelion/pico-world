@@ -5,17 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ef1df912-5873-46b7-abe3-476c4360571b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/features/friends/style/FriendRequestCard.styles.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/features/friends/ui/FriendRequestCard.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/friends/model/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/features/friends/model/types.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/friends/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/friends/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/friends/style/FriendsContent.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/features/friends/style/FriendsContent.styles.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/friends/ui/FriendsContent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/features/friends/ui/FriendsContent.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/friends/ui/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/features/friends/ui/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/journal/ui/EmotionRecordCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/features/journal/ui/EmotionRecordCard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/journal/ui/TodayHistory.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/features/journal/ui/TodayHistory.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/my/api/MyInfo.ts" beforeDir="false" afterPath="$PROJECT_DIR$/features/my/api/MyInfo.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shared/ui/Button.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/shared/ui/Button.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shared/ui/bottomSheet/CustomBottomSheet.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/shared/ui/bottomSheet/CustomBottomSheet.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

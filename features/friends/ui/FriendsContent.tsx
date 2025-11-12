@@ -1,11 +1,13 @@
 import FriendsPlusIcon from "@/shared/assets/icons/freinds-plus.svg";
 import { Button, CharacterBubble, Divider, ProfileButton } from "@/shared/ui";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import type BottomSheet from "@gorhom/bottom-sheet";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { useTheme } from "styled-components/native";
 
 import type { FriendRequest } from "@/features/friends/model/types";
 import { createFriendsContentStyles } from "@/features/friends/style/FriendsContent.styles";
+import { FriendInviteBottomSheet } from "@/features/friends/ui/FriendInviteBottomSheet";
 import { FriendRequestCard } from "@/features/friends/ui/FriendRequestCard";
 import { FriendsCard } from "@/features/friends/ui/FriendsCard/FriendsCard";
 
@@ -39,6 +41,7 @@ export function FriendsContent({
 	const [friendRequests, setFriendRequests] =
 		useState<FriendRequest[]>(INITIAL_REQUESTS);
 	const [acceptedFriends, setAcceptedFriends] = useState<FriendRequest[]>([]);
+	const addFriendBottomSheetRef = useRef<BottomSheet>(null);
 
 	useEffect(() => {
 		setFriendRequests(INITIAL_REQUESTS);
@@ -48,6 +51,7 @@ export function FriendsContent({
 	const acceptedCount = acceptedFriends.length;
 	const friendAddProgress = `${acceptedCount}/${FRIEND_LIMIT}`;
 	const pendingRequest = friendRequests[0];
+	const inviteCode = "0416";
 
 	const handleRejectRequest = useCallback((id: string) => {
 		setFriendRequests((prev) => prev.filter((request) => request.id !== id));
@@ -65,6 +69,20 @@ export function FriendsContent({
 			return [...prev, request];
 		});
 	}, []);
+
+	const handleAddFriendButtonPress = useCallback(() => {
+		addFriendBottomSheetRef.current?.expand();
+	}, []);
+
+	const handleEnterInviteCode = useCallback(
+		(code: string) => {
+			if (code.length === 0) {
+				return;
+			}
+			onAddFriendPress();
+		},
+		[onAddFriendPress],
+	);
 
 	return (
 		<View style={styles.container}>
@@ -84,7 +102,7 @@ export function FriendsContent({
 
 					<Pressable
 						style={[styles.profileButtonWrapper, styles.profileActionButton]}
-						onPress={onAddFriendPress}
+						onPress={handleAddFriendButtonPress}
 					>
 						<View style={styles.profileButtonContent}>
 							<FriendsPlusIcon
@@ -150,6 +168,13 @@ export function FriendsContent({
 					/>
 				</View>
 			</View>
+
+			<FriendInviteBottomSheet
+				bottomSheetRef={addFriendBottomSheetRef}
+				profileName={profileName}
+				inviteCode={inviteCode}
+				onEnterCode={handleEnterInviteCode}
+			/>
 		</View>
 	);
 }

@@ -10,6 +10,7 @@ export const createFriendsContentStyles = (theme: DefaultTheme) => {
 		styles: StyleSheet.create({
 			container: {
 				width: "100%",
+				flexGrow: 1,
 				paddingHorizontal: 16,
 				paddingTop: 0,
 				paddingBottom: 40,

@@ -27,7 +27,7 @@ export default function Friends() {
 			<TopNav title="친구" rightIcon={<BellIcon />} />
 			<ScrollView
 				ref={scrollViewRef}
-				contentContainerStyle={{ alignItems: "center" }}
+				contentContainerStyle={{ alignItems: "center", flexGrow: 1 }}
 				showsVerticalScrollIndicator={false}
 			>
 				<FriendsContent
