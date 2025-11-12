@@ -48,12 +48,11 @@ export function FriendsContent({
 				</Pressable>
 			</View>
 
-			<View style={styles.spacing}>
-				<CharacterBubble
-					character="츠츠"
-					message="Pico World는 친구랑 할 때 더 재밌는 거 알지? 5명까지 초대할 수 있으니 같이 기록해봐."
-				/>
-			</View>
+			<CharacterBubble
+				character="츠츠"
+				message="Pico World는 친구랑 할 때 더 재밌는 거 알지? 5명까지 초대할 수 있으니 같이 기록해봐."
+				containerStyle={styles.spacing}
+			/>
 
 			<FriendsCard
 				name="하룰라라"

@@ -47,7 +47,7 @@ export const createFriendsContentStyles = (theme: DefaultTheme) => {
 			spacing: {
 				marginBottom: 6,
 				alignSelf: "stretch",
-				paddingHorizontal: 16,
+				width: "100%",
 			},
 			dividerSpacing: {
 				marginVertical: 8,
