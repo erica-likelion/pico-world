@@ -147,6 +147,26 @@ export function FriendsContent({
 		[showToast],
 	);
 
+	const handleRemoveFriend = useCallback(
+		(friendId: string) => {
+			if (!friendId) {
+				return;
+			}
+			setAcceptedFriends((prev) =>
+				prev.filter((friend) => friend.id !== friendId),
+			);
+			setFriendNotifications((prev) => {
+				const { [friendId]: _removed, ...rest } = prev;
+				return rest;
+			});
+			setSelectedFriend((current) =>
+				current && current.id === friendId ? null : current,
+			);
+			showToast("친구를 끊었습니다.");
+		},
+		[showToast],
+	);
+
 	const openFriendBottomSheet = useCallback((friend: FriendRequest) => {
 		setSelectedFriend(friend);
 		menuBottomSheetRef.current?.expand();
@@ -270,6 +290,7 @@ export function FriendsContent({
 						: true
 				}
 				onToggleNotifications={handleToggleFriendNotifications}
+				onDeleteConfirm={handleRemoveFriend}
 			/>
 		</View>
 	);

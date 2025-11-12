@@ -1,3 +1,4 @@
+import { FriendDeleteModal } from "@/features/friends/ui/FriendDeleteModal";
 import BellOffIcon from "@/shared/assets/icons/bell-off.svg";
 import BellIcon from "@/shared/assets/icons/bell.svg";
 import RemoveFriendIcon from "@/shared/assets/icons/remove-minus-circle.svg";
@@ -9,7 +10,6 @@ import {
 	CustomBottomSheet,
 	type BottomSheetRef,
 } from "@/shared/ui/bottomSheet/CustomBottomSheet";
-import DeleteModal from "@/shared/ui/modal/DeleteModal";
 import { useState } from "react";
 import { View } from "react-native";
 
@@ -101,11 +101,11 @@ export function FriendBottomSheet({
 					<S.Text style={{ color: colors.happy }}>친구 끊기</S.Text>
 				</S.MenuItem>
 			</CustomBottomSheet>
-			<DeleteModal
+			<FriendDeleteModal
 				isVisible={isModalVisible}
 				onConfirm={handleRemoveConfirm}
 				onCancel={handleCancel}
-				date={friendName}
+				friendName={friendName}
 			/>
 		</>
 	);

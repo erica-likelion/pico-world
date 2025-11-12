@@ -6,10 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="ef1df912-5873-46b7-abe3-476c4360571b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/friends/ui/FriendBottomSheet.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/features/friends/ui/FriendBottomSheet.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/friends/ui/FriendsContent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/features/friends/ui/FriendsContent.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/friends/ui/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/features/friends/ui/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shared/style/Toast.style.ts" beforeDir="false" afterPath="$PROJECT_DIR$/shared/style/Toast.style.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shared/ui/ProfileButton.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/shared/ui/ProfileButton.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
