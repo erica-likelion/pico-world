@@ -1,10 +1,12 @@
 import FriendsPlusIcon from "@/shared/assets/icons/freinds-plus.svg";
 import { Button, CharacterBubble, Divider, ProfileButton } from "@/shared/ui";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, Text, View } from "react-native";
-import { useMemo } from "react";
 import { useTheme } from "styled-components/native";
 
+import type { FriendRequest } from "@/features/friends/model/types";
 import { createFriendsContentStyles } from "@/features/friends/style/FriendsContent.styles";
+import { FriendRequestCard } from "@/features/friends/ui/FriendRequestCard";
 import { FriendsCard } from "@/features/friends/ui/FriendsCard/FriendsCard";
 
 interface FriendsContentProps {
@@ -13,6 +15,14 @@ interface FriendsContentProps {
 	onScrollToTop?: () => void;
 	profileName: string;
 }
+
+const FRIEND_LIMIT = 5;
+const INITIAL_REQUESTS: FriendRequest[] = [
+	{
+		id: "harulala",
+		name: "하룰라라",
+	},
+];
 
 export function FriendsContent({
 	onProfilePress,
@@ -26,6 +36,36 @@ export function FriendsContent({
 		[theme],
 	);
 
+	const [friendRequests, setFriendRequests] =
+		useState<FriendRequest[]>(INITIAL_REQUESTS);
+	const [acceptedFriends, setAcceptedFriends] = useState<FriendRequest[]>([]);
+
+	useEffect(() => {
+		setFriendRequests(INITIAL_REQUESTS);
+		setAcceptedFriends([]);
+	}, []);
+
+	const acceptedCount = acceptedFriends.length;
+	const friendAddProgress = `${acceptedCount}/${FRIEND_LIMIT}`;
+	const pendingRequest = friendRequests[0];
+
+	const handleRejectRequest = useCallback((id: string) => {
+		setFriendRequests((prev) => prev.filter((request) => request.id !== id));
+	}, []);
+
+	const handleAcceptRequest = useCallback((request: FriendRequest) => {
+		setFriendRequests((prev) => prev.filter((item) => item.id !== request.id));
+		setAcceptedFriends((prev) => {
+			if (prev.some((friend) => friend.id === request.id)) {
+				return prev;
+			}
+			if (prev.length >= FRIEND_LIMIT) {
+				return prev;
+			}
+			return [...prev, request];
+		});
+	}, []);
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.profileRow}>
@@ -34,41 +74,68 @@ export function FriendsContent({
 					<Text style={styles.profileLabel}>{profileName}</Text>
 				</View>
 
-				<Pressable
-					style={[styles.profileButtonWrapper, styles.profileActionButton]}
-					onPress={onAddFriendPress}
-				>
-					<View style={styles.profileButtonContent}>
-						<FriendsPlusIcon
-							width={profileButtonSize}
-							height={profileButtonSize}
-						/>
+				<View style={styles.friendsList}>
+					{acceptedFriends.map((friend) => (
+						<View key={friend.id} style={styles.profileButtonWrapper}>
+							<ProfileButton imageUrl={friend.avatarUrl} />
+							<Text style={styles.profileLabel}>{friend.name}</Text>
+						</View>
+					))}
+
+					<Pressable
+						style={[styles.profileButtonWrapper, styles.profileActionButton]}
+						onPress={onAddFriendPress}
+					>
+						<View style={styles.profileButtonContent}>
+							<FriendsPlusIcon
+								width={profileButtonSize}
+								height={profileButtonSize}
+							/>
+						</View>
+						<Text style={styles.profileLabel}>
+							친구 추가 {friendAddProgress}
+						</Text>
+					</Pressable>
+				</View>
+			</View>
+
+			<View style={styles.spacing}>
+				<CharacterBubble
+					character="츠츠"
+					message="Pico World는 친구랑 할 때 더 재밌는 거 알지? 5명까지 초대할 수 있으니 같이 기록해봐."
+				/>
+			</View>
+
+			{pendingRequest && (
+				<>
+					<View style={styles.dividerSpacing}>
+						<Divider size="large" />
 					</View>
-					<Text style={styles.profileLabel}>친구 추가 0/5</Text>
-				</Pressable>
-			</View>
 
-			<CharacterBubble
-				character="츠츠"
-				message="Pico World는 친구랑 할 때 더 재밌는 거 알지? 5명까지 초대할 수 있으니 같이 기록해봐."
-				containerStyle={styles.spacing}
-			/>
+					<FriendRequestCard
+						profileName={profileName}
+						request={pendingRequest}
+						onAccept={handleAcceptRequest}
+						onReject={handleRejectRequest}
+					/>
 
-			<FriendsCard
-				name="하룰라라"
-				date={new Date().toISOString().split("T")[0].replace(/-/g, ". ")}
-				emotionLabel="만족스러운"
-				description="오늘은 책상 앞에 앉아서 집중도 잘 되고 할 일도 다 하고 전체적으로 만족스러운 하루였따~오늘은 책상 앞에 앉아서 집중도 잘 되고 할 일도 다 하고 전체적으로 만족스러운 하루였따~오늘은 책상 앞에 앉아서 집중도 잘 되고 할 일도 다 하고 전체적으로 만족스러운 하루였따~오늘은 책상 앞에 앉아서 집중도 잘 되고 할 일도 다 하고 전체적으로 만족스러운 하루였따~"
-			/>
-			<View style={styles.dividerSpacing}>
-				<Divider size="large" />
-			</View>
+					<View style={styles.dividerSpacing}>
+						<Divider size="large" />
+					</View>
+				</>
+			)}
+
 			<FriendsCard
 				name="루루"
 				date={new Date().toISOString().split("T")[0].replace(/-/g, ". ")}
 				emotionLabel="잔잔한"
 				description="한적한 카페에서 늦은 오후를 보냈어. 창밖으로 비가 내려서 마음이 조용히 가라앉더라. 따뜻한 라떼 한 잔에 마음이 느긋해진 느낌이야."
 			/>
+
+			<View style={styles.dividerSpacing}>
+				<Divider size="large" />
+			</View>
+
 			<View style={styles.footer}>
 				<Text style={styles.footerText}>
 					기록을 모두 확인했습니다.

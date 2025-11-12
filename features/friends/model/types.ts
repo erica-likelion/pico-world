@@ -5,3 +5,9 @@ export interface FriendMessage {
 	character: FriendCharacter;
 	message: string;
 }
+
+export interface FriendRequest {
+	id: string;
+	name: string;
+	avatarUrl?: string;
+}

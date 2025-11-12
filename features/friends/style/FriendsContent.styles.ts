@@ -21,10 +21,12 @@ export const createFriendsContentStyles = (theme: DefaultTheme) => {
 				paddingHorizontal: 16,
 				marginHorizontal: -16,
 				marginBottom: 6,
+				gap: 14,
 			},
 			profileButtonWrapper: {
-				width: profileButtonSize,
+				flexDirection: "column",
 				alignItems: "center",
+				width: profileButtonSize,
 			},
 			profileLabel: {
 				marginTop: 4,
@@ -36,7 +38,7 @@ export const createFriendsContentStyles = (theme: DefaultTheme) => {
 				letterSpacing: -0.24,
 			},
 			profileActionButton: {
-				marginLeft: 14,
+				marginLeft: 0,
 			},
 			profileButtonContent: {
 				width: profileButtonSize,
@@ -44,10 +46,23 @@ export const createFriendsContentStyles = (theme: DefaultTheme) => {
 				alignItems: "center",
 				justifyContent: "center",
 			},
+			friendsList: {
+				flexDirection: "row",
+				alignItems: "center",
+				gap: 14,
+				flexShrink: 1,
+			},
 			spacing: {
 				marginBottom: 6,
 				alignSelf: "stretch",
 				width: "100%",
+			},
+			notificationSection: {
+				flexDirection: "column",
+				alignItems: "center",
+				gap: 24,
+				alignSelf: "stretch",
+				paddingHorizontal: 16,
 			},
 			dividerSpacing: {
 				marginVertical: 8,
