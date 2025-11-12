@@ -52,7 +52,8 @@ export const createFriendsContentStyles = (theme: DefaultTheme) => {
 			dividerSpacing: {
 				marginVertical: 8,
 				alignSelf: "stretch",
-				width: "100%",
+				marginLeft: -16,
+				marginRight: -16,
 			},
 			footer: {
 				paddingTop: 8,
