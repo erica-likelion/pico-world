@@ -13,6 +13,7 @@ import { useTheme } from "styled-components/native";
 
 import type { FriendRequest } from "@/features/friends/model/types";
 import { createFriendsContentStyles } from "@/features/friends/style/FriendsContent.styles";
+import { FriendBottomSheet } from "@/features/friends/ui/FriendBottomSheet";
 import { FriendInviteBottomSheet } from "@/features/friends/ui/FriendInviteBottomSheet";
 import { FriendRequestCard } from "@/features/friends/ui/FriendRequestCard";
 import { FriendsCard } from "@/features/friends/ui/FriendsCard/FriendsCard";
@@ -48,12 +49,21 @@ export function FriendsContent({
 		useState<FriendRequest[]>(INITIAL_REQUESTS);
 	const [acceptedFriends, setAcceptedFriends] = useState<FriendRequest[]>([]);
 	const addFriendBottomSheetRef = useRef<BottomSheet>(null);
+	const menuBottomSheetRef = useRef<BottomSheet>(null);
+	const [selectedFriend, setSelectedFriend] = useState<FriendRequest | null>(
+		null,
+	);
+	const [friendNotifications, setFriendNotifications] = useState<
+		Record<string, boolean>
+	>({});
 	const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const [isToastVisible, setIsToastVisible] = useState(false);
+	const [toastMessage, setToastMessage] = useState("");
 
 	useEffect(() => {
 		setFriendRequests(INITIAL_REQUESTS);
 		setAcceptedFriends([]);
+		setFriendNotifications({});
 
 		return () => {
 			if (toastTimerRef.current) {
@@ -82,10 +92,28 @@ export function FriendsContent({
 			}
 			return [...prev, request];
 		});
+		setFriendNotifications((prev) => {
+			if (prev[request.id] !== undefined) {
+				return prev;
+			}
+			return { ...prev, [request.id]: true };
+		});
 	}, []);
 
 	const handleAddFriendButtonPress = useCallback(() => {
 		addFriendBottomSheetRef.current?.expand();
+	}, []);
+
+	const showToast = useCallback((message: string) => {
+		setToastMessage(message);
+		setIsToastVisible(true);
+		if (toastTimerRef.current) {
+			clearTimeout(toastTimerRef.current);
+		}
+		toastTimerRef.current = setTimeout(() => {
+			setIsToastVisible(false);
+			setToastMessage("");
+		}, 2000);
 	}, []);
 
 	const handleEnterInviteCode = useCallback(
@@ -94,16 +122,35 @@ export function FriendsContent({
 				return;
 			}
 			onAddFriendPress();
-			setIsToastVisible(true);
-			if (toastTimerRef.current) {
-				clearTimeout(toastTimerRef.current);
-			}
-			toastTimerRef.current = setTimeout(() => {
-				setIsToastVisible(false);
-			}, 2000);
+			showToast("친구 요청을 보냈어요!");
 		},
-		[onAddFriendPress],
+		[onAddFriendPress, showToast],
 	);
+
+	const handleToggleFriendNotifications = useCallback(
+		(friendId: string) => {
+			if (!friendId) {
+				return;
+			}
+			setFriendNotifications((prev) => {
+				const current = prev[friendId] ?? true;
+				const next = !current;
+				showToast(
+					next ? "푸시 알림을 받습니다." : "푸시 알림을 받지 않습니다.",
+				);
+				return {
+					...prev,
+					[friendId]: next,
+				};
+			});
+		},
+		[showToast],
+	);
+
+	const openFriendBottomSheet = useCallback((friend: FriendRequest) => {
+		setSelectedFriend(friend);
+		menuBottomSheetRef.current?.expand();
+	}, []);
 
 	const toastOffset = useMemo(
 		() => Math.max(parseFloat(theme.rem(72)) - 8, 0),
@@ -121,7 +168,11 @@ export function FriendsContent({
 				<View style={styles.friendsList}>
 					{acceptedFriends.map((friend) => (
 						<View key={friend.id} style={styles.profileButtonWrapper}>
-							<ProfileButton imageUrl={friend.avatarUrl} />
+							<ProfileButton
+								imageUrl={friend.avatarUrl}
+								pressable
+								onPress={() => openFriendBottomSheet(friend)}
+							/>
 							<Text style={styles.profileLabel}>{friend.name}</Text>
 						</View>
 					))}
@@ -197,7 +248,7 @@ export function FriendsContent({
 
 			<Toast
 				visible={isToastVisible}
-				message="친구 요청을 보냈어요!"
+				message={toastMessage}
 				offset={toastOffset}
 			/>
 
@@ -206,6 +257,19 @@ export function FriendsContent({
 				profileName={profileName}
 				inviteCode={inviteCode}
 				onEnterCode={handleEnterInviteCode}
+			/>
+
+			<FriendBottomSheet
+				bottomSheetRef={menuBottomSheetRef}
+				friendId={selectedFriend?.id}
+				friendName={selectedFriend?.name ?? ""}
+				friendAvatarUrl={selectedFriend?.avatarUrl}
+				notificationsEnabled={
+					selectedFriend
+						? (friendNotifications[selectedFriend.id] ?? true)
+						: true
+				}
+				onToggleNotifications={handleToggleFriendNotifications}
 			/>
 		</View>
 	);

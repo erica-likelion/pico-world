@@ -6,6 +6,7 @@ interface ProfileButtonProps {
 	logged?: boolean;
 	imageUrl?: string;
 	onPress?: () => void;
+	pressable?: boolean;
 }
 
 /**
@@ -24,13 +25,14 @@ export const ProfileButton = ({
 	logged = false,
 	imageUrl,
 	onPress,
+	pressable = false,
 }: ProfileButtonProps) => {
 	const { scale, handlePressIn, handlePressOut } = usePressAnimation({
-		disabled: !logged,
+		disabled: !(logged || pressable),
 	});
 
 	const handlePress = () => {
-		if (logged && onPress) {
+		if ((logged || pressable) && onPress) {
 			onPress();
 		}
 	};
@@ -41,6 +43,7 @@ export const ProfileButton = ({
 			onPressIn={handlePressIn}
 			onPressOut={handlePressOut}
 			style={{ transform: [{ scale }] }}
+			disabled={!(logged || pressable)}
 		>
 			{logged && <S.OuterBorder />}
 

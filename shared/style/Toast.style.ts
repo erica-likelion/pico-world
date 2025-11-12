@@ -19,7 +19,6 @@ export const Content = styled.View`
   border-radius: ${({ theme }) => theme.rem(20)};
   background-color: ${({ theme }) => theme.grayscale.gray800};
 `;
-
 export const Message = styled.Text`
   flex: 1;
   color: ${({ theme }) => theme.grayscale.white};
