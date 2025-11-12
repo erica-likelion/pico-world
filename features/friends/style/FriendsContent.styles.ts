@@ -11,6 +11,7 @@ export const createFriendsContentStyles = (theme: DefaultTheme) => {
 			container: {
 				width: "100%",
 				flexGrow: 1,
+				position: "relative",
 				paddingHorizontal: 16,
 				paddingTop: 0,
 				paddingBottom: 40,

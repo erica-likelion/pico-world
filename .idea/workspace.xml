@@ -8,9 +8,9 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/friends/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/friends/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/friends/style/FriendsContent.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/features/friends/style/FriendsContent.styles.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/friends/ui/FriendInviteBottomSheet.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/features/friends/ui/FriendInviteBottomSheet.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/friends/ui/FriendsContent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/features/friends/ui/FriendsContent.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/friends/ui/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/features/friends/ui/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shared/ui/bottomSheet/CustomBottomSheet.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/shared/ui/bottomSheet/CustomBottomSheet.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shared/ui/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/shared/ui/index.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

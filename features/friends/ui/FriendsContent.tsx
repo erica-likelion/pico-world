@@ -1,5 +1,11 @@
 import FriendsPlusIcon from "@/shared/assets/icons/freinds-plus.svg";
-import { Button, CharacterBubble, Divider, ProfileButton } from "@/shared/ui";
+import {
+	Button,
+	CharacterBubble,
+	Divider,
+	ProfileButton,
+	Toast,
+} from "@/shared/ui";
 import type BottomSheet from "@gorhom/bottom-sheet";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, Text, View } from "react-native";
@@ -42,10 +48,18 @@ export function FriendsContent({
 		useState<FriendRequest[]>(INITIAL_REQUESTS);
 	const [acceptedFriends, setAcceptedFriends] = useState<FriendRequest[]>([]);
 	const addFriendBottomSheetRef = useRef<BottomSheet>(null);
+	const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const [isToastVisible, setIsToastVisible] = useState(false);
 
 	useEffect(() => {
 		setFriendRequests(INITIAL_REQUESTS);
 		setAcceptedFriends([]);
+
+		return () => {
+			if (toastTimerRef.current) {
+				clearTimeout(toastTimerRef.current);
+			}
+		};
 	}, []);
 
 	const acceptedCount = acceptedFriends.length;
@@ -80,8 +94,20 @@ export function FriendsContent({
 				return;
 			}
 			onAddFriendPress();
+			setIsToastVisible(true);
+			if (toastTimerRef.current) {
+				clearTimeout(toastTimerRef.current);
+			}
+			toastTimerRef.current = setTimeout(() => {
+				setIsToastVisible(false);
+			}, 2000);
 		},
 		[onAddFriendPress],
+	);
+
+	const toastOffset = useMemo(
+		() => Math.max(parseFloat(theme.rem(72)) - 8, 0),
+		[theme],
 	);
 
 	return (
@@ -168,6 +194,12 @@ export function FriendsContent({
 					/>
 				</View>
 			</View>
+
+			<Toast
+				visible={isToastVisible}
+				message="친구 요청을 보냈어요!"
+				offset={toastOffset}
+			/>
 
 			<FriendInviteBottomSheet
 				bottomSheetRef={addFriendBottomSheetRef}
