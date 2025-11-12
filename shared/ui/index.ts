@@ -13,3 +13,4 @@ export * from "@/shared/ui/Popover";
 export * from "@/shared/ui/ProfileButton";
 export * from "@/shared/ui/Switch";
 export * from "@/shared/ui/TextInput";
+export * from "@/shared/ui/Toast";

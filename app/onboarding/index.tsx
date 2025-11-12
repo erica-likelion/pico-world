@@ -1,6 +1,7 @@
 import { Character } from "@/entities/character/model/character";
 import type { CharacterProps } from "@/entities/character/model/type";
 import { CharacterInfo } from "@/entities/character/ui";
+import { useInvalidateUserInfo } from "@/entities/user/model/userQueries";
 import { axiosInstance } from "@/shared/api/axios";
 import { useHideBottomNav } from "@/shared/hooks/useHideBottomNav";
 import { Button } from "@/shared/ui";
@@ -17,6 +18,7 @@ export default function Onboarding() {
 	);
 	const sele =
 		Character.findIndex((char) => char.name === selectedCharacter.name) + 1;
+	const invalidateUserInfo = useInvalidateUserInfo();
 
 	useHideBottomNav();
 
@@ -41,6 +43,7 @@ export default function Onboarding() {
 			});
 		},
 		onSuccess: () => {
+			invalidateUserInfo();
 			router.back();
 		},
 	});

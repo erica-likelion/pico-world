@@ -1,8 +1,7 @@
 import * as S from "@/shared/style/CharacterBubble.style";
+import type { CharacterName } from "@/entities/character/model/characterMessages";
 import type { ImageSourcePropType } from "react-native";
 import TypeWriter from "react-native-typewriter-effect";
-
-type CharacterName = "츠츠" | "루루" | "동동" | "티티" | "파파";
 
 interface CharacterBubbleProps {
 	character: CharacterName;

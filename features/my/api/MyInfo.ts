@@ -17,12 +17,6 @@ export interface UserInfo {
 	characterInfo: CharacterInfo;
 }
 
-interface ApiResponse<T> {
-	success: boolean;
-	data: T;
-	message: string;
-}
-
 export const getUserInfo = async (): Promise<UserInfo> => {
 	const response = await axiosInstance.get<UserInfo>("/api/v1/users/me");
 	return response.data;
