@@ -1,3 +1,4 @@
+import { useUserCharacter } from "@/entities/user/model/userQueries";
 import * as S from "@/features/record/style/EmotionComplete.styles";
 import type { EmotionChip } from "@/shared/types";
 import { CharacterBubble } from "@/shared/ui/CharacterBubble";
@@ -19,7 +20,7 @@ const getCharacterMessage = (characterName: string): string => {
 export const EmotionComplete: React.FC<EmotionCompleteProps> = ({
 	selectedEmotion,
 }) => {
-	const characterName = "츠츠";
+	const userCharacter = useUserCharacter();
 	const router = useRouter();
 	const fade1 = useRef(new Animated.Value(0)).current;
 	const fade2 = useRef(new Animated.Value(0)).current;
@@ -64,8 +65,8 @@ export const EmotionComplete: React.FC<EmotionCompleteProps> = ({
 			)}
 			<Animated.View style={{ opacity: fade3 }}>
 				<CharacterBubble
-					character={characterName}
-					message={getCharacterMessage(characterName)}
+					character={userCharacter}
+					message={getCharacterMessage(userCharacter)}
 				/>
 			</Animated.View>
 		</S.Container>

@@ -33,6 +33,11 @@ export const Label = styled.Text`
   color: ${({ theme }) => theme.grayscale.gray50};
 `;
 
+export const Description = styled.Text`
+  ${({ theme }) => theme.typography["title2-medium"]};
+  color: ${({ theme }) => theme.grayscale.white};
+`;
+
 export const EmotionWrapper = styled.View`
   width: 100%;
   flex-direction: column;

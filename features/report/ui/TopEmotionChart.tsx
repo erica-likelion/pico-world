@@ -2,11 +2,11 @@ import * as S from "@/features/report/style/TopEmotionChart.styles";
 import type { EmotionChip } from "@/shared/types";
 
 interface TopEmotionChartProps {
-	emotionChip: EmotionChip[];
+	emotionChip?: EmotionChip[];
 }
 
 export const TopEmotionChart: React.FC<TopEmotionChartProps> = ({
-	emotionChip,
+	emotionChip = [],
 }) => {
 	return (
 		<S.Container>
@@ -15,7 +15,7 @@ export const TopEmotionChart: React.FC<TopEmotionChartProps> = ({
 					<S.EmotionList key={`${chip.label}-${index}`}>
 						<S.Label>{chip.label}</S.Label>
 						<S.RightCol>
-							<S.Count>{chip.count}</S.Count>
+							<S.Count>{chip.count ?? 0}</S.Count>
 							<S.EmotionBox
 								mainColor={chip.mainColor}
 								subColor={chip.subColor}
