@@ -54,6 +54,7 @@ export function LoginButton() {
 	const handleKakaoLogin = async () => {
 		try {
 			const token = await KakaoLogin.login();
+			console.log(token);
 			kakaoLoginMutate({
 				kakaoAccessToken: token.accessToken,
 				device: Platform.OS,
