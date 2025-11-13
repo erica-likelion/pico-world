@@ -270,6 +270,7 @@ export function FriendsContent({
 				visible={isToastVisible}
 				message={toastMessage}
 				offset={toastOffset}
+				onHide={() => setIsToastVisible(false)}
 			/>
 
 			<FriendInviteBottomSheet

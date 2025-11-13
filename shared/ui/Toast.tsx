@@ -1,4 +1,4 @@
-import * as S from "@/shared/style/Toast.style";
+import * as S from "@/shared/style/Toast.styles";
 import { useEffect, useRef } from "react";
 import type { StyleProp, ViewStyle } from "react-native";
 import { Animated } from "react-native";
@@ -9,6 +9,7 @@ interface ToastProps {
 	offset?: number;
 	containerStyle?: StyleProp<ViewStyle>;
 	duration?: number;
+	onHide?: () => void;
 }
 
 export function Toast({
@@ -17,52 +18,73 @@ export function Toast({
 	offset = 0,
 	containerStyle,
 	duration = 2000,
+	onHide,
 }: ToastProps) {
 	const opacity = useRef(new Animated.Value(0)).current;
-	const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const translateY = useRef(new Animated.Value(20)).current;
 
 	useEffect(() => {
+		let hideTimer: ReturnType<typeof setTimeout> | null = null;
+
 		if (visible) {
-			Animated.timing(opacity, {
-				toValue: 1,
-				duration: 200,
-				useNativeDriver: true,
-			}).start();
-
-			if (timeoutRef.current) {
-				clearTimeout(timeoutRef.current);
-			}
-
-			timeoutRef.current = setTimeout(() => {
+			Animated.parallel([
 				Animated.timing(opacity, {
+					toValue: 1,
+					duration: 200,
+					useNativeDriver: true,
+				}),
+				Animated.timing(translateY, {
 					toValue: 0,
 					duration: 200,
 					useNativeDriver: true,
-				}).start();
+				}),
+			]).start();
+
+			hideTimer = setTimeout(() => {
+				Animated.parallel([
+					Animated.timing(opacity, {
+						toValue: 0,
+						duration: 200,
+						useNativeDriver: true,
+					}),
+					Animated.timing(translateY, {
+						toValue: 20,
+						duration: 200,
+						useNativeDriver: true,
+					}),
+				]).start(() => {
+					onHide?.();
+				});
 			}, duration);
 		} else {
-			Animated.timing(opacity, {
-				toValue: 0,
-				duration: 150,
-				useNativeDriver: true,
-			}).start();
+			opacity.setValue(0);
+			translateY.setValue(20);
 		}
 
 		return () => {
-			if (timeoutRef.current) {
-				clearTimeout(timeoutRef.current);
+			if (hideTimer) {
+				clearTimeout(hideTimer);
 			}
 		};
-	}, [duration, opacity, visible]);
+	}, [duration, onHide, opacity, translateY, visible]);
+
+	if (!visible) {
+		return null;
+	}
 
 	return (
 		<S.Container
 			pointerEvents="none"
-			style={[{ bottom: offset, opacity }, containerStyle]}
+			style={[{ bottom: offset }, containerStyle]}
 		>
-			<S.Content>
-				<S.Message>{message}</S.Message>
-			</S.Content>
+			<S.ToastWrapper
+				style={{
+					opacity,
+					transform: [{ translateY }],
+				}}
+			>
+				<S.ToastText>{message}</S.ToastText>
+			</S.ToastWrapper>
 		</S.Container>
 	);
 }
