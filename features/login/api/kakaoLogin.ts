@@ -34,7 +34,8 @@ export const kakaoLogin = async (
 	const setupNotifications = async () => {
 		const token = await registerForPushNotificationsAsync();
 		if (token) {
-			await sendFcmToken(token);
+			const res = await sendFcmToken(token);
+			console.log("FCM token sent:", res);
 		}
 	};
 	setupNotifications();
