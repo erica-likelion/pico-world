@@ -1,12 +1,14 @@
 import { theme } from "@/shared/config/theme/theme";
 import BottomSheet, {
 	BottomSheetBackdrop,
+	BottomSheetScrollView,
 	BottomSheetView,
 	type BottomSheetBackdropProps,
 	type BottomSheetProps,
 } from "@gorhom/bottom-sheet";
 import type { ReactNode, RefObject } from "react";
 import { useCallback, useEffect, useState } from "react";
+import type { StyleProp, ViewStyle } from "react-native";
 export type BottomSheetRef = RefObject<BottomSheet | null>;
 
 interface CustomBottomSheetProps extends Omit<BottomSheetProps, "children"> {
@@ -14,6 +16,9 @@ interface CustomBottomSheetProps extends Omit<BottomSheetProps, "children"> {
 	children: ReactNode;
 	snapPoints?: Array<string | number>;
 	initialIndex?: number;
+	enableDynamicSizing?: boolean;
+	enableScroll?: boolean;
+	containerStyle?: StyleProp<ViewStyle>;
 }
 
 export function CustomBottomSheet({
@@ -21,6 +26,10 @@ export function CustomBottomSheet({
 	children,
 	snapPoints,
 	initialIndex = -1,
+	enableDynamicSizing = false,
+	enableScroll = false,
+	containerStyle,
+	...rest
 }: CustomBottomSheetProps) {
 	const [currentIndex, setCurrentIndex] = useState<number>(initialIndex);
 
@@ -40,6 +49,8 @@ export function CustomBottomSheet({
 		[],
 	);
 
+	const ContentWrapper = enableScroll ? BottomSheetScrollView : BottomSheetView;
+
 	return (
 		<BottomSheet
 			ref={bottomSheetRef}
@@ -47,7 +58,8 @@ export function CustomBottomSheet({
 			snapPoints={snapPoints}
 			backdropComponent={renderBackdrop}
 			enablePanDownToClose
-			enableDynamicSizing={false}
+			enableDynamicSizing={enableDynamicSizing}
+			containerStyle={[{ zIndex: 1000, elevation: 1000 }, containerStyle]}
 			backgroundStyle={{
 				backgroundColor: theme.grayscale.gray950,
 				borderTopLeftRadius: 36,
@@ -61,8 +73,14 @@ export function CustomBottomSheet({
 			handleStyle={{
 				paddingTop: 16,
 			}}
+			{...rest}
 		>
-			<BottomSheetView style={{ flex: 1 }}>{children}</BottomSheetView>
+			<ContentWrapper
+				style={{ flex: 1 }}
+				contentContainerStyle={{ flexGrow: 1 }}
+			>
+				{children}
+			</ContentWrapper>
 		</BottomSheet>
 	);
 }

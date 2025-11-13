@@ -3,7 +3,7 @@ import * as JournalS from "@/features/journal/style/EmotionRecordCard.styles";
 import MenuIcon from "@/shared/assets/icons/menu.svg";
 import * as EmotionCardStyles from "@/shared/style/EmotionCard.styles";
 import { useId, useState } from "react";
-import { LayoutChangeEvent, TouchableOpacity, View } from "react-native";
+import { type LayoutChangeEvent, TouchableOpacity, View } from "react-native";
 import { Defs, RadialGradient, Rect, Stop, Svg } from "react-native-svg";
 
 interface EmotionRecordCardProps {

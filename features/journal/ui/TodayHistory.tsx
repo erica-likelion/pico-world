@@ -128,7 +128,7 @@ export function TodayHistory({
 		characterSlideAnim,
 	]); // date나 emotion이 바뀔 때마다 애니메이션 재실행
 
-	const handleMenuPress = () => {
+	const _handleMenuPress = () => {
 		//todo: 메뉴 기능 구현
 	};
 

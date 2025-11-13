@@ -1,17 +1,22 @@
 import * as S from "@/shared/style/Toast.styles";
 import { useEffect, useRef } from "react";
+import type { StyleProp, ViewStyle } from "react-native";
 import { Animated } from "react-native";
 
 interface ToastProps {
 	message: string;
 	visible: boolean;
+	offset?: number;
+	containerStyle?: StyleProp<ViewStyle>;
 	duration?: number;
-	onHide: () => void;
+	onHide?: () => void;
 }
 
 export function Toast({
 	message,
 	visible,
+	offset = 0,
+	containerStyle,
 	duration = 2000,
 	onHide,
 }: ToastProps) {
@@ -47,7 +52,9 @@ export function Toast({
 						duration: 200,
 						useNativeDriver: true,
 					}),
-				]).start(onHide);
+				]).start(() => {
+					onHide?.();
+				});
 			}, duration);
 		} else {
 			opacity.setValue(0);
@@ -66,7 +73,10 @@ export function Toast({
 	}
 
 	return (
-		<S.Container pointerEvents="none">
+		<S.Container
+			pointerEvents="none"
+			style={[{ bottom: offset }, containerStyle]}
+		>
 			<S.ToastWrapper
 				style={{
 					opacity,

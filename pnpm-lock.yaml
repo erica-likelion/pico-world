@@ -191,7 +191,7 @@ importers:
         version: 19.1.0(react@19.1.0)
       root:
         specifier: git+https://github.com/tanstack/react-query.git
-        version: git+https://git@github.com:tanstack/react-query.git#7783a7ae49c9e39291ff57eaf3bcbc30ba0c6668
+        version: git+https://github.com/tanstack/react-query.git#f7c952613a049bae93bb9521352dc362a7d3bddd
       storybook:
         specifier: ^9.1.10
         version: 9.1.10(@testing-library/dom@10.4.1)(prettier@2.8.8)(vite@7.1.9(@types/node@24.6.2)(lightningcss@1.30.2)(terser@5.44.0)(yaml@2.8.1))
@@ -5872,8 +5872,8 @@ packages:
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
 
-  root@git+https://git@github.com:tanstack/react-query.git#7783a7ae49c9e39291ff57eaf3bcbc30ba0c6668:
-    resolution: {commit: 7783a7ae49c9e39291ff57eaf3bcbc30ba0c6668, repo: git@github.com:tanstack/react-query.git, type: git}
+  root@git+https://github.com/tanstack/react-query.git#f7c952613a049bae93bb9521352dc362a7d3bddd:
+    resolution: {commit: f7c952613a049bae93bb9521352dc362a7d3bddd, repo: https://github.com/tanstack/react-query.git, type: git}
     version: 0.0.0
 
   run-parallel@1.2.0:
@@ -13951,7 +13951,7 @@ snapshots:
       '@rollup/rollup-win32-x64-msvc': 4.52.4
       fsevents: 2.3.3
 
-  root@git+https://git@github.com:tanstack/react-query.git#7783a7ae49c9e39291ff57eaf3bcbc30ba0c6668: {}
+  root@git+https://github.com/tanstack/react-query.git#f7c952613a049bae93bb9521352dc362a7d3bddd: {}
 
   run-parallel@1.2.0:
     dependencies:
