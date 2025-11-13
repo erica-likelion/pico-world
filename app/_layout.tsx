@@ -2,6 +2,7 @@ import { navigationTheme, theme } from "@/shared/config/theme/theme";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { BottomNav } from "@/widgets/BottomNav/ui";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { ThemeProvider } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
@@ -22,6 +23,22 @@ SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
+	return (
+		<QueryClientProvider client={queryClient}>
+			<GestureHandlerRootView style={{ flex: 1 }}>
+				<BottomSheetModalProvider>
+					<RootLayoutNav />
+				</BottomSheetModalProvider>
+			</GestureHandlerRootView>
+		</QueryClientProvider>
+	);
+}
+
+function RootLayoutNav() {
+	const { isVisible } = useBottomNavStore();
+	const pathname = usePathname();
+	const isLogin = pathname.startsWith("/login");
+
 	const [loaded, error] = useFonts({
 		"Pretendard-Bold": require("@/shared/assets/fonts/Pretendard-Bold.ttf"),
 		"Pretendard-SemiBold": require("@/shared/assets/fonts/Pretendard-SemiBold.ttf"),
@@ -43,20 +60,6 @@ export default function RootLayout() {
 	if (!loaded) {
 		return null;
 	}
-
-	return (
-		<QueryClientProvider client={queryClient}>
-			<GestureHandlerRootView style={{ flex: 1 }}>
-				<RootLayoutNav />
-			</GestureHandlerRootView>
-		</QueryClientProvider>
-	);
-}
-
-function RootLayoutNav() {
-	const { isVisible } = useBottomNavStore();
-	const pathname = usePathname();
-	const isLogin = pathname.startsWith("/login");
 
 	const Layout = isLogin ? View : SafeAreaView;
 
