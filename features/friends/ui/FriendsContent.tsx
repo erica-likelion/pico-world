@@ -181,7 +181,7 @@ export function FriendsContent({
 		<View style={styles.container}>
 			<View style={styles.profileRow}>
 				<View style={styles.profileButtonWrapper}>
-					<ProfileButton logged onPress={onProfilePress} />
+					<ProfileButton logged />
 					<Text style={styles.profileLabel}>{profileName}</Text>
 				</View>
 
