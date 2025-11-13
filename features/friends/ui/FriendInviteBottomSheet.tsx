@@ -66,6 +66,7 @@ export function FriendInviteBottomSheet({
 			bottomSheetRef={bottomSheetRef}
 			snapPoints={snapPoints}
 			initialIndex={-1}
+			enableScroll
 			containerStyle={styles.bottomSheet}
 		>
 			<View style={styles.container}>

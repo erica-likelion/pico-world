@@ -1,6 +1,7 @@
 import { theme } from "@/shared/config/theme/theme";
 import BottomSheet, {
 	BottomSheetBackdrop,
+	BottomSheetScrollView,
 	BottomSheetView,
 	type BottomSheetBackdropProps,
 	type BottomSheetProps,
@@ -16,6 +17,7 @@ interface CustomBottomSheetProps extends Omit<BottomSheetProps, "children"> {
 	snapPoints?: Array<string | number>;
 	initialIndex?: number;
 	enableDynamicSizing?: boolean;
+	enableScroll?: boolean;
 	containerStyle?: StyleProp<ViewStyle>;
 }
 
@@ -25,6 +27,7 @@ export function CustomBottomSheet({
 	snapPoints,
 	initialIndex = -1,
 	enableDynamicSizing = false,
+	enableScroll = false,
 	containerStyle,
 	...rest
 }: CustomBottomSheetProps) {
@@ -45,6 +48,8 @@ export function CustomBottomSheet({
 		),
 		[],
 	);
+
+	const ContentWrapper = enableScroll ? BottomSheetScrollView : BottomSheetView;
 
 	return (
 		<BottomSheet
@@ -70,7 +75,12 @@ export function CustomBottomSheet({
 			}}
 			{...rest}
 		>
-			<BottomSheetView style={{ flex: 1 }}>{children}</BottomSheetView>
+			<ContentWrapper
+				style={{ flex: 1 }}
+				contentContainerStyle={{ flexGrow: 1 }}
+			>
+				{children}
+			</ContentWrapper>
 		</BottomSheet>
 	);
 }
