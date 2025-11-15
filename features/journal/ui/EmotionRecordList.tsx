@@ -1,8 +1,10 @@
+import type { EmotionRecord } from "@/features/home/model/emotionRecords";
 import { getAllEmotionRecords } from "@/features/journal/model/emotionRecords";
 import { EmotionRecordCard } from "@/features/journal/ui/EmotionRecordCard";
 import LeftSmIcon from "@/shared/assets/icons/left-sm.svg";
 import RightSmIcon from "@/shared/assets/icons/right-sm.svg";
 import { Button } from "@/shared/ui/Button";
+import type BottomSheet from "@gorhom/bottom-sheet";
 import { useRouter, type Href } from "expo-router";
 import { useMemo, useRef, useState } from "react";
 import { ScrollView } from "react-native";
@@ -12,7 +14,13 @@ import * as JournalListS from "@/features/journal/style/EmotionRecordList.styles
 
 const ICON_HIT_SLOP = { top: 8, bottom: 8, left: 8, right: 8 } as const;
 
-export const EmotionRecordList = () => {
+interface EmotionRecordListProps {
+	onRecordSelect?: (record: EmotionRecord) => void;
+}
+
+export const EmotionRecordList = ({
+	onRecordSelect,
+}: EmotionRecordListProps) => {
 	const records = useMemo(() => getAllEmotionRecords(), []);
 	const scrollViewRef = useRef<ScrollView>(null);
 	const router = useRouter();
@@ -102,7 +110,9 @@ export const EmotionRecordList = () => {
 									onPress={() =>
 										router.push(`/journal/detail?date=${record.date}` as Href)
 									}
-									onMenuPress={() => {}}
+									onMenuPress={() => {
+										onRecordSelect?.(record);
+									}}
 								/>
 							</JournalListS.CardWrapper>
 						))
