@@ -18,12 +18,6 @@ export const EmotionRecordList = () => {
 	const router = useRouter();
 	const theme = useTheme();
 	const [currentMonth, setCurrentMonth] = useState(() => {
-		const initialRecord = records[0];
-		if (initialRecord) {
-			const date = new Date(initialRecord.date);
-			return new Date(date.getFullYear(), date.getMonth(), 1);
-		}
-
 		const now = new Date();
 		return new Date(now.getFullYear(), now.getMonth(), 1);
 	});
