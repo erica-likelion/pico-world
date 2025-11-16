@@ -1,10 +1,11 @@
-import type { EmotionRecord } from "@/features/home/model/emotionRecords";
+import type { EmotionRecord } from "@/shared/types/emotion";
 import * as JournalS from "@/features/journal/style/EmotionRecordCard.styles";
 import MenuIcon from "@/shared/assets/icons/menu.svg";
 import * as EmotionCardStyles from "@/shared/style/EmotionCard.styles";
 import { useId, useState } from "react";
 import { type LayoutChangeEvent, TouchableOpacity, View } from "react-native";
 import { Defs, RadialGradient, Rect, Stop, Svg } from "react-native-svg";
+import { format } from "date-fns";
 
 interface EmotionRecordCardProps {
 	record: EmotionRecord;
@@ -23,7 +24,9 @@ export const EmotionRecordCard = ({
 	timeTextColor,
 	onPress,
 }: EmotionRecordCardProps) => {
-	const formattedDate = record.date.replace(/-/g, ". ");
+	const createdAt = new Date(record.created_at);
+	const formattedDate = format(createdAt, "yyyy.MM.dd");
+	const formattedTime = format(createdAt, "HH:mm");
 	const gradientId = useId();
 	const [cardSize, setCardSize] = useState({ width: 303, height: 193 });
 
@@ -68,8 +71,8 @@ export const EmotionRecordCard = ({
 						rx="31.85%"
 						ry="50%"
 					>
-						<Stop offset="0%" stopColor={record.emotion.mainColor} />
-						<Stop offset="100%" stopColor={record.emotion.subColor} />
+						<Stop offset="0%" stopColor={record.main_color} />
+						<Stop offset="100%" stopColor={record.sub_color} />
 					</RadialGradient>
 				</Defs>
 				<Rect
@@ -102,7 +105,7 @@ export const EmotionRecordCard = ({
 							<JournalS.JournalEditTime
 								style={timeTextColor ? { color: timeTextColor } : undefined}
 							>
-								{record.time}
+								{formattedTime}
 							</JournalS.JournalEditTime>
 						</JournalS.JournalDateBox>
 						{onMenuPress && (
@@ -121,7 +124,7 @@ export const EmotionRecordCard = ({
 			{/* 감정 레이블 */}
 			<EmotionCardStyles.EmotionCardTextBox>
 				<EmotionCardStyles.EmotionCardText>
-					{record.emotion.label}
+					{record.emotion_name}
 				</EmotionCardStyles.EmotionCardText>
 			</EmotionCardStyles.EmotionCardTextBox>
 		</TouchableOpacity>

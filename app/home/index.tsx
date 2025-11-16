@@ -1,7 +1,8 @@
-import { getEmotionRecordByDate } from "@/features/home/model/emotionRecords";
+import { getEmotionRecords } from "@/features/home/api/emotion";
 import { CalendarUI, ClickToJournal, TodayHistory } from "@/features/home/ui";
 import BellIcon from "@/shared/assets/icons/bell.svg";
 import AIImageSrc from "@/shared/assets/images/chch.png";
+import type { EmotionRecord } from "@/shared/types/emotion";
 import { CharacterBubble, MenuBottomSheet } from "@/shared/ui";
 import { formatDate } from "@/shared/utils/date";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
@@ -14,21 +15,45 @@ import { ScrollView, View } from "react-native";
 export default function Home() {
 	const { show } = useBottomNavStore();
 	const bottomSheetRef = useRef<BottomSheetModal>(null);
-	const [selectedDate, setSelectedDate] = useState<string>(
-		new Date().toISOString().split("T")[0],
+	const today = new Date().toISOString().split("T")[0];
+
+	const [selectedDate, setSelectedDate] = useState<string>(today);
+	const [selectedRecord, setSelectedRecord] = useState<EmotionRecord | null>(
+		null,
 	);
-	const [selectedRecord, setSelectedRecord] = useState(
-		getEmotionRecordByDate(new Date().toISOString().split("T")[0]),
-	);
+	const [emotionRecords, setEmotionRecords] = useState<EmotionRecord[]>([]);
+	const [currentMonth, setCurrentMonth] = useState<string>(today.slice(0, 7));
 
 	useEffect(() => {
 		show();
 	}, [show]);
 
+	useEffect(() => {
+		const fetchRecords = async () => {
+			const records = await getEmotionRecords(currentMonth);
+			setEmotionRecords(records);
+
+			// If the selected date is in the current month, find and set the record
+			if (selectedDate.startsWith(currentMonth)) {
+				const recordForSelectedDate = records.find((r) =>
+					r.created_at.startsWith(selectedDate),
+				);
+				setSelectedRecord(recordForSelectedDate || null);
+			}
+		};
+		fetchRecords();
+	}, [currentMonth, selectedDate]);
+
 	const handleDateSelect = (dateString: string) => {
 		setSelectedDate(dateString);
-		const record = getEmotionRecordByDate(dateString);
-		setSelectedRecord(record);
+		const record = emotionRecords.find((r) =>
+			r.created_at.startsWith(dateString),
+		);
+		setSelectedRecord(record || null);
+	};
+
+	const handleMonthChange = (month: string) => {
+		setCurrentMonth(month);
 	};
 
 	const isTodayHistory = selectedRecord !== null;
@@ -62,10 +87,7 @@ export default function Home() {
 				</View>
 				{isTodayHistory && selectedRecord ? (
 					<TodayHistory
-						date={formatDate(selectedRecord.date)}
-						time={selectedRecord.time}
-						emotion={selectedRecord.emotion}
-						text={selectedRecord.text}
+						record={selectedRecord}
 						AIImage={AIImageSrc}
 						onMenuPress={() => bottomSheetRef.current?.present()}
 					/>
@@ -78,13 +100,16 @@ export default function Home() {
 					<CalendarUI
 						isTodayHistory={isTodayHistory}
 						onDateSelect={handleDateSelect}
+						emotionRecords={emotionRecords}
+						currentMonth={currentMonth}
+						onMonthChange={handleMonthChange}
 					/>
 				</View>
 			</ScrollView>
 			{selectedRecord && (
 				<MenuBottomSheet
 					bottomSheetRef={bottomSheetRef}
-					date={formatDate(selectedRecord.date, { korean: true })}
+					date={formatDate(selectedRecord.created_at, { korean: true })}
 				/>
 			)}
 		</View>

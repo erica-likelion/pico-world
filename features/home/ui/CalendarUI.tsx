@@ -1,6 +1,5 @@
-import { getEmotionColorByDate } from "@/features/home/model/emotionRecords";
 import * as S from "@/features/home/style/CalendarUI.styles";
-import { useState } from "react";
+import type { EmotionRecord } from "@/shared/types/emotion";
 import { Text, TouchableOpacity, View } from "react-native";
 import { Calendar, type DateData } from "react-native-calendars";
 
@@ -104,30 +103,27 @@ const CustomHeader = ({ date }: { date: Date }) => {
 interface CalendarUIProps {
 	isTodayHistory: boolean;
 	onDateSelect?: (dateString: string) => void;
+	emotionRecords: EmotionRecord[];
+	currentMonth: string;
+	onMonthChange: (month: string) => void;
 }
 
-export function CalendarUI({ isTodayHistory, onDateSelect }: CalendarUIProps) {
+export function CalendarUI({
+	isTodayHistory,
+	onDateSelect,
+	emotionRecords,
+	currentMonth,
+	onMonthChange,
+}: CalendarUIProps) {
 	const today = new Date().toISOString().split("T")[0];
-	const currentDateObj = new Date(today);
-	const [currentMonth, setCurrentMonth] = useState<string>(
-		today.slice(0, 7), // ✅ 현재 달 (예: "2025-11")
-	);
-	const [currentDate, setCurrentDate] = useState<Date>(currentDateObj);
 
-	// 동적으로 감정 기록이 있는 날짜의 색상을 가져옴
 	const dayColors: DateStyleMap = {};
-	const emotionDates = [
-		"2025-10-03",
-		"2025-10-07",
-		"2025-10-08",
-		"2025-10-15",
-		"2025-10-22",
-	];
-	emotionDates.forEach((date) => {
-		const colors = getEmotionColorByDate(date);
-		if (colors.bg) {
-			dayColors[date] = colors;
-		}
+	emotionRecords.forEach((record) => {
+		const date = record.created_at.split("T")[0];
+		dayColors[date] = {
+			bg: record.main_color,
+			text: record.text_color,
+		};
 	});
 
 	return (
@@ -139,7 +135,7 @@ export function CalendarUI({ isTodayHistory, onDateSelect }: CalendarUIProps) {
 		>
 			<Calendar
 				current={currentMonth}
-				renderHeader={() => <CustomHeader date={currentDate} />}
+				renderHeader={(date) => <CustomHeader date={date} />}
 				style={{
 					width: "100%",
 					borderRadius: 40,
@@ -160,7 +156,6 @@ export function CalendarUI({ isTodayHistory, onDateSelect }: CalendarUIProps) {
 					textSectionTitleColor: "#909090",
 				}}
 				onDayPress={(day) => {
-					setCurrentDate(new Date(day.dateString));
 					onDateSelect?.(day.dateString);
 				}}
 				onMonthChange={(month) => {
@@ -168,8 +163,7 @@ export function CalendarUI({ isTodayHistory, onDateSelect }: CalendarUIProps) {
 						2,
 						"0",
 					)}`;
-					setCurrentMonth(monthStr);
-					setCurrentDate(new Date(`${monthStr}-01`));
+					onMonthChange(monthStr);
 				}}
 				dayComponent={(props) => (
 					<CustomDay {...props} dayColors={dayColors} today={today} />

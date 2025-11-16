@@ -1,22 +1,16 @@
-import type { EmotionRecord } from "@/features/home/model/emotionRecords";
 import * as S from "@/features/home/style/TodayHistory.styles";
+import type { EmotionRecord } from "@/shared/types/emotion";
 import { EmotionCard } from "@/shared/ui/EmotionCard";
+import { format } from "date-fns";
 import { BlurView } from "expo-blur";
 import { useEffect, useRef } from "react";
 import type { ImageSourcePropType } from "react-native";
 import { Animated, Easing, TouchableOpacity } from "react-native";
 
-interface TodayHistoryProps extends Partial<EmotionRecord> {
-	date?: string;
-	time?: string;
-	emotionTitle?: string;
-	mainColor?: string;
-	subColor?: string;
-	textColor?: string;
-	historyText?: string;
-	AIImage?: ImageSourcePropType;
-	AIComment?: string;
+interface TodayHistoryProps {
+	record: EmotionRecord;
 	onMenuPress: () => void;
+	AIImage?: ImageSourcePropType;
 }
 
 // AI 코멘트 생성 함수
@@ -35,18 +29,9 @@ const generateAIComment = (emotion: string): string => {
 };
 
 export function TodayHistory({
-	date,
-	time,
-	emotion,
-	text,
-	emotionTitle,
-	mainColor,
-	subColor,
-	textColor,
-	historyText,
-	AIImage,
-	AIComment,
+	record,
 	onMenuPress,
+	AIImage,
 }: TodayHistoryProps) {
 	// 애니메이션 값들
 	const fadeInAnim = useRef(new Animated.Value(0)).current;
@@ -55,15 +40,15 @@ export function TodayHistory({
 	const characterSlideAnim = useRef(new Animated.Value(30)).current;
 	const characterFadeAnim = useRef(new Animated.Value(0)).current;
 
-	// 기존 props가 있으면 사용하고, 없으면 emotion record 데이터 사용
-	const displayDate = date || "날짜 없음";
-	const displayTime = time || "시간 없음";
-	const displayEmotionTitle = emotionTitle || emotion?.label || "감정 없음";
-	const displayMainColor = mainColor || emotion?.mainColor || "#FF685B";
-	const displaySubColor = subColor || emotion?.subColor || "#F3E9DA";
-	const displayTextColor = textColor || "#FFFFFF";
-	const displayHistoryText = historyText || text || "기록이 없습니다.";
-	const displayAIComment = AIComment || generateAIComment(emotion?.label || "");
+	const createdAt = new Date(record.created_at);
+	const displayDate = format(createdAt, "yyyy.MM.dd");
+	const displayTime = format(createdAt, "HH:mm");
+	const displayEmotionTitle = record.emotion_name;
+	const displayMainColor = record.main_color;
+	const displaySubColor = record.sub_color;
+	const displayTextColor = record.text_color;
+	const displayHistoryText = record.record;
+	const displayAIComment = generateAIComment(record.emotion_name);
 
 	// 컴포넌트 마운트 시 애니메이션 실행
 	useEffect(() => {
