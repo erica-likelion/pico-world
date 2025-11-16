@@ -12,6 +12,12 @@ export default function JournalDetail() {
 
 	const record = date ? getEmotionRecordByDate(date) : null;
 
+	const handleEditPress = () => {
+		if (date) {
+			router.push(`/record/edit?date=${date}` as any);
+		}
+	};
+
 	return (
 		<View style={{ flex: 1 }}>
 			<TopNav
@@ -19,6 +25,7 @@ export default function JournalDetail() {
 				leftIcon={true}
 				rightIcon={<EditIcon />}
 				onLeftPress={() => router.back()}
+				onRightPress={handleEditPress}
 			/>
 			<ScrollView
 				contentContainerStyle={{
