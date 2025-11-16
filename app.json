@@ -6,9 +6,6 @@
 		"orientation": "portrait",
 		"icon": "./shared/assets/images/icon.png",
 		"scheme": "omegamon",
-		"extra": {
-			"expo-linking-preferred-scheme": "omegamon"
-		},
 		"userInterfaceStyle": "automatic",
 		"newArchEnabled": true,
 		"splash": {
@@ -41,6 +38,14 @@
 		"plugins": ["expo-router"],
 		"experiments": {
 			"typedRoutes": true
-		}
+		},
+		"extra": {
+			"expo-linking-preferred-scheme": "omegamon",
+			"router": {},
+			"eas": {
+				"projectId": "c7e63ad1-4f17-41fc-bb1e-44d4c64d9bfb"
+			}
+		},
+		"owner": "whddnjs960"
 	}
 }

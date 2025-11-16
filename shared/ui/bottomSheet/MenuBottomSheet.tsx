@@ -9,6 +9,7 @@ import {
 } from "@/shared/ui/bottomSheet/CustomBottomSheet";
 import DeleteModal from "@/shared/ui/modal/DeleteModal";
 import { useState } from "react";
+import { View } from "react-native";
 
 interface MenuBottomSheetProps {
 	bottomSheetRef: BottomSheetRef;
@@ -32,7 +33,7 @@ export function MenuBottomSheet({
 	};
 
 	const handleDeletePress = () => {
-		bottomSheetRef.current?.close();
+		bottomSheetRef.current?.dismiss();
 		setIsModalVisible(true);
 	};
 
@@ -42,7 +43,7 @@ export function MenuBottomSheet({
 
 	const handleRecordDeleteConfirm = () => {
 		setIsModalVisible(false);
-		bottomSheetRef.current?.close();
+		bottomSheetRef.current?.dismiss();
 		onDeleteConfirm?.();
 	};
 
@@ -51,7 +52,6 @@ export function MenuBottomSheet({
 			<CustomBottomSheet
 				bottomSheetRef={bottomSheetRef}
 				snapPoints={snapPoints}
-				initialIndex={-1}
 			>
 				<S.MenuHeader>
 					<S.Text>{date}</S.Text>
@@ -66,6 +66,7 @@ export function MenuBottomSheet({
 					<DeleteIcon width={24} height={24} color={theme.grayscale.gray200} />
 					<S.Text>삭제하기</S.Text>
 				</S.MenuItem>
+				<View style={{ height: 30 }} />
 			</CustomBottomSheet>
 			<DeleteModal
 				isVisible={isModalVisible}

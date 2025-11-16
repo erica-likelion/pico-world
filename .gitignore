@@ -38,6 +38,9 @@ yarn-error.*
 *.tsbuildinfo
 
 # generated native folders
+ios/
+ios/GoogleService-Info.plist
+android/
 /ios
 
 # storybook

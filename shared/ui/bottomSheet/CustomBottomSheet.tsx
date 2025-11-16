@@ -1,17 +1,19 @@
 import { theme } from "@/shared/config/theme/theme";
-import BottomSheet, {
+import {
 	BottomSheetBackdrop,
+	BottomSheetModal,
 	BottomSheetScrollView,
 	BottomSheetView,
 	type BottomSheetBackdropProps,
-	type BottomSheetProps,
+	type BottomSheetModalProps,
 } from "@gorhom/bottom-sheet";
 import type { ReactNode, RefObject } from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import type { StyleProp, ViewStyle } from "react-native";
-export type BottomSheetRef = RefObject<BottomSheet | null>;
+export type BottomSheetRef = RefObject<BottomSheetModal | null>;
 
-interface CustomBottomSheetProps extends Omit<BottomSheetProps, "children"> {
+interface CustomBottomSheetProps
+	extends Omit<BottomSheetModalProps, "children" | "snapPoints"> {
 	bottomSheetRef: BottomSheetRef;
 	children: ReactNode;
 	snapPoints?: Array<string | number>;
@@ -31,12 +33,6 @@ export function CustomBottomSheet({
 	containerStyle,
 	...rest
 }: CustomBottomSheetProps) {
-	const [currentIndex, setCurrentIndex] = useState<number>(initialIndex);
-
-	useEffect(() => {
-		setCurrentIndex(initialIndex);
-	}, [initialIndex]);
-
 	const renderBackdrop = useCallback(
 		(backdropProps: BottomSheetBackdropProps) => (
 			<BottomSheetBackdrop
@@ -52,9 +48,8 @@ export function CustomBottomSheet({
 	const ContentWrapper = enableScroll ? BottomSheetScrollView : BottomSheetView;
 
 	return (
-		<BottomSheet
+		<BottomSheetModal
 			ref={bottomSheetRef}
-			index={currentIndex}
 			snapPoints={snapPoints}
 			backdropComponent={renderBackdrop}
 			enablePanDownToClose
@@ -81,6 +76,6 @@ export function CustomBottomSheet({
 			>
 				{children}
 			</ContentWrapper>
-		</BottomSheet>
+		</BottomSheetModal>
 	);
 }

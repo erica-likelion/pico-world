@@ -6,13 +6,14 @@ import { CharacterBubble, MenuBottomSheet } from "@/shared/ui";
 import { formatDate } from "@/shared/utils/date";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { TopNav } from "@/widgets/TopNav/ui";
-import type BottomSheet from "@gorhom/bottom-sheet";
+import type { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { ScrollView, View } from "react-native";
 
 export default function Home() {
 	const { show } = useBottomNavStore();
-	const bottomSheetRef = useRef<BottomSheet>(null);
+	const bottomSheetRef = useRef<BottomSheetModal>(null);
 	const [selectedDate, setSelectedDate] = useState<string>(
 		new Date().toISOString().split("T")[0],
 	);
@@ -38,7 +39,13 @@ export default function Home() {
 				flex: 1,
 			}}
 		>
-			<TopNav title="홈" rightIcon={<BellIcon />} />
+			<TopNav
+				title="홈"
+				rightIcon={<BellIcon />}
+				onRightPress={() => {
+					router.push("/notifications");
+				}}
+			/>
 			<ScrollView
 				contentContainerStyle={{ alignItems: "center" }}
 				showsVerticalScrollIndicator={false}
@@ -60,7 +67,7 @@ export default function Home() {
 						emotion={selectedRecord.emotion}
 						text={selectedRecord.text}
 						AIImage={AIImageSrc}
-						onMenuPress={() => bottomSheetRef.current?.expand()}
+						onMenuPress={() => bottomSheetRef.current?.present()}
 					/>
 				) : (
 					<ClickToJournal date={selectedDate} />
