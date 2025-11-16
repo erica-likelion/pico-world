@@ -1,3 +1,5 @@
+import { CHARACTER_RECORD_MESSAGES } from "@/entities/character/model/characterMessages";
+import { useUserCharacter } from "@/entities/user/model/userQueries";
 import * as S from "@/features/record/style/EmotionWrite.styles";
 import type { EmotionChip } from "@/shared/types";
 import { Button, Switch, TextInput } from "@/shared/ui";
@@ -11,6 +13,7 @@ interface EmotionWriteProps {
 	setText?: (text: string) => void;
 	isFriendOnly: boolean;
 	setIsFriendOnly: (value: boolean) => void;
+	isSaving: boolean;
 	OnSave: () => void;
 }
 
@@ -20,13 +23,17 @@ export const EmotionWrite: React.FC<EmotionWriteProps> = ({
 	setText,
 	isFriendOnly,
 	setIsFriendOnly,
+	isSaving = false,
 	OnSave,
-}) => {
+}: EmotionWriteProps) => {
+	const userCharacter = useUserCharacter();
+	const activeCharacter = userCharacter;
+	const message = CHARACTER_RECORD_MESSAGES[activeCharacter];
 	return (
 		<S.Container>
 			<CharacterBubble
-				character="츠츠"
-				message="오늘 어땠는지 들어볼까?"
+				character={activeCharacter}
+				message={message}
 				enableTypewriter
 			/>
 			<S.EmotionWrapper>
@@ -54,7 +61,7 @@ export const EmotionWrite: React.FC<EmotionWriteProps> = ({
 				size="large"
 				text="완료"
 				color="white"
-				disabled={!text}
+				disabled={!text || isSaving}
 				onPress={OnSave}
 			/>
 		</S.Container>

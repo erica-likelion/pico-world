@@ -2,13 +2,14 @@ import { theme } from "@/shared/config/theme/theme";
 import {
 	BottomSheetBackdrop,
 	BottomSheetModal,
+	BottomSheetScrollView,
 	BottomSheetView,
 	type BottomSheetBackdropProps,
 	type BottomSheetModalProps,
 } from "@gorhom/bottom-sheet";
 import type { ReactNode, RefObject } from "react";
 import { useCallback } from "react";
-import { ThemeProvider as StyledThemeProvider } from "styled-components/native";
+import type { StyleProp, ViewStyle } from "react-native";
 export type BottomSheetRef = RefObject<BottomSheetModal | null>;
 
 interface CustomBottomSheetProps
@@ -16,13 +17,21 @@ interface CustomBottomSheetProps
 	bottomSheetRef: BottomSheetRef;
 	children: ReactNode;
 	snapPoints?: Array<string | number>;
+	initialIndex?: number;
+	enableDynamicSizing?: boolean;
+	enableScroll?: boolean;
+	containerStyle?: StyleProp<ViewStyle>;
 }
 
 export function CustomBottomSheet({
 	bottomSheetRef,
 	children,
 	snapPoints,
-	...props
+	initialIndex = -1,
+	enableDynamicSizing = false,
+	enableScroll = false,
+	containerStyle,
+	...rest
 }: CustomBottomSheetProps) {
 	const renderBackdrop = useCallback(
 		(backdropProps: BottomSheetBackdropProps) => (
@@ -36,12 +45,16 @@ export function CustomBottomSheet({
 		[],
 	);
 
+	const ContentWrapper = enableScroll ? BottomSheetScrollView : BottomSheetView;
+
 	return (
 		<BottomSheetModal
 			ref={bottomSheetRef}
 			snapPoints={snapPoints}
 			backdropComponent={renderBackdrop}
 			enablePanDownToClose
+			enableDynamicSizing={enableDynamicSizing}
+			containerStyle={[{ zIndex: 1000, elevation: 1000 }, containerStyle]}
 			backgroundStyle={{
 				backgroundColor: theme.grayscale.gray950,
 				borderTopLeftRadius: 36,
@@ -55,11 +68,14 @@ export function CustomBottomSheet({
 			handleStyle={{
 				paddingTop: 16,
 			}}
-			{...props}
+			{...rest}
 		>
-			<StyledThemeProvider theme={theme}>
-				<BottomSheetView style={{ flex: 1 }}>{children}</BottomSheetView>
-			</StyledThemeProvider>
+			<ContentWrapper
+				style={{ flex: 1 }}
+				contentContainerStyle={{ flexGrow: 1 }}
+			>
+				{children}
+			</ContentWrapper>
 		</BottomSheetModal>
 	);
 }

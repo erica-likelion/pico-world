@@ -1,0 +1,6 @@
+<resources>
+  <string name="app_name">omegamon</string>
+  <string name="kakao_app_key">8d0a53545248cb27155e927ab10f1b90</string>
+  <string name="expo_splash_screen_resize_mode" translatable="false">contain</string>
+  <string name="expo_splash_screen_status_bar_translucent" translatable="false">false</string>
+</resources>

@@ -28,7 +28,7 @@
 			},
 			"edgeToEdgeEnabled": true,
 			"predictiveBackGestureEnabled": false,
-			"package": "com.whddnjs960.omegamon"
+			"package": "com.omegamon"
 		},
 		"web": {
 			"bundler": "metro",
@@ -40,6 +40,7 @@
 			"typedRoutes": true
 		},
 		"extra": {
+			"expo-linking-preferred-scheme": "omegamon",
 			"router": {},
 			"eas": {
 				"projectId": "c7e63ad1-4f17-41fc-bb1e-44d4c64d9bfb"

@@ -16,19 +16,20 @@ interface MenuBottomSheetProps {
 	snapPoints?: Array<string | number>;
 	date: string;
 	onDeleteConfirm?: () => void;
+	onEditPress?: () => void;
 }
 export function MenuBottomSheet({
 	bottomSheetRef,
 	snapPoints = ["42%"],
 	date,
 	onDeleteConfirm,
+	onEditPress,
 }: MenuBottomSheetProps) {
 	const [isModalVisible, setIsModalVisible] = useState(false);
 
 	const handleEditPress = () => {
-		// 기록 수정으로 이동
-		bottomSheetRef.current?.dismiss();
-		console.log("기록 수정");
+		bottomSheetRef.current?.close();
+		onEditPress?.();
 	};
 
 	const handleDeletePress = () => {

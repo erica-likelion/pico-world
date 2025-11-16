@@ -5,6 +5,7 @@ import {
 	EmotionWrite,
 } from "@/features/record/ui";
 import { useHideBottomNav } from "@/shared/hooks/useHideBottomNav";
+import { Toast } from "@/shared/ui";
 import { TopNav } from "@/widgets/TopNav/ui";
 
 export default function Record() {
@@ -40,7 +41,13 @@ export default function Record() {
 					setText={recordFlow.setText}
 					isFriendOnly={recordFlow.isFriendOnly}
 					setIsFriendOnly={recordFlow.setIsFriendOnly}
+					isSaving={recordFlow.isSaving}
 					OnSave={recordFlow.handleSave}
+				/>
+				<Toast
+					message={recordFlow.toastMessage}
+					visible={recordFlow.isToastVisible}
+					onHide={recordFlow.handleToastHide}
 				/>
 			</>
 		);

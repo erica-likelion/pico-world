@@ -1,10 +1,9 @@
 import * as S from "@/features/report/style/MonthlyEmotionChart.styles";
-import { useHideBottomNav } from "@/shared/hooks/useHideBottomNav";
 import { EmotionGradientCanvas } from "@/shared/ui/emotion/EmotionGradientCanvas";
 import { getEmotionCoordinate } from "@/shared/utils/emotionCoordinates";
 import { useSkiaFont } from "@/shared/utils/skiaFont";
 import { BlurMask, Circle, Group, Text } from "@shopify/react-native-skia";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -18,27 +17,49 @@ export const MonthlyEmotionChart: React.FC<MonthlyEmotionChartProps> = ({
 	thisMonthEmotion,
 	lastMonthEmotion,
 }) => {
-	useHideBottomNav();
 	const [canvasSize, setCanvasSize] = useState({
 		width: SCREEN_WIDTH,
 		height: SCREEN_HEIGHT,
 	});
 	const font = useSkiaFont();
 
-	const isSameEmotion = thisMonthEmotion === lastMonthEmotion;
+	const extractEmotion = useCallback(
+		(emotion?: string | null) =>
+			emotion && emotion !== "없음" ? emotion : null,
+		[],
+	);
+
+	const thisMonth = useMemo(
+		() => extractEmotion(thisMonthEmotion),
+		[thisMonthEmotion, extractEmotion],
+	);
+	const lastMonth = useMemo(
+		() => extractEmotion(lastMonthEmotion),
+		[lastMonthEmotion, extractEmotion],
+	);
+
+	if (!thisMonth) {
+		return (
+			<S.Container>
+				<S.CanvasContainer>
+					<View style={StyleSheet.absoluteFill} />
+				</S.CanvasContainer>
+			</S.Container>
+		);
+	}
+
+	const hasLastMonthEmotion = Boolean(lastMonth);
+	const isSameEmotion = hasLastMonthEmotion && thisMonth === lastMonth;
 
 	const thisMonthCoord = getEmotionCoordinate(
-		thisMonthEmotion,
+		thisMonth,
 		canvasSize.width,
 		canvasSize.height,
 	);
-	const lastMonthCoord = !isSameEmotion
-		? getEmotionCoordinate(
-				lastMonthEmotion,
-				canvasSize.width,
-				canvasSize.height,
-			)
-		: null;
+	const lastMonthCoord =
+		hasLastMonthEmotion && !isSameEmotion && lastMonth
+			? getEmotionCoordinate(lastMonth, canvasSize.width, canvasSize.height)
+			: null;
 
 	return (
 		<S.Container>

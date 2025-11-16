@@ -42,7 +42,6 @@ ios/
 ios/GoogleService-Info.plist
 android/
 /ios
-/android
 
 # storybook
 storybook-static/

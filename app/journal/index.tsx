@@ -1,12 +1,21 @@
+import type { EmotionRecord } from "@/features/home/model/emotionRecords";
+import { EmotionRecordList } from "@/features/journal/ui";
+import { MenuBottomSheet } from "@/shared/ui";
+import { formatDate } from "@/shared/utils/date";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { TopNav } from "@/widgets/TopNav/ui";
-import { useFocusEffect, useRouter } from "expo-router";
-import { useCallback } from "react";
-import { Text, TouchableOpacity } from "react-native";
+import type BottomSheet from "@gorhom/bottom-sheet";
+import { useRouter, useFocusEffect } from "expo-router";
+import { useCallback, useRef, useState } from "react";
+import { View } from "react-native";
 
 export default function Journal() {
 	const { show } = useBottomNavStore();
 	const router = useRouter();
+	const bottomSheetRef = useRef<BottomSheet>(null);
+	const [selectedRecord, setSelectedRecord] = useState<EmotionRecord | null>(
+		null,
+	);
 
 	useFocusEffect(
 		useCallback(() => {
@@ -14,12 +23,28 @@ export default function Journal() {
 		}, [show]),
 	);
 
+	const handleRecordSelect = (record: EmotionRecord) => {
+		setSelectedRecord(record);
+		bottomSheetRef.current?.expand();
+	};
+
+	const handleEditPress = () => {
+		if (selectedRecord) {
+			router.push(`/record/edit?date=${selectedRecord.date}` as any);
+		}
+	};
+
 	return (
-		<>
+		<View style={{ flex: 1 }}>
 			<TopNav title="기록" />
-			<TouchableOpacity onPress={() => router.push("../record")}>
-				<Text style={{ color: "white" }}>감정 기록 ㄱㄱ</Text>
-			</TouchableOpacity>
-		</>
+			<EmotionRecordList onRecordSelect={handleRecordSelect} />
+			{selectedRecord && (
+				<MenuBottomSheet
+					bottomSheetRef={bottomSheetRef}
+					date={formatDate(selectedRecord.date, { korean: true })}
+					onEditPress={handleEditPress}
+				/>
+			)}
+		</View>
 	);
 }
