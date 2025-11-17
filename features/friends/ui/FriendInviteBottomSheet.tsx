@@ -1,17 +1,20 @@
 import { Character } from "@/entities/character/model/character";
+import { useUserNickname } from "@/entities/user/model/userQueries";
+import { getGreeting } from "@/features/friends/api/getGreeting";
+import { sendFriendRequest } from "@/features/friends/api/sendFriendRequest";
 import { useInviteCodeCopy } from "@/features/friends/model/hooks/useInviteCodeCopy";
 import * as S from "@/features/friends/style/FriendInviteBottomSheet.styles";
 import { InviteCodeDisplay } from "@/features/friends/ui/FriendInviteBottomSheet/InviteCodeDisplay";
 import { SpeechBubble } from "@/features/friends/ui/FriendInviteBottomSheet/SpeechBubble";
-import { Avatar } from "@/shared/ui";
+import { Avatar, Toast } from "@/shared/ui";
 import {
 	CustomBottomSheet,
 	type BottomSheetRef,
 } from "@/shared/ui/bottomSheet/CustomBottomSheet";
 import { Divider } from "@/shared/ui/Divider";
-import { LinearGradient } from "expo-linear-gradient";
-import { useMemo, useRef, useState } from "react";
-import { TextInput as RNTextInput, TouchableOpacity } from "react-native";
+import { useMutation } from "@tanstack/react-query";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { TextInput, TouchableOpacity } from "react-native";
 import { useTheme } from "styled-components/native";
 
 interface FriendInviteBottomSheetProps {
@@ -30,15 +33,49 @@ export function FriendInviteBottomSheet({
 	onEnterCode,
 }: FriendInviteBottomSheetProps) {
 	const theme = useTheme();
-	const { isCopied, handleCopy } = useInviteCodeCopy();
+	const nickname = useUserNickname();
+	const { isCopied, handleCopy } = useInviteCodeCopy({ inviteCode });
 	const [enteredCode, setEnteredCode] = useState("");
-	const codeInputRef = useRef<RNTextInput>(null);
+	const codeInputRef = useRef<TextInput>(null);
+	const [isToastVisible, setIsToastVisible] = useState(false);
+	const [toastMessage, setToastMessage] = useState("");
 
-	// 츠츠 캐릭터 데이터 사용
-	const chchCharacter = useMemo(
-		() => Character.find((char) => char.name === "츠츠") || Character[0],
-		[],
-	);
+	const showToast = useCallback((message: string) => {
+		setToastMessage(message);
+		setIsToastVisible(true);
+	}, []);
+
+	// 인사
+	const { data: greetingData, mutate: fetchGreeting } = useMutation({
+		mutationFn: () => getGreeting("friend-invite"),
+	});
+
+	// 친구 요청
+	const { mutate: sendFriendRequestMutate } = useMutation({
+		mutationFn: sendFriendRequest,
+		onSuccess: (data) => {
+			console.log("친구 요청 성공:", data);
+			const trimmed = enteredCode.trim();
+			bottomSheetRef.current?.close();
+			onEnterCode?.(trimmed);
+			setEnteredCode("");
+		},
+		onError: (error) => {
+			console.error("친구 요청 실패:", error);
+			showToast("친구 요청 실패");
+		},
+	});
+
+	useEffect(() => {
+		fetchGreeting();
+	}, [fetchGreeting]);
+
+	const AICharacter = useMemo(() => {
+		const characterName = greetingData?.characterName || "츠츠";
+		return (
+			Character.find((char) => char.name === characterName) || Character[0]
+		);
+	}, [greetingData?.characterName]);
 
 	const handleFocusCodeEntry = () => {
 		codeInputRef.current?.focus();
@@ -50,9 +87,13 @@ export function FriendInviteBottomSheet({
 			codeInputRef.current?.focus();
 			return;
 		}
-		bottomSheetRef.current?.close();
-		onEnterCode?.(trimmed);
-		setEnteredCode("");
+
+		const requestCode = {
+			connectCode: trimmed,
+		};
+
+		console.log("친구 요청 전송:", requestCode);
+		sendFriendRequestMutate(requestCode);
 	};
 
 	return (
@@ -71,29 +112,20 @@ export function FriendInviteBottomSheet({
 				</S.Header>
 
 				<S.ContentGroup>
-					<SpeechBubble message="친구랑 같이 열심히 좀 기록해봐. 흠 멘트 뭐라하지..." />
+					<SpeechBubble
+						message={greetingData?.message || "친구랑 같이 열심히 기록해봐."}
+					/>
 
 					<S.CharacterWrapper>
-						<S.CharacterGradient boxShadow={chchCharacter.boxShadow}>
-							<LinearGradient
-								colors={["#F57A24", "#FF4000"]}
-								style={{
-									width: parseFloat(theme.rem(124)),
-									height: parseFloat(theme.rem(124)),
-									borderRadius: parseFloat(theme.rem(62)),
-									alignItems: "center",
-									justifyContent: "center",
-								}}
-							>
-								<S.CharacterImage source={chchCharacter.image} />
-							</LinearGradient>
+						<S.CharacterGradient boxShadow={AICharacter.boxShadow}>
+							<S.CharacterImage source={AICharacter.image} />
 						</S.CharacterGradient>
 					</S.CharacterWrapper>
 
 					<S.CodeOwnerRow>
 						<Avatar size="small" />
 						<S.CodeOwnerTexts>
-							<S.FriendName>{profileName}</S.FriendName>
+							<S.FriendName>{nickname}</S.FriendName>
 							<S.FriendCodeLabel>님의 초대 코드</S.FriendCodeLabel>
 						</S.CodeOwnerTexts>
 					</S.CodeOwnerRow>
@@ -116,26 +148,25 @@ export function FriendInviteBottomSheet({
 					<TouchableOpacity activeOpacity={0.8} onPress={handleFocusCodeEntry}>
 						<S.PromptAction>초대 코드 입력하기</S.PromptAction>
 					</TouchableOpacity>
+					<Toast
+						visible={isToastVisible}
+						message={toastMessage}
+						onHide={() => {
+							setIsToastVisible(false);
+							setToastMessage("");
+						}}
+					/>
 				</S.PromptRow>
 
 				<S.CodeEntryContainer>
-					<RNTextInput
+					<S.CodeEntryInput
 						ref={codeInputRef}
-						style={{
-							flex: 1,
-							color: theme.grayscale.gray50,
-							fontFamily: "Pretendard-Regular",
-							fontSize: parseFloat(theme.rem(16)),
-							lineHeight: parseFloat(theme.rem(24)),
-							letterSpacing: -0.32,
-							paddingVertical: parseFloat(theme.rem(4)),
-						}}
-						placeholder="4자리 코드 입력"
+						placeholder="8자리 코드 입력"
 						placeholderTextColor={theme.grayscale.gray400}
 						value={enteredCode}
 						onChangeText={setEnteredCode}
 						keyboardType="default"
-						maxLength={6}
+						maxLength={8}
 						returnKeyType="done"
 						onSubmitEditing={handleEnterCodeSubmit}
 					/>

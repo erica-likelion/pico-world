@@ -1,3 +1,4 @@
+import { useUserConnectCode } from "@/entities/user/model/userQueries";
 import type { FriendRequest } from "@/features/friends/model/types";
 import * as S from "@/features/friends/style/FriendsContent.styles";
 import { FriendBottomSheet } from "@/features/friends/ui/FriendBottomSheet";
@@ -68,7 +69,7 @@ export function FriendsContent({
 	const acceptedCount = acceptedFriends.length;
 	const friendAddProgress = `${acceptedCount}/${FRIEND_LIMIT}`;
 	const pendingRequest = friendRequests[0];
-	const inviteCode = "0416";
+	const inviteCode = useUserConnectCode();
 
 	const handleRejectRequest = useCallback((id: string) => {
 		setFriendRequests((prev) => prev.filter((request) => request.id !== id));
