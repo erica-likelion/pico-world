@@ -30,26 +30,9 @@ export const putRecord = async (
 	recordId: string | number,
 	params: PutRecordRequest,
 ): Promise<PutRecordData> => {
-	// Debug logging for development: request URL and payload
-	try {
-		// eslint-disable-next-line no-console
-		console.log(
-			"putRecord -> url:/api/v1/emotion/" + recordId,
-			"payload:",
-			params,
-		);
-	} catch (_e) {}
-
 	const response = await axiosInstance.put<PutRecordData>(
 		`/api/v1/emotion/${recordId}`,
 		params,
 	);
-
-	// Debug logging for development: server response
-	try {
-		// eslint-disable-next-line no-console
-		console.log("putRecord response:", response);
-	} catch (_e) {}
-
 	return response.data;
 };

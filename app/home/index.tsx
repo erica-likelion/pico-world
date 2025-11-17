@@ -10,14 +10,23 @@ import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { TopNav } from "@/widgets/TopNav/ui";
 import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { router } from "expo-router";
+import { format } from "date-fns";
+import { router, useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ScrollView, View } from "react-native";
+
+const getTodayKST = () => {
+	const now = new Date();
+	const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+	const kstOffset = 9 * 60 * 60000;
+	const kstDate = new Date(utc + kstOffset);
+	return format(kstDate, "yyyy-MM-dd");
+};
 
 export default function Home() {
 	const { show } = useBottomNavStore();
 	const bottomSheetRef = useRef<BottomSheetModal>(null);
-	const today = new Date().toISOString().split("T")[0];
+	const today = getTodayKST();
 	const queryClient = useQueryClient();
 
 	const [selectedDate, setSelectedDate] = useState<string>(today);
@@ -38,10 +47,16 @@ export default function Home() {
 		setIsToastVisible(false);
 	}, []);
 
-	const { data: emotionRecords = [] } = useQuery<EmotionRecord[]>({
+	const { data: emotionRecords = [], refetch } = useQuery<EmotionRecord[]>({
 		queryKey: ["emotionRecords", currentMonth],
 		queryFn: () => getEmotionRecords(currentMonth),
 	});
+
+	useFocusEffect(
+		useCallback(() => {
+			refetch();
+		}, [refetch]),
+	);
 
 	const deleteRecordMutation = useMutation({
 		mutationFn: deleteEmotionRecord,
@@ -63,18 +78,27 @@ export default function Home() {
 
 	useEffect(() => {
 		if (selectedDate.startsWith(currentMonth)) {
-			const recordForSelectedDate = emotionRecords.find((r) =>
-				r.created_at.startsWith(selectedDate),
-			);
+			const recordForSelectedDate = emotionRecords.find((r) => {
+				const recordDate = new Date(r.created_at);
+				const utc =
+					recordDate.getTime() + recordDate.getTimezoneOffset() * 60000;
+				const kstOffset = 9 * 60 * 60000;
+				const kstDate = new Date(utc + kstOffset);
+				return format(kstDate, "yyyy-MM-dd") === selectedDate;
+			});
 			setSelectedRecord(recordForSelectedDate || null);
 		}
 	}, [emotionRecords, selectedDate, currentMonth]);
 
 	const handleDateSelect = (dateString: string) => {
 		setSelectedDate(dateString);
-		const record = emotionRecords.find((r) =>
-			r.created_at.startsWith(dateString),
-		);
+		const record = emotionRecords.find((r) => {
+			const recordDate = new Date(r.created_at);
+			const utc = recordDate.getTime() + recordDate.getTimezoneOffset() * 60000;
+			const kstOffset = 9 * 60 * 60000;
+			const kstDate = new Date(utc + kstOffset);
+			return format(kstDate, "yyyy-MM-dd") === dateString;
+		});
 		setSelectedRecord(record || null);
 	};
 

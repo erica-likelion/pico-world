@@ -1,8 +1,10 @@
+import { postFeedback } from "@/entities/character/api/feedback";
 import { postRecord } from "@/features/record/api/PostRecord";
 import { putRecord } from "@/features/record/api/PutRecord";
 import type { EmotionChip } from "@/shared/types";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
+import { useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 
 type Phase = "explore" | "write" | "complete";
@@ -17,6 +19,7 @@ const ERROR_MESSAGES: Record<number, string> = {
 };
 
 export function useRecordFlow() {
+	const router = useRouter();
 	const [phase, setPhase] = useState<Phase>("explore");
 	const [selectedEmotion, setSelectedEmotion] = useState<EmotionChip | null>(
 		null,
@@ -25,6 +28,12 @@ export function useRecordFlow() {
 	const [isFriendOnly, setIsFriendOnly] = useState(false);
 	const [isToastVisible, setIsToastVisible] = useState(false);
 	const [toastMessage, setToastMessage] = useState("");
+	const [showConfirmModal, setShowConfirmModal] = useState(false);
+	const [updatedRecordId, setUpdatedRecordId] = useState<number | null>(null);
+
+	const { mutate: feedbackMutate } = useMutation({
+		mutationFn: postFeedback,
+	});
 
 	const { mutateAsync: postRecordMutate, isPending: isSavingPost } =
 		useMutation<
@@ -33,8 +42,9 @@ export function useRecordFlow() {
 			Parameters<typeof postRecord>[0]
 		>({
 			mutationFn: postRecord,
-			onSuccess: () => {
+			onSuccess: (data) => {
 				setIsToastVisible(false);
+				feedbackMutate(data.record_id);
 				setPhase("complete");
 			},
 			onError: (error) => {
@@ -66,9 +76,10 @@ export function useRecordFlow() {
 		Parameters<typeof putRecord>
 	>({
 		mutationFn: ([id, payload]) => putRecord(id, payload),
-		onSuccess: () => {
+		onSuccess: (data) => {
 			setIsToastVisible(false);
-			setPhase("complete");
+			setUpdatedRecordId(data.record_id);
+			setShowConfirmModal(true); // "답변 다시 받을거냐?" 모달 띄우기
 		},
 		onError: (error) => {
 			const status = error.response?.status;
@@ -91,6 +102,19 @@ export function useRecordFlow() {
 			setIsToastVisible(true);
 		},
 	});
+
+	const handleConfirmFeedback = () => {
+		if (updatedRecordId) {
+			feedbackMutate(updatedRecordId);
+		}
+		setShowConfirmModal(false);
+		setPhase("complete");
+	};
+
+	const handleCancelFeedback = () => {
+		setShowConfirmModal(false);
+		router.push("/journal");
+	};
 
 	const isSaving = isSavingPost || isSavingPut;
 
@@ -162,5 +186,8 @@ export function useRecordFlow() {
 		isToastVisible,
 		toastMessage,
 		handleToastHide,
+		showConfirmModal,
+		handleConfirmFeedback,
+		handleCancelFeedback,
 	};
 }
