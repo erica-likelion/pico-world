@@ -1,8 +1,10 @@
+import { fetchGreeting } from "@/entities/character/api/greeting";
+import { Character } from "@/entities/character/model/character";
+import type { CharacterName } from "@/entities/character/model/characterMessages";
 import { getEmotionRecords } from "@/features/home/api/emotion";
 import { CalendarUI, ClickToJournal, TodayHistory } from "@/features/home/ui";
 import { deleteEmotionRecord } from "@/features/journal/api/emotion";
 import BellIcon from "@/shared/assets/icons/bell.svg";
-import AIImageSrc from "@/shared/assets/images/chch.png";
 import type { EmotionRecord } from "@/shared/types/emotion";
 import { CharacterBubble, MenuBottomSheet, Toast } from "@/shared/ui"; // Import Toast
 import { formatDate } from "@/shared/utils/date";
@@ -12,7 +14,7 @@ import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { router, useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ScrollView, View } from "react-native";
 
 const getTodayKST = () => {
@@ -37,6 +39,11 @@ export default function Home() {
 
 	const [isToastVisible, setIsToastVisible] = useState(false); // Toast state
 	const [toastMessage, setToastMessage] = useState(""); // Toast message state
+
+	const { data: greetingData } = useQuery({
+		queryKey: ["greeting", "home"],
+		queryFn: () => fetchGreeting({ context: "home" }),
+	});
 
 	const handleShowToast = useCallback((message: string) => {
 		setToastMessage(message);
@@ -115,6 +122,14 @@ export default function Home() {
 	const isTodayHistory = selectedRecord !== null;
 	const isSelectedDateToday = selectedDate === today;
 
+	const characterName = greetingData?.characterName as
+		| CharacterName
+		| undefined;
+	const characterImage = useMemo(() => {
+		const foundCharacter = Character.find((c) => c.name === characterName);
+		return foundCharacter ? foundCharacter.image : undefined;
+	}, [characterName]);
+
 	return (
 		<View
 			style={{
@@ -134,18 +149,14 @@ export default function Home() {
 			>
 				<View style={{ width: "100%", paddingHorizontal: 16 }}>
 					<CharacterBubble
-						character="츠츠"
-						message={
-							isTodayHistory
-								? `너의 기록을 보고 있어. 나름 괜찮네.`
-								: `기록이 없네. 뭐 했는지 기억도 안 나나?`
-						}
+						character={characterName ?? "츠츠"}
+						message={greetingData?.message?.replace(/"/g, "") ?? "..."}
 					/>
 				</View>
 				{isTodayHistory && selectedRecord ? (
 					<TodayHistory
 						record={selectedRecord}
-						AIImage={AIImageSrc}
+						AIImage={characterImage}
 						onMenuPress={() => bottomSheetRef.current?.present()}
 					/>
 				) : (

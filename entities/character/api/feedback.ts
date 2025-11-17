@@ -15,7 +15,6 @@ export const getFeedback = async (
 	const response = await axiosInstance.get<FeedBackResponse>(
 		`/api/v1/feedback?recordId=${recordId}`,
 	);
-	console.log("getFeedback response:", response.data);
 	return response.data;
 };
 

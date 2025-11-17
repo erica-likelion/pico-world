@@ -22,7 +22,7 @@ export function TodayHistory({
 	AIImage,
 }: TodayHistoryProps) {
 	const router = useRouter();
-	const { data: feedbackData } = useQuery({
+	const { data: feedbackData, isLoading } = useQuery({
 		queryKey: ["feedback", record.record_id],
 		queryFn: () => getFeedback(record.record_id),
 		enabled: !!record.record_id,
@@ -43,8 +43,9 @@ export function TodayHistory({
 	const displaySubColor = record.sub_color;
 	const displayTextColor = record.text_color;
 	const displayHistoryText = record.record;
-	const displayAIComment =
-		feedbackData?.AIreply || "피드백을 생성하고 있습니다...";
+	const displayAIComment = isLoading
+		? "피드백을 생성하고 있습니다..."
+		: feedbackData?.aiReply || "오늘 하루도 수고했어.";
 
 	// 컴포넌트 마운트 시 애니메이션 실행
 	useEffect(() => {
