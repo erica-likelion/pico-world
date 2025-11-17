@@ -3,6 +3,7 @@ import type { EmotionRecord } from "@/shared/types/emotion";
 import { EmotionCard } from "@/shared/ui/EmotionCard";
 import { format } from "date-fns";
 import { BlurView } from "expo-blur";
+import { useRouter } from "expo-router";
 import { useEffect, useRef } from "react";
 import type { ImageSourcePropType } from "react-native";
 import { Animated, Easing, TouchableOpacity } from "react-native";
@@ -33,6 +34,7 @@ export function TodayHistory({
 	onMenuPress,
 	AIImage,
 }: TodayHistoryProps) {
+	const router = useRouter();
 	// 애니메이션 값들
 	const fadeInAnim = useRef(new Animated.Value(0)).current;
 	const slideUpAnim = useRef(new Animated.Value(50)).current;
@@ -123,7 +125,11 @@ export function TodayHistory({
 						zIndex: 2,
 					}}
 				>
-					<S.MyHistoryBox>
+					<S.MyHistoryBox
+						onPress={() =>
+							router.push(`/journal/detail?id=${record.record_id}`)
+						}
+					>
 						<BlurView
 							intensity={38}
 							tint="dark"
@@ -155,7 +161,6 @@ export function TodayHistory({
 						</S.HistoryText>
 					</S.MyHistoryBox>
 				</Animated.View>
-
 				{/* 캐릭터 코멘트 박스 - 애니메이션 적용 */}
 				<Animated.View
 					style={{

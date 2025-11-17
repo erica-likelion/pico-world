@@ -1,5 +1,6 @@
 import { getEmotionRecords } from "@/features/home/api/emotion";
 import { CalendarUI, ClickToJournal, TodayHistory } from "@/features/home/ui";
+import { deleteEmotionRecord } from "@/features/journal/api/emotion";
 import BellIcon from "@/shared/assets/icons/bell.svg";
 import AIImageSrc from "@/shared/assets/images/chch.png";
 import type { EmotionRecord } from "@/shared/types/emotion";
@@ -8,6 +9,7 @@ import { formatDate } from "@/shared/utils/date";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { TopNav } from "@/widgets/TopNav/ui";
 import type { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { ScrollView, View } from "react-native";
@@ -16,33 +18,45 @@ export default function Home() {
 	const { show } = useBottomNavStore();
 	const bottomSheetRef = useRef<BottomSheetModal>(null);
 	const today = new Date().toISOString().split("T")[0];
+	const queryClient = useQueryClient();
 
 	const [selectedDate, setSelectedDate] = useState<string>(today);
 	const [selectedRecord, setSelectedRecord] = useState<EmotionRecord | null>(
 		null,
 	);
-	const [emotionRecords, setEmotionRecords] = useState<EmotionRecord[]>([]);
 	const [currentMonth, setCurrentMonth] = useState<string>(today.slice(0, 7));
+
+	const { data: emotionRecords = [] } = useQuery<EmotionRecord[]>({
+		queryKey: ["emotionRecords", currentMonth],
+		queryFn: () => getEmotionRecords(currentMonth),
+	});
+
+	const deleteRecordMutation = useMutation({
+		mutationFn: deleteEmotionRecord,
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ["emotionRecords", currentMonth],
+			});
+			setSelectedRecord(null);
+			bottomSheetRef.current?.dismiss();
+		},
+		onError: (error) => {
+			console.error("Error deleting record:", error);
+		},
+	});
 
 	useEffect(() => {
 		show();
 	}, [show]);
 
 	useEffect(() => {
-		const fetchRecords = async () => {
-			const records = await getEmotionRecords(currentMonth);
-			setEmotionRecords(records);
-
-			// If the selected date is in the current month, find and set the record
-			if (selectedDate.startsWith(currentMonth)) {
-				const recordForSelectedDate = records.find((r) =>
-					r.created_at.startsWith(selectedDate),
-				);
-				setSelectedRecord(recordForSelectedDate || null);
-			}
-		};
-		fetchRecords();
-	}, [currentMonth, selectedDate]);
+		if (selectedDate.startsWith(currentMonth)) {
+			const recordForSelectedDate = emotionRecords.find((r) =>
+				r.created_at.startsWith(selectedDate),
+			);
+			setSelectedRecord(recordForSelectedDate || null);
+		}
+	}, [emotionRecords, selectedDate, currentMonth]);
 
 	const handleDateSelect = (dateString: string) => {
 		setSelectedDate(dateString);
@@ -54,6 +68,12 @@ export default function Home() {
 
 	const handleMonthChange = (month: string) => {
 		setCurrentMonth(month);
+	};
+
+	const handleDeleteConfirm = () => {
+		if (selectedRecord) {
+			deleteRecordMutation.mutate(selectedRecord.record_id);
+		}
 	};
 
 	const isTodayHistory = selectedRecord !== null;
@@ -110,6 +130,7 @@ export default function Home() {
 				<MenuBottomSheet
 					bottomSheetRef={bottomSheetRef}
 					date={formatDate(selectedRecord.created_at, { korean: true })}
+					onDeleteConfirm={handleDeleteConfirm}
 				/>
 			)}
 		</View>

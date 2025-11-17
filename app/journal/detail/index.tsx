@@ -10,25 +10,25 @@ import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 export default function JournalDetail() {
 	const router = useRouter();
-	const { date } = useLocalSearchParams<{ date: string }>();
+	const { id } = useLocalSearchParams<{ id: string }>();
 	const [record, setRecord] = useState<EmotionRecord | null>(null);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		if (date) {
+		if (id) {
 			const fetchRecord = async () => {
 				setLoading(true);
-				const fetchedRecord = await getEmotionRecord(date);
+				const fetchedRecord = await getEmotionRecord(id);
 				setRecord(fetchedRecord);
 				setLoading(false);
 			};
 			fetchRecord();
 		}
-	}, [date]);
+	}, [id]);
 
 	const handleEditPress = () => {
-		if (date) {
-			router.push(`/record/edit?date=${date}` as any);
+		if (id) {
+			router.push(`/record/edit?id=${id}` as any);
 		}
 	};
 

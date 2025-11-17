@@ -1,19 +1,28 @@
 import { axiosInstance } from "@/shared/api/axios";
-import type { EmotionRecord } from "@/shared/types/emotion";
+import type { EmotionOneRecord } from "@/shared/types/emotion";
 
 export const getEmotionRecord = async (
-	date: string,
-): Promise<EmotionRecord | null> => {
+	id: string,
+): Promise<EmotionOneRecord | null> => {
 	try {
-		const response = await axiosInstance.get<EmotionRecord[]>(
-			`/api/v1/emotion?date=${date}`,
+		const response = await axiosInstance.get<EmotionOneRecord>(
+			`/api/v1/emotion/${id}`,
 		);
-		if (response.data && response.data.length > 0) {
-			return response.data[0];
-		}
-		return null;
+		console.log(response.data);
+		return response.data;
 	} catch (error) {
-		console.error(`Error fetching emotion record for date ${date}:`, error);
+		console.error(`Error fetching emotion record for date ${id}:`, error);
 		return null;
+	}
+};
+
+export const deleteEmotionRecord = async (id: number): Promise<boolean> => {
+	try {
+		await axiosInstance.delete(`/api/v1/emotion/${id}`);
+		console.log(`Deleted emotion record with id ${id}`);
+		return true;
+	} catch (error) {
+		console.error(`Error deleting emotion record with id ${id}:`, error);
+		return false;
 	}
 };

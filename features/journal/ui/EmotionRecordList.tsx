@@ -14,12 +14,10 @@ import * as JournalListS from "@/features/journal/style/EmotionRecordList.styles
 const ICON_HIT_SLOP = { top: 8, bottom: 8, left: 8, right: 8 } as const;
 
 interface EmotionRecordListProps {
-	onRecordSelect?: (record: EmotionRecord) => void;
+	onMenuPress?: (record: EmotionRecord) => void;
 }
 
-export const EmotionRecordList = ({
-	onRecordSelect,
-}: EmotionRecordListProps) => {
+export const EmotionRecordList = ({ onMenuPress }: EmotionRecordListProps) => {
 	const [records, setRecords] = useState<EmotionRecord[]>([]);
 	const scrollViewRef = useRef<ScrollView>(null);
 	const router = useRouter();
@@ -118,11 +116,11 @@ export const EmotionRecordList = ({
 									record={record}
 									onPress={() =>
 										router.push(
-											`/journal/detail?date=${record.created_at}` as Href,
+											`/journal/detail?id=${record.record_id}` as Href,
 										)
 									}
 									onMenuPress={() => {
-										onRecordSelect?.(record);
+										onMenuPress?.(record);
 									}}
 								/>
 							</JournalListS.CardWrapper>

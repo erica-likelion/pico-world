@@ -1,6 +1,7 @@
 import * as S from "@/features/journal/style/TodayHistory.styles";
 import { EmotionRecordCard } from "@/features/journal/ui/EmotionRecordCard";
 import type { EmotionRecord } from "@/shared/types/emotion";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { format } from "date-fns";
 import { useEffect, useRef } from "react";
 import type { ImageSourcePropType } from "react-native";
@@ -28,6 +29,7 @@ const generateAIComment = (emotion: string): string => {
 };
 
 export function TodayHistory({ record, AIImage }: TodayHistoryProps) {
+	const bottomSheetRef = useRef<BottomSheetModal>(null);
 	// 애니메이션 값들
 	const fadeInAnim = useRef(new Animated.Value(0)).current;
 	const slideUpAnim = useRef(new Animated.Value(50)).current;
@@ -132,6 +134,7 @@ export function TodayHistory({ record, AIImage }: TodayHistoryProps) {
 					}}
 				>
 					<EmotionRecordCard
+						onMenuPress={() => bottomSheetRef.current?.present()}
 						record={record}
 						showDate={false}
 						dateTextColor={theme.grayscale.gray400}
