@@ -1,72 +1,64 @@
-import { grayscale } from "@/shared/config/theme/Colors";
-import { StyleSheet } from "react-native";
-import type { DefaultTheme } from "styled-components/native";
+import styled from "styled-components/native";
 
-export const createFriendRequestCardStyles = (_theme: DefaultTheme) =>
-	StyleSheet.create({
-		container: {
-			flexDirection: "column",
-			alignItems: "center",
-			gap: 16,
-			alignSelf: "stretch",
-			paddingHorizontal: 16,
-			marginVertical: 24,
-		},
-		header: {
-			flexDirection: "row",
-			justifyContent: "space-between",
-			alignItems: "center",
-			alignSelf: "stretch",
-		},
-		title: {
-			flexDirection: "row",
-			alignItems: "center",
-			flex: 1,
-			justifyContent: "flex-start",
-		},
-		titleStrong: {
-			color: grayscale.white,
-			fontFamily: "Pretendard-Bold",
-			fontSize: 16,
-			lineHeight: 20,
-			letterSpacing: -0.32,
-		},
-		titleText: {
-			color: grayscale.white,
-			fontFamily: "Pretendard-Medium",
-			fontSize: 16,
-			lineHeight: 20,
-			letterSpacing: -0.32,
-		},
-		time: {
-			color: grayscale.gray400,
-			textAlign: "right",
-			fontFamily: "Pretendard-Medium",
-			fontSize: 12,
-			lineHeight: 16,
-			letterSpacing: -0.24,
-		},
-		user: {
-			flexDirection: "row",
-			alignItems: "center",
-			gap: 10,
-			alignSelf: "stretch",
-		},
-		userName: {
-			color: grayscale.gray200,
-			fontFamily: "Pretendard-SemiBold",
-			fontSize: 14,
-			lineHeight: 16,
-			letterSpacing: -0.28,
-		},
-		actionsWrapper: {
-			alignSelf: "stretch",
-		},
-		actions: {
-			flexDirection: "row",
-			alignItems: "center",
-			justifyContent: "space-between",
-			gap: 8,
-			alignSelf: "stretch",
-		},
-	});
+export const Container = styled.View`
+  flex-direction: column;
+  align-items: center;
+  gap: ${({ theme }) => theme.rem(16)};
+  align-self: stretch;
+  padding-horizontal: ${({ theme }) => theme.rem(16)};
+  margin-vertical: ${({ theme }) => theme.rem(24)};
+`;
+
+export const Header = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+`;
+
+export const Title = styled.View`
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
+  justify-content: flex-start;
+`;
+
+export const TitleStrong = styled.Text`
+  color: ${({ theme }) => theme.grayscale.white};
+  ${({ theme }) => theme.typography["title2-bold"]};
+`;
+
+export const TitleText = styled.Text`
+  color: ${({ theme }) => theme.grayscale.white};
+  ${({ theme }) => theme.typography["title2-medium"]};
+`;
+
+export const Time = styled.Text`
+  color: ${({ theme }) => theme.grayscale.gray400};
+  text-align: right;
+  ${({ theme }) => theme.typography["title4-medium"]};
+`;
+
+export const User = styled.View`
+  flex-direction: row;
+  align-items: center;
+  gap: ${({ theme }) => theme.rem(10)};
+  align-self: stretch;
+`;
+
+export const UserName = styled.Text`
+  color: ${({ theme }) => theme.grayscale.gray200};
+  ${({ theme }) => theme.typography["title3-semibold"]};
+`;
+
+export const ActionsWrapper = styled.View`
+  align-self: stretch;
+`;
+
+export const Actions = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: ${({ theme }) => theme.rem(8)};
+  align-self: stretch;
+`;

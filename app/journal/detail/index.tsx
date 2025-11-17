@@ -1,7 +1,7 @@
 import { getEmotionRecord } from "@/features/journal/api/emotion";
 import { TodayHistory } from "@/features/journal/ui";
 import EditIcon from "@/shared/assets/icons/edit.svg";
-import AIImageSrc from "@/shared/assets/images/chch.png";
+import AIImageSrc from "@/shared/assets/images/characters/chch.png";
 import type { EmotionRecord } from "@/shared/types/emotion";
 import { TopNav } from "@/widgets/TopNav/ui";
 import { useLocalSearchParams, useRouter } from "expo-router";

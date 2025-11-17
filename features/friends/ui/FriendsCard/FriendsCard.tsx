@@ -1,9 +1,6 @@
+import * as S from "@/features/friends/style/FriendsCard.styles";
 import { Avatar } from "@/shared/ui";
-import { Text, View } from "react-native";
-import { useMemo } from "react";
 import { useTheme } from "styled-components/native";
-
-import { createFriendsCardStyles } from "@/features/friends/ui/FriendsCard/styles";
 
 interface FriendsCardProps {
 	name: string;
@@ -21,25 +18,24 @@ export function FriendsCard({
 	avatarUrl,
 }: FriendsCardProps) {
 	const theme = useTheme();
-	const styles = useMemo(() => createFriendsCardStyles(theme), [theme]);
+	const avatarSize = parseFloat(theme.rem(36));
+	const borderOffset = avatarSize / 2;
 
 	return (
-		<View style={styles.container}>
-			<View style={styles.header}>
-				<View style={styles.userInfo}>
+		<S.Container>
+			<S.Header>
+				<S.UserInfo>
 					<Avatar size="small" imageUrl={avatarUrl} />
-					<Text style={styles.name}>{name}</Text>
-					<Text style={styles.date}>{date}</Text>
-				</View>
-				<View style={styles.emotionBadge}>
-					<Text style={styles.emotionBadgeText}>{emotionLabel}</Text>
-				</View>
-			</View>
-			<View style={styles.body}>
-				<Text style={styles.bodyText} numberOfLines={8}>
-					{description}
-				</Text>
-			</View>
-		</View>
+					<S.Name>{name}</S.Name>
+					<S.DateText>{date}</S.DateText>
+				</S.UserInfo>
+				<S.EmotionBadge>
+					<S.EmotionBadgeText>{emotionLabel}</S.EmotionBadgeText>
+				</S.EmotionBadge>
+			</S.Header>
+			<S.Body borderOffset={borderOffset}>
+				<S.BodyText numberOfLines={8}>{description}</S.BodyText>
+			</S.Body>
+		</S.Container>
 	);
 }

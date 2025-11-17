@@ -1,3 +1,9 @@
+import type { FriendRequest } from "@/features/friends/model/types";
+import * as S from "@/features/friends/style/FriendsContent.styles";
+import { FriendBottomSheet } from "@/features/friends/ui/FriendBottomSheet";
+import { FriendInviteBottomSheet } from "@/features/friends/ui/FriendInviteBottomSheet";
+import { FriendRequestCard } from "@/features/friends/ui/FriendRequestCard";
+import { FriendsCard } from "@/features/friends/ui/FriendsCard/FriendsCard";
 import FriendsPlusIcon from "@/shared/assets/icons/freinds-plus.svg";
 import {
 	Button,
@@ -6,17 +12,9 @@ import {
 	ProfileButton,
 	Toast,
 } from "@/shared/ui";
-import type BottomSheet from "@gorhom/bottom-sheet";
+import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Pressable, Text, View } from "react-native";
 import { useTheme } from "styled-components/native";
-
-import type { FriendRequest } from "@/features/friends/model/types";
-import { createFriendsContentStyles } from "@/features/friends/style/FriendsContent.styles";
-import { FriendBottomSheet } from "@/features/friends/ui/FriendBottomSheet";
-import { FriendInviteBottomSheet } from "@/features/friends/ui/FriendInviteBottomSheet";
-import { FriendRequestCard } from "@/features/friends/ui/FriendRequestCard";
-import { FriendsCard } from "@/features/friends/ui/FriendsCard/FriendsCard";
 
 interface FriendsContentProps {
 	onProfilePress: () => void;
@@ -40,16 +38,11 @@ export function FriendsContent({
 	profileName,
 }: FriendsContentProps) {
 	const theme = useTheme();
-	const { styles, profileButtonSize } = useMemo(
-		() => createFriendsContentStyles(theme),
-		[theme],
-	);
-
 	const [friendRequests, setFriendRequests] =
 		useState<FriendRequest[]>(INITIAL_REQUESTS);
 	const [acceptedFriends, setAcceptedFriends] = useState<FriendRequest[]>([]);
-	const addFriendBottomSheetRef = useRef<BottomSheet>(null);
-	const menuBottomSheetRef = useRef<BottomSheet>(null);
+	const addFriendBottomSheetRef = useRef<BottomSheetModal>(null);
+	const menuBottomSheetRef = useRef<BottomSheetModal>(null);
 	const [selectedFriend, setSelectedFriend] = useState<FriendRequest | null>(
 		null,
 	);
@@ -101,7 +94,7 @@ export function FriendsContent({
 	}, []);
 
 	const handleAddFriendButtonPress = useCallback(() => {
-		addFriendBottomSheetRef.current?.expand();
+		addFriendBottomSheetRef.current?.present();
 	}, []);
 
 	const showToast = useCallback((message: string) => {
@@ -169,7 +162,7 @@ export function FriendsContent({
 
 	const openFriendBottomSheet = useCallback((friend: FriendRequest) => {
 		setSelectedFriend(friend);
-		menuBottomSheetRef.current?.expand();
+		menuBottomSheetRef.current?.present();
 	}, []);
 
 	const toastOffset = useMemo(
@@ -178,54 +171,48 @@ export function FriendsContent({
 	);
 
 	return (
-		<View style={styles.container}>
-			<View style={styles.profileRow}>
-				<View style={styles.profileButtonWrapper}>
+		<S.Container>
+			<S.ProfileRow>
+				<S.ProfileButtonWrapper>
 					<ProfileButton logged />
-					<Text style={styles.profileLabel}>{profileName}</Text>
-				</View>
+					<S.ProfileLabel>{profileName}</S.ProfileLabel>
+				</S.ProfileButtonWrapper>
 
-				<View style={styles.friendsList}>
+				<S.FriendsList>
 					{acceptedFriends.map((friend) => (
-						<View key={friend.id} style={styles.profileButtonWrapper}>
+						<S.ProfileButtonWrapper key={friend.id}>
 							<ProfileButton
 								imageUrl={friend.avatarUrl}
 								pressable
 								onPress={() => openFriendBottomSheet(friend)}
 							/>
-							<Text style={styles.profileLabel}>{friend.name}</Text>
-						</View>
+							<S.ProfileLabel>{friend.name}</S.ProfileLabel>
+						</S.ProfileButtonWrapper>
 					))}
 
-					<Pressable
-						style={[styles.profileButtonWrapper, styles.profileActionButton]}
-						onPress={handleAddFriendButtonPress}
-					>
-						<View style={styles.profileButtonContent}>
-							<FriendsPlusIcon
-								width={profileButtonSize}
-								height={profileButtonSize}
-							/>
-						</View>
-						<Text style={styles.profileLabel}>
+					<S.ProfileButtonWrapperPressable onPress={handleAddFriendButtonPress}>
+						<S.ProfileButtonContent>
+							<FriendsPlusIcon width={theme.rem(64)} height={theme.rem(64)} />
+						</S.ProfileButtonContent>
+						<S.ProfileLabel numberOfLines={2} ellipsizeMode="tail">
 							친구 추가 {friendAddProgress}
-						</Text>
-					</Pressable>
-				</View>
-			</View>
+						</S.ProfileLabel>
+					</S.ProfileButtonWrapperPressable>
+				</S.FriendsList>
+			</S.ProfileRow>
 
-			<View style={styles.spacing}>
+			<S.Spacing>
 				<CharacterBubble
 					character="츠츠"
 					message="Pico World는 친구랑 할 때 더 재밌는 거 알지? 5명까지 초대할 수 있으니 같이 기록해봐."
 				/>
-			</View>
+			</S.Spacing>
 
 			{pendingRequest && (
 				<>
-					<View style={styles.dividerSpacing}>
+					<S.DividerSpacing>
 						<Divider size="large" />
-					</View>
+					</S.DividerSpacing>
 
 					<FriendRequestCard
 						profileName={profileName}
@@ -234,9 +221,9 @@ export function FriendsContent({
 						onReject={handleRejectRequest}
 					/>
 
-					<View style={styles.dividerSpacing}>
+					<S.DividerSpacing>
 						<Divider size="large" />
-					</View>
+					</S.DividerSpacing>
 				</>
 			)}
 
@@ -247,24 +234,24 @@ export function FriendsContent({
 				description="한적한 카페에서 늦은 오후를 보냈어. 창밖으로 비가 내려서 마음이 조용히 가라앉더라. 따뜻한 라떼 한 잔에 마음이 느긋해진 느낌이야."
 			/>
 
-			<View style={styles.dividerSpacing}>
+			<S.DividerSpacing>
 				<Divider size="large" />
-			</View>
+			</S.DividerSpacing>
 
-			<View style={styles.footer}>
-				<Text style={styles.footerText}>
+			<S.Footer>
+				<S.FooterText>
 					기록을 모두 확인했습니다.
 					{"\n"}친구들과 꾸준히 기록을 더 쌓아보세요.
-				</Text>
-				<View style={styles.footerButtonWrapper}>
+				</S.FooterText>
+				<S.FooterButtonWrapper>
 					<Button
 						text="위로 돌아가기"
 						size="small"
 						color="gray"
 						onPress={onScrollToTop}
 					/>
-				</View>
-			</View>
+				</S.FooterButtonWrapper>
+			</S.Footer>
 
 			<Toast
 				visible={isToastVisible}
@@ -293,6 +280,6 @@ export function FriendsContent({
 				onToggleNotifications={handleToggleFriendNotifications}
 				onDeleteConfirm={handleRemoveFriend}
 			/>
-		</View>
+		</S.Container>
 	);
 }

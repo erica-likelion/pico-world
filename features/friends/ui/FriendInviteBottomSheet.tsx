@@ -1,7 +1,8 @@
+import { Character } from "@/entities/character/model/character";
 import { useInviteCodeCopy } from "@/features/friends/model/hooks/useInviteCodeCopy";
-import { InviteCodeDisplay } from "@/features/friends/ui/FriendInviteBottomSheet/components/InviteCodeDisplay";
-import { SpeechBubble } from "@/features/friends/ui/FriendInviteBottomSheet/components/SpeechBubble";
-import CharacterImage from "@/shared/assets/images/characters/chch.png";
+import * as S from "@/features/friends/style/FriendInviteBottomSheet.styles";
+import { InviteCodeDisplay } from "@/features/friends/ui/FriendInviteBottomSheet/InviteCodeDisplay";
+import { SpeechBubble } from "@/features/friends/ui/FriendInviteBottomSheet/SpeechBubble";
 import { Avatar } from "@/shared/ui";
 import {
 	CustomBottomSheet,
@@ -10,16 +11,8 @@ import {
 import { Divider } from "@/shared/ui/Divider";
 import { LinearGradient } from "expo-linear-gradient";
 import { useMemo, useRef, useState } from "react";
-import {
-	Image,
-	TextInput as RNTextInput,
-	Text,
-	TouchableOpacity,
-	View,
-} from "react-native";
+import { TextInput as RNTextInput, TouchableOpacity } from "react-native";
 import { useTheme } from "styled-components/native";
-
-import { createFriendInviteBottomSheetStyles } from "@/features/friends/style/FriendInviteBottomSheet.styles";
 
 interface FriendInviteBottomSheetProps {
 	bottomSheetRef: BottomSheetRef;
@@ -31,20 +24,21 @@ interface FriendInviteBottomSheetProps {
 
 export function FriendInviteBottomSheet({
 	bottomSheetRef,
-	snapPoints = ["90%"],
+	snapPoints = ["80%"],
 	profileName,
 	inviteCode,
 	onEnterCode,
 }: FriendInviteBottomSheetProps) {
 	const theme = useTheme();
-	const styles = useMemo(
-		() => createFriendInviteBottomSheetStyles(theme),
-		[theme],
-	);
-
 	const { isCopied, handleCopy } = useInviteCodeCopy();
 	const [enteredCode, setEnteredCode] = useState("");
 	const codeInputRef = useRef<RNTextInput>(null);
+
+	// 츠츠 캐릭터 데이터 사용
+	const chchCharacter = useMemo(
+		() => Character.find((char) => char.name === "츠츠") || Character[0],
+		[],
+	);
 
 	const handleFocusCodeEntry = () => {
 		codeInputRef.current?.focus();
@@ -67,66 +61,75 @@ export function FriendInviteBottomSheet({
 			snapPoints={snapPoints}
 			initialIndex={-1}
 			enableScroll
-			containerStyle={styles.bottomSheet}
+			containerStyle={{ zIndex: 1000, elevation: 1000 }}
 		>
-			<View style={styles.container}>
-				<View style={styles.header}>
-					<View style={styles.titleWrapper}>
-						<Text numberOfLines={1} style={styles.title}>
-							친구 초대하기
-						</Text>
-					</View>
-				</View>
+			<S.Container>
+				<S.Header>
+					<S.TitleWrapper>
+						<S.Title numberOfLines={1}>친구 초대하기</S.Title>
+					</S.TitleWrapper>
+				</S.Header>
 
-				<View style={styles.contentGroup}>
-					<SpeechBubble
-						styles={styles}
-						message="친구랑 같이 열심히 좀 기록해봐. 흠 멘트 뭐라하지..."
-					/>
+				<S.ContentGroup>
+					<SpeechBubble message="친구랑 같이 열심히 좀 기록해봐. 흠 멘트 뭐라하지..." />
 
-					<View style={styles.characterWrapper}>
-						<LinearGradient
-							colors={["#F57A24", "#FF4000"]}
-							style={styles.characterGradient}
-						>
-							<Image source={CharacterImage} style={styles.characterImage} />
-						</LinearGradient>
-					</View>
+					<S.CharacterWrapper>
+						<S.CharacterGradient boxShadow={chchCharacter.boxShadow}>
+							<LinearGradient
+								colors={["#F57A24", "#FF4000"]}
+								style={{
+									width: parseFloat(theme.rem(124)),
+									height: parseFloat(theme.rem(124)),
+									borderRadius: parseFloat(theme.rem(62)),
+									alignItems: "center",
+									justifyContent: "center",
+								}}
+							>
+								<S.CharacterImage source={chchCharacter.image} />
+							</LinearGradient>
+						</S.CharacterGradient>
+					</S.CharacterWrapper>
 
-					<View style={styles.codeOwnerRow}>
+					<S.CodeOwnerRow>
 						<Avatar size="small" />
-						<View style={styles.codeOwnerTexts}>
-							<Text style={styles.friendName}>{profileName}</Text>
-							<Text style={styles.friendCodeLabel}>님의 초대 코드</Text>
-						</View>
-					</View>
+						<S.CodeOwnerTexts>
+							<S.FriendName>{profileName}</S.FriendName>
+							<S.FriendCodeLabel>님의 초대 코드</S.FriendCodeLabel>
+						</S.CodeOwnerTexts>
+					</S.CodeOwnerRow>
 
 					<InviteCodeDisplay
-						styles={styles}
-						theme={theme}
 						inviteCode={inviteCode}
 						isCopied={isCopied}
 						onCopy={handleCopy}
 					/>
 
-					<Text style={styles.infoText}>
+					<S.InfoText>
 						{"친한 친구 최대 5명에게 초대를 보내\n함께 기록을 작성해보세요."}
-					</Text>
-				</View>
+					</S.InfoText>
+				</S.ContentGroup>
 
 				<Divider size="small" />
 
-				<View style={styles.promptRow}>
-					<Text style={styles.promptQuestion}>초대를 받았나요?</Text>
+				<S.PromptRow>
+					<S.PromptQuestion>초대를 받았나요?</S.PromptQuestion>
 					<TouchableOpacity activeOpacity={0.8} onPress={handleFocusCodeEntry}>
-						<Text style={styles.promptAction}>초대 코드 입력하기</Text>
+						<S.PromptAction>초대 코드 입력하기</S.PromptAction>
 					</TouchableOpacity>
-				</View>
+				</S.PromptRow>
 
-				<View style={styles.codeEntryContainer}>
+				<S.CodeEntryContainer>
 					<RNTextInput
 						ref={codeInputRef}
-						style={styles.codeEntryInput}
+						style={{
+							flex: 1,
+							color: theme.grayscale.gray50,
+							fontFamily: "Pretendard-Regular",
+							fontSize: parseFloat(theme.rem(16)),
+							lineHeight: parseFloat(theme.rem(24)),
+							letterSpacing: -0.32,
+							paddingVertical: parseFloat(theme.rem(4)),
+						}}
 						placeholder="4자리 코드 입력"
 						placeholderTextColor={theme.grayscale.gray400}
 						value={enteredCode}
@@ -136,15 +139,14 @@ export function FriendInviteBottomSheet({
 						returnKeyType="done"
 						onSubmitEditing={handleEnterCodeSubmit}
 					/>
-					<TouchableOpacity
+					<S.CodeEntryButton
 						activeOpacity={0.8}
-						style={styles.codeEntryButton}
 						onPress={handleEnterCodeSubmit}
 					>
-						<Text style={styles.codeEntryButtonText}>친구 요청 보내기</Text>
-					</TouchableOpacity>
-				</View>
-			</View>
+						<S.CodeEntryButtonText>친구 요청 보내기</S.CodeEntryButtonText>
+					</S.CodeEntryButton>
+				</S.CodeEntryContainer>
+			</S.Container>
 		</CustomBottomSheet>
 	);
 }

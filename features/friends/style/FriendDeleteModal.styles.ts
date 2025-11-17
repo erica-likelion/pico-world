@@ -20,23 +20,13 @@ export const DescriptionContainer = styled.View`
 export const Description = styled.Text`
   color: ${({ theme }) => theme.grayscale.white};
   text-align: center;
-  font-family: Pretendard;
-  font-size: ${({ theme }) => theme.rem(16)};
-  font-style: normal;
-  font-weight: 400;
-  line-height: ${({ theme }) => theme.rem(24)};
-  letter-spacing: -0.32px;
+  ${({ theme }) => theme.typography.b2};
 `;
 
 export const SubDescription = styled.Text`
   color: ${({ theme }) => theme.grayscale.gray200};
   text-align: center;
-  font-family: Pretendard;
-  font-size: ${({ theme }) => theme.rem(12)};
-  font-style: normal;
-  font-weight: 600;
-  line-height: ${({ theme }) => theme.rem(16)};
-  letter-spacing: -0.24px;
+  ${({ theme }) => theme.typography["title3-semibold"]};
 `;
 
 export const ButtonRow = styled.View`

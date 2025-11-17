@@ -2,9 +2,9 @@ import { getEmotionRecords } from "@/features/home/api/emotion";
 import { CalendarUI, ClickToJournal, TodayHistory } from "@/features/home/ui";
 import { deleteEmotionRecord } from "@/features/journal/api/emotion";
 import BellIcon from "@/shared/assets/icons/bell.svg";
-import AIImageSrc from "@/shared/assets/images/chch.png";
+import AIImageSrc from "@/shared/assets/images/characters/chch.png";
 import type { EmotionRecord } from "@/shared/types/emotion";
-import { CharacterBubble, MenuBottomSheet, Toast } from "@/shared/ui"; // Import Toast
+import { CharacterBubble, MenuBottomSheet, Toast } from "@/shared/ui";
 import { formatDate } from "@/shared/utils/date";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { TopNav } from "@/widgets/TopNav/ui";
@@ -26,8 +26,8 @@ export default function Home() {
 	);
 	const [currentMonth, setCurrentMonth] = useState<string>(today.slice(0, 7));
 
-	const [isToastVisible, setIsToastVisible] = useState(false); // Toast state
-	const [toastMessage, setToastMessage] = useState(""); // Toast message state
+	const [isToastVisible, setIsToastVisible] = useState(false);
+	const [toastMessage, setToastMessage] = useState("");
 
 	const handleShowToast = useCallback((message: string) => {
 		setToastMessage(message);

@@ -1,10 +1,6 @@
-import { Avatar, Button } from "@/shared/ui";
-import { Text, View } from "react-native";
-import { useMemo } from "react";
-import { useTheme } from "styled-components/native";
-
-import { createFriendRequestCardStyles } from "@/features/friends/style/FriendRequestCard.styles";
 import type { FriendRequest } from "@/features/friends/model/types";
+import * as S from "@/features/friends/style/FriendRequestCard.styles";
+import { Avatar, Button } from "@/shared/ui";
 
 interface FriendRequestCardProps {
 	profileName: string;
@@ -21,26 +17,23 @@ export function FriendRequestCard({
 	onReject,
 	timeLabel = "1시간 전",
 }: FriendRequestCardProps) {
-	const theme = useTheme();
-	const styles = useMemo(() => createFriendRequestCardStyles(theme), [theme]);
-
 	return (
-		<View style={styles.container}>
-			<View style={styles.header}>
-				<View style={styles.title}>
-					<Text style={styles.titleStrong}>{profileName}님 </Text>
-					<Text style={styles.titleText}>의 새로운 친구 요청이 있어요.</Text>
-				</View>
-				<Text style={styles.time}>{timeLabel}</Text>
-			</View>
+		<S.Container>
+			<S.Header>
+				<S.Title>
+					<S.TitleStrong>{profileName}님 </S.TitleStrong>
+					<S.TitleText>의 새로운 친구 요청이 있어요.</S.TitleText>
+				</S.Title>
+				<S.Time>{timeLabel}</S.Time>
+			</S.Header>
 
-			<View style={styles.user}>
+			<S.User>
 				<Avatar size="small" imageUrl={request.avatarUrl} />
-				<Text style={styles.userName}>{request.name}</Text>
-			</View>
+				<S.UserName>{request.name}</S.UserName>
+			</S.User>
 
-			<View style={styles.actionsWrapper}>
-				<View style={styles.actions}>
+			<S.ActionsWrapper>
+				<S.Actions>
 					<Button
 						text="거절"
 						size="medium"
@@ -53,8 +46,8 @@ export function FriendRequestCard({
 						color="white"
 						onPress={() => onAccept(request)}
 					/>
-				</View>
-			</View>
-		</View>
+				</S.Actions>
+			</S.ActionsWrapper>
+		</S.Container>
 	);
 }

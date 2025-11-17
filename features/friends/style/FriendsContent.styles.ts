@@ -1,94 +1,98 @@
-import { grayscale } from "@/shared/config/theme/Colors";
-import { StyleSheet } from "react-native";
-import type { DefaultTheme } from "styled-components/native";
+import styled from "styled-components/native";
 
-export const createFriendsContentStyles = (theme: DefaultTheme) => {
-	const profileButtonSize = parseFloat(theme.rem(64));
+export const Container = styled.View`
+  width: 100%;
+  flex-grow: 1;
+  position: relative;
+  padding-top: 0;
+  padding-bottom: ${({ theme }) => theme.rem(40)};
+`;
 
-	return {
-		profileButtonSize,
-		styles: StyleSheet.create({
-			container: {
-				width: "100%",
-				flexGrow: 1,
-				position: "relative",
-				paddingHorizontal: 16,
-				paddingTop: 0,
-				paddingBottom: 40,
-			},
-			profileRow: {
-				flexDirection: "row",
-				alignItems: "center",
-				paddingVertical: 8,
-				paddingHorizontal: 16,
-				marginHorizontal: -16,
-				marginBottom: 6,
-				gap: 14,
-			},
-			profileButtonWrapper: {
-				flexDirection: "column",
-				alignItems: "center",
-				width: profileButtonSize,
-			},
-			profileLabel: {
-				marginTop: 4,
-				color: grayscale.gray50,
-				textAlign: "center",
-				fontFamily: "Pretendard-Medium",
-				fontSize: 12,
-				lineHeight: 16,
-				letterSpacing: -0.24,
-			},
-			profileActionButton: {
-				marginLeft: 0,
-			},
-			profileButtonContent: {
-				width: profileButtonSize,
-				height: profileButtonSize,
-				alignItems: "center",
-				justifyContent: "center",
-			},
-			friendsList: {
-				flexDirection: "row",
-				alignItems: "center",
-				gap: 14,
-				flexShrink: 1,
-			},
-			spacing: {
-				marginBottom: 6,
-				alignSelf: "stretch",
-				width: "100%",
-			},
-			notificationSection: {
-				flexDirection: "column",
-				alignItems: "center",
-				gap: 24,
-				alignSelf: "stretch",
-				paddingHorizontal: 16,
-			},
-			dividerSpacing: {
-				marginVertical: 8,
-				alignSelf: "stretch",
-				marginLeft: -16,
-				marginRight: -16,
-			},
-			footer: {
-				paddingTop: 8,
-				paddingBottom: 24,
-				alignItems: "center",
-				width: "100%",
-			},
-			footerText: {
-				color: grayscale.white,
-				fontFamily: "Pretendard-Regular",
-				fontSize: 14,
-				lineHeight: 20,
-				opacity: 0.6,
-				textAlign: "center",
-			},
-			footerButtonWrapper: {
-				marginTop: 16,
-			},
-		}),
-	};
-};
+export const ProfileRow = styled.View`
+  flex-direction: row;
+  align-items: center;
+  padding-vertical: ${({ theme }) => theme.rem(8)};
+  padding-horizontal: ${({ theme }) => theme.rem(16)};
+  margin-horizontal: ${({ theme }) => -theme.rem(16)};
+  margin-bottom: ${({ theme }) => theme.rem(6)};
+  gap: ${({ theme }) => theme.rem(14)};
+`;
+
+export const ProfileButtonWrapper = styled.View`
+  flex-direction: column;
+  align-items: center;
+  width: ${({ theme }) => theme.rem(64)};
+`;
+
+export const ProfileButtonWrapperPressable = styled.Pressable`
+  flex-direction: column;
+  align-items: center;
+  min-width: ${({ theme }) => theme.rem(64)};
+`;
+
+export const ProfileLabel = styled.Text`
+  ${({ theme }) => theme.typography["title4-medium"]};
+  margin-top: ${({ theme }) => theme.rem(4)};
+  color: ${({ theme }) => theme.grayscale.gray50};
+  text-align: center;
+  align-self: center;
+`;
+
+export const ProfileActionButton = styled.View`
+  margin-left: 0;
+`;
+
+export const ProfileButtonContent = styled.View`
+  width: ${({ theme }) => theme.rem(64)};
+  height: ${({ theme }) => theme.rem(64)};
+  align-items: center;
+  justify-content: center;
+`;
+
+export const FriendsList = styled.View`
+  flex-direction: row;
+  align-items: center;
+  gap: ${({ theme }) => theme.rem(14)};
+  flex-shrink: 1;
+`;
+
+export const Spacing = styled.View`
+  padding-horizontal: ${({ theme }) => theme.rem(16)};
+
+  margin-bottom: ${({ theme }) => theme.rem(6)};
+  align-self: stretch;
+  width: 100%;
+`;
+
+export const NotificationSection = styled.View`
+  flex-direction: column;
+  align-items: center;
+  gap: ${({ theme }) => theme.rem(24)};
+  align-self: stretch;
+  padding-horizontal: ${({ theme }) => theme.rem(16)};
+`;
+
+export const DividerSpacing = styled.View`
+  margin-vertical: ${({ theme }) => theme.rem(8)};
+  align-self: stretch;
+  margin-left: ${({ theme }) => -theme.rem(16)};
+  margin-right: ${({ theme }) => -theme.rem(16)};
+`;
+
+export const Footer = styled.View`
+  padding-top: ${({ theme }) => theme.rem(8)};
+  padding-bottom: ${({ theme }) => theme.rem(24)};
+  align-items: center;
+  width: 100%;
+`;
+
+export const FooterText = styled.Text`
+  color: ${({ theme }) => theme.grayscale.white};
+  ${({ theme }) => theme.typography["title3-medium"]};
+  opacity: 0.6;
+  text-align: center;
+`;
+
+export const FooterButtonWrapper = styled.View`
+  margin-top: ${({ theme }) => theme.rem(16)};
+`;

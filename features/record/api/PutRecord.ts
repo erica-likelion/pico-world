@@ -34,7 +34,7 @@ export const putRecord = async (
 	try {
 		// eslint-disable-next-line no-console
 		console.log(
-			"putRecord -> url:/api/v1/emotion/" + recordId,
+			"putRecord -> url:/api/v1/emotion/${recordId}",
 			"payload:",
 			params,
 		);
