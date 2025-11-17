@@ -1,20 +1,34 @@
-import { getEmotionRecordByDate } from "@/features/home/model/emotionRecords";
+import { getEmotionRecord } from "@/features/journal/api/emotion";
 import { TodayHistory } from "@/features/journal/ui";
 import EditIcon from "@/shared/assets/icons/edit.svg";
 import AIImageSrc from "@/shared/assets/images/chch.png";
+import type { EmotionRecord } from "@/shared/types/emotion";
 import { TopNav } from "@/widgets/TopNav/ui";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { ScrollView, View } from "react-native";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 export default function JournalDetail() {
 	const router = useRouter();
-	const { date } = useLocalSearchParams<{ date: string }>();
+	const { id } = useLocalSearchParams<{ id: string }>();
+	const [record, setRecord] = useState<EmotionRecord | null>(null);
+	const [loading, setLoading] = useState(true);
 
-	const record = date ? getEmotionRecordByDate(date) : null;
+	useEffect(() => {
+		if (id) {
+			const fetchRecord = async () => {
+				setLoading(true);
+				const fetchedRecord = await getEmotionRecord(id);
+				setRecord(fetchedRecord);
+				setLoading(false);
+			};
+			fetchRecord();
+		}
+	}, [id]);
 
 	const handleEditPress = () => {
-		if (date) {
-			router.push(`/record/edit?date=${date}` as any);
+		if (id) {
+			router.push(`/record/edit?id=${id}` as any);
 		}
 	};
 
@@ -34,14 +48,10 @@ export default function JournalDetail() {
 				}}
 				showsVerticalScrollIndicator={false}
 			>
-				{record ? (
-					<TodayHistory
-						date={record.date.replace(/-/g, ". ")}
-						time={record.time}
-						emotion={record.emotion}
-						text={record.text}
-						AIImage={AIImageSrc}
-					/>
+				{loading ? (
+					<ActivityIndicator style={{ marginTop: 100 }} />
+				) : record ? (
+					<TodayHistory record={record} AIImage={AIImageSrc} />
 				) : (
 					<View
 						style={{
@@ -51,7 +61,7 @@ export default function JournalDetail() {
 							marginTop: 100,
 						}}
 					>
-						{/* TODO: 기록이 없을 때 표시할 컴포넌트 */}
+						<Text style={{ color: "white" }}>기록이 없습니다.</Text>
 					</View>
 				)}
 			</ScrollView>

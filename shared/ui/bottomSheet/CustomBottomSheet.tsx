@@ -10,6 +10,7 @@ import {
 import type { ReactNode, RefObject } from "react";
 import { useCallback } from "react";
 import type { StyleProp, ViewStyle } from "react-native";
+import { ThemeProvider } from "styled-components/native";
 export type BottomSheetRef = RefObject<BottomSheetModal | null>;
 
 interface CustomBottomSheetProps
@@ -70,12 +71,14 @@ export function CustomBottomSheet({
 			}}
 			{...rest}
 		>
-			<ContentWrapper
-				style={{ flex: 1 }}
-				contentContainerStyle={{ flexGrow: 1 }}
-			>
-				{children}
-			</ContentWrapper>
+			<ThemeProvider theme={theme}>
+				<ContentWrapper
+					style={{ flex: 1 }}
+					contentContainerStyle={{ flexGrow: 1 }}
+				>
+					{children}
+				</ContentWrapper>
+			</ThemeProvider>
 		</BottomSheetModal>
 	);
 }

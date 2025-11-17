@@ -1,12 +1,11 @@
-import type { EmotionRecord } from "@/features/home/model/emotionRecords";
-import { getAllEmotionRecords } from "@/features/journal/model/emotionRecords";
+import { getEmotionRecords } from "@/features/home/api/emotion";
 import { EmotionRecordCard } from "@/features/journal/ui/EmotionRecordCard";
 import LeftSmIcon from "@/shared/assets/icons/left-sm.svg";
 import RightSmIcon from "@/shared/assets/icons/right-sm.svg";
+import type { EmotionRecord } from "@/shared/types/emotion";
 import { Button } from "@/shared/ui/Button";
-import type BottomSheet from "@gorhom/bottom-sheet";
 import { useRouter, type Href } from "expo-router";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ScrollView } from "react-native";
 import { useTheme } from "styled-components/native";
 
@@ -15,13 +14,11 @@ import * as JournalListS from "@/features/journal/style/EmotionRecordList.styles
 const ICON_HIT_SLOP = { top: 8, bottom: 8, left: 8, right: 8 } as const;
 
 interface EmotionRecordListProps {
-	onRecordSelect?: (record: EmotionRecord) => void;
+	onMenuPress?: (record: EmotionRecord) => void;
 }
 
-export const EmotionRecordList = ({
-	onRecordSelect,
-}: EmotionRecordListProps) => {
-	const records = useMemo(() => getAllEmotionRecords(), []);
+export const EmotionRecordList = ({ onMenuPress }: EmotionRecordListProps) => {
+	const [records, setRecords] = useState<EmotionRecord[]>([]);
 	const scrollViewRef = useRef<ScrollView>(null);
 	const router = useRouter();
 	const theme = useTheme();
@@ -29,6 +26,16 @@ export const EmotionRecordList = ({
 		const now = new Date();
 		return new Date(now.getFullYear(), now.getMonth(), 1);
 	});
+
+	useEffect(() => {
+		const fetchRecords = async () => {
+			const year = currentMonth.getFullYear();
+			const month = String(currentMonth.getMonth() + 1).padStart(2, "0");
+			const records = await getEmotionRecords(`${year}-${month}`);
+			setRecords(records);
+		};
+		fetchRecords();
+	}, [currentMonth]);
 
 	const scrollToTop = () => {
 		scrollViewRef.current?.scrollTo({ y: 0, animated: true });
@@ -53,7 +60,7 @@ export const EmotionRecordList = ({
 		const targetMonth = currentMonth.getMonth();
 
 		return records.filter((record) => {
-			const recordDate = new Date(record.date);
+			const recordDate = new Date(record.created_at);
 			return (
 				recordDate.getFullYear() === targetYear &&
 				recordDate.getMonth() === targetMonth
@@ -104,14 +111,16 @@ export const EmotionRecordList = ({
 						</JournalListS.EmptyMonthContainer>
 					) : (
 						filteredRecords.map((record) => (
-							<JournalListS.CardWrapper key={record.id}>
+							<JournalListS.CardWrapper key={record.record_id}>
 								<EmotionRecordCard
 									record={record}
 									onPress={() =>
-										router.push(`/journal/detail?date=${record.date}` as Href)
+										router.push(
+											`/journal/detail?id=${record.record_id}` as Href,
+										)
 									}
 									onMenuPress={() => {
-										onRecordSelect?.(record);
+										onMenuPress?.(record);
 									}}
 								/>
 							</JournalListS.CardWrapper>

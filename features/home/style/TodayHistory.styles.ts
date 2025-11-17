@@ -14,7 +14,7 @@ export const TodayHistoryContainer = styled.View`
   margin-top: ${({ theme }) => theme.rem(32)};
 `;
 
-export const MyHistoryBox = styled.View`
+export const MyHistoryBox = styled.Pressable`
   display: flex;
   padding: ${({ theme }) => theme.rem(20)};
   flex-direction: column;
@@ -66,6 +66,7 @@ export const MenuIcon = styled(MenuIconSvg)`
 `;
 
 export const HistoryText = styled.Text`
+  width: 100%;
   color: ${({ theme }) => theme.grayscale.gray50};
   ${({ theme }) => theme.typography.b3};
 `;

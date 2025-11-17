@@ -1,21 +1,16 @@
-import type { EmotionRecord } from "@/features/home/model/emotionRecords";
 import * as S from "@/features/journal/style/TodayHistory.styles";
 import { EmotionRecordCard } from "@/features/journal/ui/EmotionRecordCard";
+import type { EmotionRecord } from "@/shared/types/emotion";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { format } from "date-fns";
 import { useEffect, useRef } from "react";
 import type { ImageSourcePropType } from "react-native";
 import { Animated, Easing } from "react-native";
 import { useTheme } from "styled-components/native";
 
-interface TodayHistoryProps extends Partial<EmotionRecord> {
-	date?: string;
-	time?: string;
-	emotionTitle?: string;
-	mainColor?: string;
-	subColor?: string;
-	textColor?: string;
-	historyText?: string;
+interface TodayHistoryProps {
+	record: EmotionRecord;
 	AIImage?: ImageSourcePropType;
-	AIComment?: string;
 }
 
 // AI 코멘트 생성 함수
@@ -33,19 +28,8 @@ const generateAIComment = (emotion: string): string => {
 	);
 };
 
-export function TodayHistory({
-	date,
-	time,
-	emotion,
-	text,
-	emotionTitle,
-	mainColor,
-	subColor,
-	textColor,
-	historyText,
-	AIImage,
-	AIComment,
-}: TodayHistoryProps) {
+export function TodayHistory({ record, AIImage }: TodayHistoryProps) {
+	const bottomSheetRef = useRef<BottomSheetModal>(null);
 	// 애니메이션 값들
 	const fadeInAnim = useRef(new Animated.Value(0)).current;
 	const slideUpAnim = useRef(new Animated.Value(50)).current;
@@ -54,21 +38,11 @@ export function TodayHistory({
 	const characterFadeAnim = useRef(new Animated.Value(0)).current;
 	const theme = useTheme();
 
-	// 기존 props가 있으면 사용하고, 없으면 emotion record 데이터 사용
-	const displayDate = date || "날짜 없음";
-	const displayTime = time || "시간 없음";
-	const displayEmotionTitle = emotionTitle || emotion?.label || "감정 없음";
-	const displayMainColor = mainColor || emotion?.mainColor || "#FF685B";
-	const displaySubColor = subColor || emotion?.subColor || "#F3E9DA";
-	const displayTextColor = textColor || "#FFFFFF";
-	const displayHistoryText = historyText || text || "기록이 없습니다.";
-	const displayAIComment = AIComment || generateAIComment(emotion?.label || "");
-
-	// 날짜 형식 변환 (YYYY. MM. DD -> YYYY-MM-DD)
-	const formatDateForRecord = (dateStr: string): string => {
-		if (dateStr === "날짜 없음") return new Date().toISOString().split("T")[0];
-		return dateStr.replace(/\. /g, "-");
-	};
+	const createdAt = new Date(record.created_at);
+	const displayDate = format(createdAt, "yyyy.MM.dd");
+	const displayTime = format(createdAt, "HH:mm");
+	const displayHistoryText = record.record;
+	const displayAIComment = generateAIComment(record.emotion_name);
 
 	// 컴포넌트 마운트 시 애니메이션 실행
 	useEffect(() => {
@@ -128,25 +102,6 @@ export function TodayHistory({
 		characterSlideAnim,
 	]); // date나 emotion이 바뀔 때마다 애니메이션 재실행
 
-	const _handleMenuPress = () => {
-		//todo: 메뉴 기능 구현
-	};
-
-	// EmotionRecord 형식으로 변환
-	const recordData: EmotionRecord = {
-		id: emotion?.label || "",
-		date: formatDateForRecord(displayDate),
-		time: displayTime || "",
-		emotion: {
-			label: displayEmotionTitle,
-			mainColor: displayMainColor,
-			subColor: displaySubColor,
-		},
-		text: displayHistoryText,
-		isFriendOnly: false,
-		createdAt: new Date().toISOString(),
-	};
-
 	return (
 		<S.Begin>
 			<S.TodayHistoryContainer $isDetail={true}>
@@ -179,7 +134,8 @@ export function TodayHistory({
 					}}
 				>
 					<EmotionRecordCard
-						record={recordData}
+						onMenuPress={() => bottomSheetRef.current?.present()}
+						record={record}
 						showDate={false}
 						dateTextColor={theme.grayscale.gray400}
 						timeTextColor={theme.grayscale.gray500}
@@ -212,12 +168,12 @@ export function TodayHistory({
 						alignSelf: "stretch",
 					}}
 				>
-					<S.CharacterCommentBox $mainColor={displayMainColor}>
+					<S.CharacterCommentBox $mainColor={record.main_color}>
 						<S.InnerShadow />
 						<S.CharacterNameBox>
 							<S.CharacterImage source={AIImage} resizeMode="contain" />
 						</S.CharacterNameBox>
-						<S.CharacterText $textColor={displayTextColor}>
+						<S.CharacterText $textColor={record.text_color}>
 							{displayAIComment}
 						</S.CharacterText>
 					</S.CharacterCommentBox>
