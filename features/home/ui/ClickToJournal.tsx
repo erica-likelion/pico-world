@@ -2,7 +2,7 @@ import * as S from "@/features/home/style/ClickToJournal.styles";
 import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
 import { PlusButton } from "@/shared/ui";
 import { useRouter } from "expo-router";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { Animated, Pressable } from "react-native";
 import {
 	Easing,
@@ -53,9 +53,15 @@ const AnimatedPlusingEffect = () => {
 
 interface ClickToJournalProps {
 	date: string;
+	isToday: boolean;
+	onShowToast: (message: string) => void; // Add onShowToast prop
 }
 
-export function ClickToJournal({ date }: ClickToJournalProps) {
+export function ClickToJournal({
+	date,
+	isToday,
+	onShowToast,
+}: ClickToJournalProps) {
 	const router = useRouter();
 	const { scale, handlePressIn, handlePressOut } = usePressAnimation();
 	const fadeInAnim = useRef(new Animated.Value(0)).current;
@@ -92,7 +98,16 @@ export function ClickToJournal({ date }: ClickToJournalProps) {
 				useNativeDriver: true,
 			}),
 		]).start();
-	}, [date, fadeInAnim, scaleAnim, slideUpAnim]); // date나 emotion이 바뀔 때마다 애니메이션 재실행
+	}, [date, fadeInAnim, scaleAnim, slideUpAnim]);
+
+	const handlePress = useCallback(() => {
+		// Wrap handlePress in useCallback
+		if (!isToday) {
+			onShowToast("감정 기록은 오늘 날짜만 가능합니다.");
+			return;
+		}
+		router.push("/record");
+	}, [isToday, onShowToast, router]);
 
 	return (
 		<Animated.View
@@ -117,7 +132,7 @@ export function ClickToJournal({ date }: ClickToJournalProps) {
 					<Pressable
 						onPressIn={handlePressIn}
 						onPressOut={handlePressOut}
-						onPress={() => router.push("/record")}
+						onPress={handlePress}
 						style={{
 							zIndex: 40,
 							alignItems: "center",
