@@ -8,7 +8,6 @@ export const getEmotionRecords = async (
 		const response = await axiosInstance.get<EmotionRecord[]>(
 			`/api/v1/emotion?date=${month}`,
 		);
-		console.log(response.data);
 		return response.data;
 	} catch (error) {
 		console.error("Error fetching emotion records:", error);

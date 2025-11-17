@@ -130,6 +130,9 @@ export default function Home() {
 				<MenuBottomSheet
 					bottomSheetRef={bottomSheetRef}
 					date={formatDate(selectedRecord.created_at, { korean: true })}
+					onEditPress={() => {
+						router.push(`/record/edit?id=${selectedRecord.record_id}` as any);
+					}}
 					onDeleteConfirm={handleDeleteConfirm}
 				/>
 			)}

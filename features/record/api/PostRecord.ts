@@ -24,5 +24,7 @@ export const postRecord = async (
 		params,
 	);
 
+	console.log("postRecord response:");
+
 	return response.data;
 };
