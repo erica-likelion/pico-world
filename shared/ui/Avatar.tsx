@@ -1,6 +1,7 @@
 import UserIconImage from "@/shared/assets/icons/user.png";
 import * as S from "@/shared/style/Avatar.style";
 import { type AvatarSize, SIZE_MAP } from "@/shared/types";
+import { useDefaultImage } from "@/shared/utils/profileImage";
 
 interface AvatarProps {
 	size?: AvatarSize;
@@ -20,11 +21,14 @@ interface AvatarProps {
 
 export const Avatar = ({ size = "small", imageUrl }: AvatarProps) => {
 	const { bg, icon } = SIZE_MAP[size];
+
+	const shouldUseDefaultImage = useDefaultImage(imageUrl);
+
 	return (
 		<S.Background $size={bg}>
 			<S.AvatarImage
-				source={imageUrl ? { uri: imageUrl } : UserIconImage}
-				$size={imageUrl ? bg : icon}
+				source={shouldUseDefaultImage ? UserIconImage : { uri: imageUrl }}
+				$size={shouldUseDefaultImage ? icon : bg}
 			/>
 		</S.Background>
 	);
