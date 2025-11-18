@@ -4,7 +4,6 @@ import type { CharacterName } from "@/entities/character/model/characterMessages
 import { getEmotionRecord } from "@/features/journal/api/emotion";
 import { TodayHistory } from "@/features/journal/ui";
 import EditIcon from "@/shared/assets/icons/edit.svg";
-import type { EmotionRecord } from "@/shared/types/emotion";
 import { useHideBottomNav } from "@/shared/hooks/useHideBottomNav";
 import { TopNav } from "@/widgets/TopNav/ui";
 import { useQuery } from "@tanstack/react-query";
@@ -38,7 +37,7 @@ export default function JournalDetail() {
 
 	const handleEditPress = () => {
 		if (id) {
-			router.push(`/record/edit?id=${id}` as any);
+			router.push(`/record/edit?id=${id}`);
 		}
 	};
 

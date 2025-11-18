@@ -2,7 +2,7 @@ import { getFeedback } from "@/entities/character/api/feedback";
 import * as S from "@/features/journal/style/TodayHistory.styles";
 import { EmotionRecordCard } from "@/features/journal/ui/EmotionRecordCard";
 import type { EmotionRecord } from "@/shared/types/emotion";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useEffect, useRef } from "react";
@@ -149,9 +149,7 @@ export function TodayHistory({ record, AIImage }: TodayHistoryProps) {
 						marginTop: 16,
 					}}
 				>
-					<S.HistoryText numberOfLines={4} ellipsizeMode="tail">
-						{displayHistoryText}
-					</S.HistoryText>
+					<S.HistoryText>{displayHistoryText}</S.HistoryText>
 				</Animated.View>
 
 				{/* 캐릭터 코멘트 박스 - 애니메이션 적용 */}

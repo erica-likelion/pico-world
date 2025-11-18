@@ -8,8 +8,8 @@ export const ItemContainer = styled.View`
   align-self: stretch;
 `;
 
-export const ItemTitle = styled.Text`
-  color: ${({ theme }) => theme.colors.happy};
+export const ItemTitle = styled.Text<{ color?: string }>`
+  color: ${({ theme, color }) => color || theme.colors.happy};
   ${({ theme }) => theme.typography["title4-bold"]};
   padding: ${({ theme }) => theme.rem(0)} ${({ theme }) => theme.rem(16)};
 `;
