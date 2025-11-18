@@ -33,17 +33,18 @@ export const DateText = styled.Text`
   ${({ theme }) => theme.typography["title3-semibold"]};
 `;
 
-export const EmotionBadge = styled.View`
+export const EmotionBadge = styled.View<{ $backgroundColor?: string }>`
   padding-vertical: ${({ theme }) => theme.rem(8)};
   padding-horizontal: ${({ theme }) => theme.rem(12)};
   justify-content: center;
   align-items: center;
   border-radius: 60px;
-  background-color: ${({ theme }) => theme.grayscale.gray700};
+  background-color: ${({ $backgroundColor, theme }) =>
+		$backgroundColor ?? theme.grayscale.gray700};
 `;
 
-export const EmotionBadgeText = styled.Text`
-  color: #ffffff;
+export const EmotionBadgeText = styled.Text<{ $textColor?: string }>`
+  color: ${({ $textColor }) => $textColor ?? "#ffffff"};
   text-align: center;
   ${({ theme }) => theme.typography["title4-semibold"]};
 `;
@@ -65,4 +66,17 @@ export const BodyText = styled.Text`
   width: ${({ theme }) => theme.rem(297)};
   color: ${({ theme }) => theme.grayscale.gray50};
   ${({ theme }) => theme.typography.b2};
+`;
+
+export const ReadMoreButton = styled.View`
+  margin-top: ${({ theme }) => theme.rem(8)};
+  width: 100%;
+  height: ${({ theme }) => theme.rem(16)};
+  align-self: flex-start;
+  justify-content: center;
+`;
+
+export const ReadMoreText = styled.Text`
+  color: ${({ theme }) => theme.grayscale.gray600};
+  ${({ theme }) => theme.typography["title4-semibold"]};
 `;

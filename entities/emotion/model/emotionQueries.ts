@@ -6,7 +6,7 @@ export function useHasRecordedToday() {
 	const currentMonth = today.slice(0, 7);
 
 	const { data: emotionRecords = [] } = useQuery({
-		queryKey: ["emotionRecords", currentMonth],
+		queryKey: ["emotionRecords", currentMonth, today],
 		queryFn: () => getEmotionRecords(currentMonth),
 		staleTime: 1000 * 60 * 5,
 	});
