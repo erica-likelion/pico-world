@@ -1,5 +1,6 @@
 import * as S from "@/features/home/style/CalendarUI.styles";
 import type { EmotionRecord } from "@/shared/types/emotion";
+import { format } from "date-fns";
 import { Text, TouchableOpacity, View } from "react-native";
 import { Calendar, type DateData } from "react-native-calendars";
 
@@ -8,6 +9,14 @@ type DateStyleMap = {
 		bg?: string;
 		text?: string;
 	};
+};
+
+const getTodayKST = () => {
+	const now = new Date();
+	const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+	const kstOffset = 9 * 60 * 60000;
+	const kstDate = new Date(utc + kstOffset);
+	return format(kstDate, "yyyy-MM-dd");
 };
 
 const CustomDay = ({
@@ -115,11 +124,16 @@ export function CalendarUI({
 	currentMonth,
 	onMonthChange,
 }: CalendarUIProps) {
-	const today = new Date().toISOString().split("T")[0];
+	const today = getTodayKST();
 
 	const dayColors: DateStyleMap = {};
 	emotionRecords.forEach((record) => {
-		const date = record.created_at.split("T")[0];
+		const recordDate = new Date(record.created_at);
+		const utc = recordDate.getTime() + recordDate.getTimezoneOffset() * 60000;
+		const kstOffset = 9 * 60 * 60000;
+		const kstDate = new Date(utc + kstOffset);
+		const date = format(kstDate, "yyyy-MM-dd");
+
 		dayColors[date] = {
 			bg: record.main_color,
 			text: record.text_color,

@@ -1,8 +1,10 @@
+import { postFeedback } from "@/entities/character/api/feedback";
 import { postRecord } from "@/features/record/api/PostRecord";
 import { putRecord } from "@/features/record/api/PutRecord";
 import type { EmotionChip } from "@/shared/types";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
+import { useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 
 type Phase = "explore" | "write" | "complete";
@@ -17,6 +19,7 @@ const ERROR_MESSAGES: Record<number, string> = {
 };
 
 export function useRecordFlow() {
+	const router = useRouter();
 	const [phase, setPhase] = useState<Phase>("explore");
 	const [selectedEmotion, setSelectedEmotion] = useState<EmotionChip | null>(
 		null,
@@ -25,6 +28,37 @@ export function useRecordFlow() {
 	const [isFriendOnly, setIsFriendOnly] = useState(false);
 	const [isToastVisible, setIsToastVisible] = useState(false);
 	const [toastMessage, setToastMessage] = useState("");
+	const [showConfirmModal, setShowConfirmModal] = useState(false);
+	const [updatedRecordId, setUpdatedRecordId] = useState<number | null>(null);
+	const [aiFeedbackCount, setAiFeedbackCount] = useState(0);
+
+	const initializeRecord = useCallback(
+		(record: {
+			emotion_name: string;
+			main_color: string;
+			sub_color: string;
+			text_color: string;
+			record: string;
+			is_shared: boolean;
+			ai_feedback_count: number;
+		}) => {
+			const chip: EmotionChip = {
+				label: record.emotion_name,
+				mainColor: record.main_color,
+				subColor: record.sub_color,
+				textColor: record.text_color,
+			};
+			setSelectedEmotion(chip);
+			setText(record.record);
+			setIsFriendOnly(record.is_shared);
+			setAiFeedbackCount(record.ai_feedback_count);
+		},
+		[],
+	);
+
+	const { mutate: feedbackMutate } = useMutation({
+		mutationFn: postFeedback,
+	});
 
 	const { mutateAsync: postRecordMutate, isPending: isSavingPost } =
 		useMutation<
@@ -33,8 +67,9 @@ export function useRecordFlow() {
 			Parameters<typeof postRecord>[0]
 		>({
 			mutationFn: postRecord,
-			onSuccess: () => {
+			onSuccess: (data) => {
 				setIsToastVisible(false);
+				feedbackMutate(data.record_id);
 				setPhase("complete");
 			},
 			onError: (error) => {
@@ -66,9 +101,19 @@ export function useRecordFlow() {
 		Parameters<typeof putRecord>
 	>({
 		mutationFn: ([id, payload]) => putRecord(id, payload),
-		onSuccess: () => {
+		onSuccess: (data) => {
 			setIsToastVisible(false);
-			setPhase("complete");
+			setUpdatedRecordId(data.record_id);
+			const newCount = aiFeedbackCount;
+			setAiFeedbackCount(newCount);
+
+			if (newCount >= 3) {
+				setToastMessage("피드백 횟수가 끝났습니다.");
+				setIsToastVisible(true);
+				router.push(`/journal/detail?id=${data.record_id}`);
+			} else {
+				setShowConfirmModal(true); // "답변 다시 받을거냐?" 모달 띄우기
+			}
 		},
 		onError: (error) => {
 			const status = error.response?.status;
@@ -91,6 +136,23 @@ export function useRecordFlow() {
 			setIsToastVisible(true);
 		},
 	});
+
+	const handleConfirmFeedback = () => {
+		if (updatedRecordId) {
+			feedbackMutate(updatedRecordId);
+		}
+		setShowConfirmModal(false);
+		setPhase("complete");
+	};
+
+	const handleCancelFeedback = () => {
+		setShowConfirmModal(false);
+		if (updatedRecordId) {
+			router.push(`/journal/detail?id=${updatedRecordId}`);
+		} else {
+			router.push("/journal");
+		}
+	};
 
 	const isSaving = isSavingPost || isSavingPut;
 
@@ -122,7 +184,7 @@ export function useRecordFlow() {
 				sub_color: selectedEmotion.subColor,
 				text_color: selectedEmotion.textColor ?? "#FFFFFF",
 				is_shared: isFriendOnly,
-				ai_feedback_count: 1,
+				ai_feedback_count: aiFeedbackCount + 1,
 			};
 
 			try {
@@ -135,7 +197,14 @@ export function useRecordFlow() {
 				console.log(error);
 			}
 		},
-		[isFriendOnly, postRecordMutate, putRecordMutate, selectedEmotion, text],
+		[
+			isFriendOnly,
+			postRecordMutate,
+			putRecordMutate,
+			selectedEmotion,
+			text,
+			aiFeedbackCount,
+		],
 	);
 
 	const handleBack = useCallback(() => {
@@ -162,5 +231,10 @@ export function useRecordFlow() {
 		isToastVisible,
 		toastMessage,
 		handleToastHide,
+		showConfirmModal,
+		handleConfirmFeedback,
+		handleCancelFeedback,
+		initializeRecord,
+		aiFeedbackCount,
 	};
 }
