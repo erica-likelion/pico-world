@@ -3,7 +3,7 @@ import { axiosInstance } from "@/shared/api/axios";
 export interface FriendRequestItem {
 	requestId: number;
 	requesterNickname: string;
-	profileImageUrl: string | null;
+	requesterProfileImageUrl: string | null;
 	requesterConnectCode: string;
 	createdAt: string;
 }

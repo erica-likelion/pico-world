@@ -1,6 +1,7 @@
 import UserIconImage from "@/shared/assets/icons/user.png";
 import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
 import * as S from "@/shared/style/ProfileButton.style";
+import { useDefaultImage } from "@/shared/utils/profileImage";
 
 interface ProfileButtonProps {
 	logged?: boolean;
@@ -37,6 +38,8 @@ export const ProfileButton = ({
 		}
 	};
 
+	const shouldUseDefaultImage = useDefaultImage(imageUrl);
+
 	return (
 		<S.Container
 			onPress={handlePress}
@@ -47,14 +50,16 @@ export const ProfileButton = ({
 		>
 			{logged && <S.OuterBorder />}
 
-			<S.Background $logged={logged} $isDefault={!imageUrl}>
+			<S.Background $logged={logged} $isDefault={shouldUseDefaultImage}>
 				{logged && (
 					<S.Guard>
 						<S.Text>완료!</S.Text>
 					</S.Guard>
 				)}
 
-				<S.ProfileImage source={imageUrl ? { uri: imageUrl } : UserIconImage} />
+				<S.ProfileImage
+					source={shouldUseDefaultImage ? UserIconImage : { uri: imageUrl }}
+				/>
 			</S.Background>
 		</S.Container>
 	);

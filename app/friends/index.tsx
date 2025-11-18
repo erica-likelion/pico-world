@@ -3,12 +3,13 @@ import { FriendsContent } from "@/features/friends/ui";
 import BellIcon from "@/shared/assets/icons/bell.svg";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { TopNav } from "@/widgets/TopNav/ui";
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useRef } from "react";
 import { ScrollView, View } from "react-native";
 
 export default function Friends() {
 	const { show } = useBottomNavStore();
+	const router = useRouter();
 	const { handleAddFriendPress, handleProfilePress } = useFriendsNavigation();
 	const scrollViewRef = useRef<ScrollView>(null);
 
@@ -22,9 +23,17 @@ export default function Friends() {
 		scrollViewRef.current?.scrollTo({ y: 0, animated: true });
 	}, []);
 
+	const handleNotificationPress = useCallback(() => {
+		router.push("/notifications");
+	}, [router]);
+
 	return (
 		<View style={{ flex: 1 }}>
-			<TopNav title="친구" rightIcon={<BellIcon />} />
+			<TopNav
+				title="친구"
+				rightIcon={<BellIcon />}
+				onRightPress={handleNotificationPress}
+			/>
 			<ScrollView
 				ref={scrollViewRef}
 				contentContainerStyle={{ alignItems: "center", flexGrow: 1 }}

@@ -8,6 +8,7 @@ import {
 	useUserNickname,
 	useUserProfileImageUrl,
 } from "@/entities/user/model/userQueries";
+import { getFriendFeed } from "@/features/friends/api/getFriendFeed";
 import { getFriendRequests } from "@/features/friends/api/getFriendRequests";
 import { getFriends, type Friend } from "@/features/friends/api/getFriends";
 import { getGreeting } from "@/features/friends/api/getGreeting";
@@ -70,6 +71,11 @@ export function FriendsContent({
 	const { data: greetingData } = useQuery({
 		queryKey: ["greeting", "friend-reminder"],
 		queryFn: () => getGreeting("friend-reminder"),
+	});
+
+	const { data: friendFeedData = [] } = useQuery({
+		queryKey: ["friendFeed"],
+		queryFn: getFriendFeed,
 	});
 
 	const acceptedFriends = friendsData ?? [];
@@ -266,6 +272,7 @@ export function FriendsContent({
 						<S.ProfileButtonWrapper key={friend.connectCode}>
 							<ProfileButton
 								imageUrl={friend.profileImageUrl ?? undefined}
+								logged={friend.hasRecordedToday ?? false}
 								pressable
 								onPress={() => openFriendBottomSheet(friend)}
 							/>
@@ -300,7 +307,8 @@ export function FriendsContent({
 								request={{
 									id: request.requestId.toString(),
 									name: request.requesterNickname,
-									profileImageUrl: request.profileImageUrl ?? undefined,
+									profileImageUrl:
+										request.requesterProfileImageUrl ?? undefined,
 								}}
 								timeLabel={formatTimeAgo(request.createdAt)}
 								onAccept={handleAcceptRequest}
@@ -317,16 +325,30 @@ export function FriendsContent({
 				</>
 			)}
 
-			<FriendsCard
-				name="루루"
-				date={new Date().toISOString().split("T")[0].replace(/-/g, ". ")}
-				emotionLabel="잔잔한"
-				description="한적한 카페에서 늦은 오후를 보냈어. 창밖으로 비가 내려서 마음이 조용히 가라앉더라. 따뜻한 라떼 한 잔에 마음이 느긋해진 느낌이야."
-			/>
+			{friendFeedData.map((feed, index) => (
+				<View key={feed.recordId}>
+					<FriendsCard
+						name={feed.authorNickname}
+						date={formatTimeAgo(feed.createdAt)}
+						emotionLabel={feed.emotionName}
+						description={feed.record}
+						avatarUrl={feed.requesterProfileImageUrl ?? ""}
+						mainColor={feed.mainColor}
+						textColor={feed.textColor}
+					/>
+					{index < friendFeedData.length - 1 && (
+						<S.DividerSpacing>
+							<Divider size="large" />
+						</S.DividerSpacing>
+					)}
+				</View>
+			))}
 
-			<S.DividerSpacing>
-				<Divider size="large" />
-			</S.DividerSpacing>
+			{friendFeedData.length > 0 && (
+				<S.DividerSpacing>
+					<Divider size="large" />
+				</S.DividerSpacing>
+			)}
 
 			<S.Footer>
 				<S.FooterText>

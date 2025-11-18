@@ -5,6 +5,7 @@ export interface Friend {
 	profileImageUrl: string | null;
 	connectCode: string;
 	name: string;
+	hasRecordedToday: boolean;
 }
 
 export async function getFriends(): Promise<Friend[]> {
