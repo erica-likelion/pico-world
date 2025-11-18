@@ -30,6 +30,31 @@ export function useRecordFlow() {
 	const [toastMessage, setToastMessage] = useState("");
 	const [showConfirmModal, setShowConfirmModal] = useState(false);
 	const [updatedRecordId, setUpdatedRecordId] = useState<number | null>(null);
+	const [aiFeedbackCount, setAiFeedbackCount] = useState(0);
+
+	const initializeRecord = useCallback(
+		(record: {
+			emotion_name: string;
+			main_color: string;
+			sub_color: string;
+			text_color: string;
+			record: string;
+			is_shared: boolean;
+			ai_feedback_count: number;
+		}) => {
+			const chip: EmotionChip = {
+				label: record.emotion_name,
+				mainColor: record.main_color,
+				subColor: record.sub_color,
+				textColor: record.text_color,
+			};
+			setSelectedEmotion(chip);
+			setText(record.record);
+			setIsFriendOnly(record.is_shared);
+			setAiFeedbackCount(record.ai_feedback_count);
+		},
+		[],
+	);
 
 	const { mutate: feedbackMutate } = useMutation({
 		mutationFn: postFeedback,
@@ -79,7 +104,16 @@ export function useRecordFlow() {
 		onSuccess: (data) => {
 			setIsToastVisible(false);
 			setUpdatedRecordId(data.record_id);
-			setShowConfirmModal(true); // "답변 다시 받을거냐?" 모달 띄우기
+			const newCount = aiFeedbackCount;
+			setAiFeedbackCount(newCount);
+
+			if (newCount >= 3) {
+				setToastMessage("피드백 횟수가 끝났습니다.");
+				setIsToastVisible(true);
+				router.push(`/journal/detail?id=${data.record_id}`);
+			} else {
+				setShowConfirmModal(true); // "답변 다시 받을거냐?" 모달 띄우기
+			}
 		},
 		onError: (error) => {
 			const status = error.response?.status;
@@ -113,7 +147,11 @@ export function useRecordFlow() {
 
 	const handleCancelFeedback = () => {
 		setShowConfirmModal(false);
-		router.push("/journal");
+		if (updatedRecordId) {
+			router.push(`/journal/detail?id=${updatedRecordId}`);
+		} else {
+			router.push("/journal");
+		}
 	};
 
 	const isSaving = isSavingPost || isSavingPut;
@@ -146,7 +184,7 @@ export function useRecordFlow() {
 				sub_color: selectedEmotion.subColor,
 				text_color: selectedEmotion.textColor ?? "#FFFFFF",
 				is_shared: isFriendOnly,
-				ai_feedback_count: 1,
+				ai_feedback_count: aiFeedbackCount + 1,
 			};
 
 			try {
@@ -159,7 +197,14 @@ export function useRecordFlow() {
 				console.log(error);
 			}
 		},
-		[isFriendOnly, postRecordMutate, putRecordMutate, selectedEmotion, text],
+		[
+			isFriendOnly,
+			postRecordMutate,
+			putRecordMutate,
+			selectedEmotion,
+			text,
+			aiFeedbackCount,
+		],
 	);
 
 	const handleBack = useCallback(() => {
@@ -189,5 +234,7 @@ export function useRecordFlow() {
 		showConfirmModal,
 		handleConfirmFeedback,
 		handleCancelFeedback,
+		initializeRecord,
+		aiFeedbackCount,
 	};
 }

@@ -4,7 +4,7 @@ interface FeedBackResponse {
 	feedbackId: number;
 	recordId: number;
 	aiReply: string;
-	attempts: number;
+	attemptsUsed: number;
 	createdAt: string;
 	updatedAt: string;
 }

@@ -15,7 +15,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ScrollView, View } from "react-native";
+import { ActivityIndicator, ScrollView, View } from "react-native";
 
 const getTodayKST = () => {
 	const now = new Date();
@@ -32,9 +32,6 @@ export default function Home() {
 	const queryClient = useQueryClient();
 
 	const [selectedDate, setSelectedDate] = useState<string>(today);
-	const [selectedRecord, setSelectedRecord] = useState<EmotionRecord | null>(
-		null,
-	);
 	const [currentMonth, setCurrentMonth] = useState<string>(today.slice(0, 7));
 
 	const [isToastVisible, setIsToastVisible] = useState(false); // Toast state
@@ -54,10 +51,29 @@ export default function Home() {
 		setIsToastVisible(false);
 	}, []);
 
-	const { data: emotionRecords = [], refetch } = useQuery<EmotionRecord[]>({
+	const {
+		data: emotionRecords = [],
+		refetch,
+		isLoading,
+	} = useQuery<EmotionRecord[]>({
 		queryKey: ["emotionRecords", currentMonth],
 		queryFn: () => getEmotionRecords(currentMonth),
 	});
+
+	const selectedRecord = useMemo(() => {
+		if (selectedDate.startsWith(currentMonth)) {
+			const recordForSelectedDate = emotionRecords.find((r) => {
+				const recordDate = new Date(r.created_at);
+				const utc =
+					recordDate.getTime() + recordDate.getTimezoneOffset() * 60000;
+				const kstOffset = 9 * 60 * 60000;
+				const kstDate = new Date(utc + kstOffset);
+				return format(kstDate, "yyyy-MM-dd") === selectedDate;
+			});
+			return recordForSelectedDate || null;
+		}
+		return null;
+	}, [emotionRecords, selectedDate, currentMonth]);
 
 	useFocusEffect(
 		useCallback(() => {
@@ -71,7 +87,6 @@ export default function Home() {
 			queryClient.invalidateQueries({
 				queryKey: ["emotionRecords", currentMonth],
 			});
-			setSelectedRecord(null);
 			bottomSheetRef.current?.dismiss();
 		},
 		onError: (error) => {
@@ -83,30 +98,8 @@ export default function Home() {
 		show();
 	}, [show]);
 
-	useEffect(() => {
-		if (selectedDate.startsWith(currentMonth)) {
-			const recordForSelectedDate = emotionRecords.find((r) => {
-				const recordDate = new Date(r.created_at);
-				const utc =
-					recordDate.getTime() + recordDate.getTimezoneOffset() * 60000;
-				const kstOffset = 9 * 60 * 60000;
-				const kstDate = new Date(utc + kstOffset);
-				return format(kstDate, "yyyy-MM-dd") === selectedDate;
-			});
-			setSelectedRecord(recordForSelectedDate || null);
-		}
-	}, [emotionRecords, selectedDate, currentMonth]);
-
 	const handleDateSelect = (dateString: string) => {
 		setSelectedDate(dateString);
-		const record = emotionRecords.find((r) => {
-			const recordDate = new Date(r.created_at);
-			const utc = recordDate.getTime() + recordDate.getTimezoneOffset() * 60000;
-			const kstOffset = 9 * 60 * 60000;
-			const kstDate = new Date(utc + kstOffset);
-			return format(kstDate, "yyyy-MM-dd") === dateString;
-		});
-		setSelectedRecord(record || null);
 	};
 
 	const handleMonthChange = (month: string) => {
@@ -125,8 +118,10 @@ export default function Home() {
 	const characterName = greetingData?.characterName as
 		| CharacterName
 		| undefined;
+	console.log("characterName", characterName);
 	const characterImage = useMemo(() => {
 		const foundCharacter = Character.find((c) => c.name === characterName);
+		console.log("characterImage", characterImage);
 		return foundCharacter ? foundCharacter.image : undefined;
 	}, [characterName]);
 
@@ -153,7 +148,9 @@ export default function Home() {
 						message={greetingData?.message?.replace(/"/g, "") ?? "..."}
 					/>
 				</View>
-				{isTodayHistory && selectedRecord ? (
+				{isLoading ? (
+					<ActivityIndicator style={{ marginVertical: 20 }} />
+				) : isTodayHistory && selectedRecord ? (
 					<TodayHistory
 						record={selectedRecord}
 						AIImage={characterImage}

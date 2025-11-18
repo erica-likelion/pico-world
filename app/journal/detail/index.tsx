@@ -4,6 +4,7 @@ import type { CharacterName } from "@/entities/character/model/characterMessages
 import { getEmotionRecord } from "@/features/journal/api/emotion";
 import { TodayHistory } from "@/features/journal/ui";
 import EditIcon from "@/shared/assets/icons/edit.svg";
+import { useHideBottomNav } from "@/shared/hooks/useHideBottomNav";
 import { TopNav } from "@/widgets/TopNav/ui";
 import { useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -11,6 +12,7 @@ import { useMemo } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 export default function JournalDetail() {
+	useHideBottomNav();
 	const router = useRouter();
 	const { id } = useLocalSearchParams<{ id: string }>();
 
@@ -45,7 +47,7 @@ export default function JournalDetail() {
 				title="내 기록"
 				leftIcon={true}
 				rightIcon={<EditIcon />}
-				onLeftPress={() => router.back()}
+				onLeftPress={() => router.push("/journal")}
 				onRightPress={handleEditPress}
 			/>
 			<ScrollView
