@@ -1,247 +1,221 @@
-import { grayscale } from "@/shared/config/theme/Colors";
-import { StyleSheet } from "react-native";
-import type { DefaultTheme } from "styled-components/native";
+import PolygonIcon from "@/shared/assets/icons/polygon.svg";
+import styled from "styled-components/native";
 
-export const createFriendInviteBottomSheetStyles = (theme: DefaultTheme) => {
-	const rem = (value: number) => parseFloat(theme.rem(value));
+export const Container = styled.View`
+  width: 100%;
+  padding: ${({ theme }) => theme.rem(16)};
+  border-top-left-radius: ${({ theme }) => theme.rem(36)};
+  border-top-right-radius: ${({ theme }) => theme.rem(36)};
+  background-color: ${({ theme }) => theme.grayscale.gray950};
+  gap: ${({ theme }) => theme.rem(16)};
+`;
 
-	return StyleSheet.create({
-		container: {
-			width: "100%",
-			padding: rem(16),
-			borderTopLeftRadius: rem(36),
-			borderTopRightRadius: rem(36),
-			backgroundColor: grayscale.gray950,
-			gap: rem(16),
-		},
-		bottomSheet: {
-			zIndex: 1000,
-			elevation: 1000,
-		},
-		header: {
-			alignItems: "center",
-			alignSelf: "stretch",
-			gap: rem(16),
-		},
-		titleWrapper: {
-			alignItems: "center",
-			gap: rem(16),
-		},
-		title: {
-			overflow: "hidden",
-			color: grayscale.gray100,
-			textAlign: "center",
-			fontFamily: "Pretendard-SemiBold",
-			fontWeight: "600",
-			fontSize: 16,
-			lineHeight: 20,
-			letterSpacing: -0.32,
-		},
-		contentGroup: {
-			flexDirection: "column",
-			alignItems: "center",
-			alignSelf: "stretch",
-			gap: rem(16),
-		},
-		speechBubbleContainer: {
-			position: "relative",
-			alignSelf: "stretch",
-			alignItems: "center",
-		},
-		speechBubble: {
-			paddingVertical: rem(10),
-			paddingHorizontal: rem(16),
-			borderRadius: 20,
-			backgroundColor: grayscale.gray800,
-			maxWidth: "100%",
-		},
-		speechBubbleText: {
-			color: grayscale.gray100,
-			fontFamily: "Pretendard-Regular",
-			fontSize: 16,
-			lineHeight: 24,
-			letterSpacing: -0.32,
-		},
-		speechBubbleArrow: {
-			position: "absolute",
-			bottom: -rem(13),
-			width: rem(23),
-			height: rem(23),
-		},
-		characterWrapper: {
-			alignItems: "center",
-			justifyContent: "center",
-		},
-		characterGradient: {
-			width: rem(124),
-			height: rem(124),
-			borderRadius: rem(62),
-			alignItems: "center",
-			justifyContent: "center",
-			shadowColor: "rgba(246, 115, 31, 0.5)",
-			shadowOpacity: 1,
-			shadowOffset: { width: 0, height: 0 },
-			shadowRadius: rem(30),
-			elevation: 20,
-		},
-		characterImage: {
-			width: rem(108),
-			height: rem(108),
-			resizeMode: "contain",
-		},
-		codeOwnerRow: {
-			flexDirection: "row",
-			alignItems: "center",
-			gap: rem(10),
-			alignSelf: "stretch",
-		},
-		codeOwnerTexts: {
-			flexDirection: "row",
-			alignItems: "center",
-			gap: rem(4),
-		},
-		friendName: {
-			color: grayscale.white,
-			fontFamily: "Pretendard-SemiBold",
-			fontWeight: "500",
-			fontSize: 14,
-			lineHeight: 16,
-			letterSpacing: -0.28,
-		},
-		friendCodeLabel: {
-			color: grayscale.gray200,
-			fontFamily: "Pretendard-SemiBold",
-			fontWeight: "500",
-			fontSize: 14,
-			lineHeight: 16,
-			letterSpacing: -0.28,
-		},
-		codeDisplay: {
-			flexDirection: "row",
-			alignItems: "center",
-			justifyContent: "space-between",
-			alignSelf: "stretch",
-			paddingTop: rem(8),
-			paddingBottom: rem(8),
-			paddingRight: rem(8),
-			paddingLeft: rem(16),
-			borderRadius: rem(20),
-			borderWidth: 1,
-			borderColor: grayscale.gray700,
-			backgroundColor: grayscale.black,
-			gap: rem(8),
-		},
-		codeText: {
-			color: grayscale.gray50,
-			fontFamily: "Pretendard-Regular",
-			fontSize: 16,
-			lineHeight: 24,
-			letterSpacing: -0.32,
-		},
-		copyButton: {
-			flexDirection: "row",
-			alignItems: "center",
-			justifyContent: "center",
-			paddingVertical: rem(10),
-			paddingHorizontal: rem(14),
-			borderRadius: 40,
-			backgroundColor: grayscale.gray800,
-			borderWidth: 1,
-			borderColor: "transparent",
-			gap: rem(4),
-		},
-		copyButtonActive: {
-			borderColor: grayscale.gray500,
-			backgroundColor: grayscale.gray800,
-		},
-		copyButtonText: {
-			color: grayscale.gray200,
-			fontFamily: "Pretendard-SemiBold",
-			fontWeight: "500",
-			fontSize: 16,
-			lineHeight: 20,
-			letterSpacing: -0.32,
-		},
-		copyButtonTextActive: {
-			color: grayscale.white,
-		},
-		copyButtonIcon: {
-			marginLeft: 0,
-		},
-		infoText: {
-			color: grayscale.gray200,
-			textAlign: "center",
-			fontFamily: "Pretendard-Regular",
-			fontSize: 14,
-			lineHeight: 20,
-			letterSpacing: -0.28,
-			alignSelf: "stretch",
-		},
-		promptRow: {
-			flexDirection: "row",
-			alignItems: "center",
-			gap: rem(4),
-			alignSelf: "stretch",
-		},
-		promptQuestion: {
-			color: grayscale.white,
-			fontFamily: "Pretendard-SemiBold",
-			fontWeight: "500",
-			fontSize: 14,
-			lineHeight: 16,
-			letterSpacing: -0.28,
-		},
-		promptAction: {
-			color: grayscale.gray200,
-			fontFamily: "Pretendard-SemiBold",
-			fontWeight: "500",
-			fontSize: 14,
-			lineHeight: 16,
-			letterSpacing: -0.28,
-		},
-		codeEntryContainer: {
-			flexDirection: "row",
-			alignItems: "center",
-			justifyContent: "space-between",
-			alignSelf: "stretch",
-			paddingVertical: rem(8),
-			paddingRight: rem(8),
-			paddingLeft: rem(16),
-			borderRadius: 20,
-			borderWidth: 1,
-			borderColor: grayscale.gray700,
-			backgroundColor: grayscale.black,
-			gap: rem(8),
-		},
-		codeEntryInput: {
-			flex: 1,
-			color: grayscale.gray50,
-			fontFamily: "Pretendard-Regular",
-			fontSize: 16,
-			lineHeight: 24,
-			letterSpacing: -0.32,
-			paddingVertical: rem(4),
-		},
-		codeEntryButton: {
-			height: rem(44),
-			paddingVertical: rem(10),
-			paddingHorizontal: rem(14),
-			borderRadius: 40,
-			backgroundColor: grayscale.gray800,
-			alignItems: "center",
-			justifyContent: "center",
-		},
-		codeEntryButtonText: {
-			color: grayscale.gray200,
-			fontFamily: "Pretendard-SemiBold",
-			fontWeight: "500",
-			fontSize: 16,
-			lineHeight: 20,
-			letterSpacing: -0.32,
-		},
-	});
-};
+export const BottomSheet = styled.View`
+  z-index: 1000;
+  elevation: 1000;
+`;
 
-export type FriendInviteBottomSheetStyles = ReturnType<
-	typeof createFriendInviteBottomSheetStyles
->;
+export const Header = styled.View`
+  align-items: center;
+  align-self: stretch;
+  gap: ${({ theme }) => theme.rem(16)};
+`;
+
+export const TitleWrapper = styled.View`
+  align-items: center;
+  gap: ${({ theme }) => theme.rem(16)};
+`;
+
+export const Title = styled.Text`
+  ${({ theme }) => theme.typography["title2-semibold"]};
+  overflow: hidden;
+  color: ${({ theme }) => theme.grayscale.gray100};
+  text-align: center;
+`;
+
+export const ContentGroup = styled.View`
+  flex-direction: column;
+  align-items: center;
+  align-self: stretch;
+  gap: ${({ theme }) => theme.rem(16)};
+`;
+
+export const SpeechBubbleContainer = styled.View`
+  position: relative;
+  align-self: stretch;
+  align-items: center;
+`;
+
+export const SpeechBubble = styled.View`
+  padding-vertical: ${({ theme }) => theme.rem(10)};
+  padding-horizontal: ${({ theme }) => theme.rem(16)};
+  border-radius: 20px;
+  background-color: ${({ theme }) => theme.grayscale.gray800};
+  max-width: 100%;
+`;
+
+export const SpeechBubbleText = styled.Text`
+  color: ${({ theme }) => theme.grayscale.gray100};
+  ${({ theme }) => theme.typography.b2};
+`;
+
+export const SpeechBubbleArrow = styled(PolygonIcon)`
+  position: absolute;
+  bottom: -10px;
+  width: ${({ theme }) => theme.rem(23)};
+  height: ${({ theme }) => theme.rem(23)};
+`;
+
+export const CharacterWrapper = styled.View`
+  align-items: center;
+  justify-content: center;
+`;
+
+export const CharacterGradient = styled.View<{ boxShadow: string }>`
+  width: ${({ theme }) => theme.rem(124)};
+  height: ${({ theme }) => theme.rem(124)};
+  border-radius: ${({ theme }) => theme.rem(62)};
+  align-items: center;
+  justify-content: center;
+  shadow-color: ${({ boxShadow }) => boxShadow};
+  shadow-offset: ${({ theme }) => theme.rem(4)} ${({ theme }) => theme.rem(4)};
+  shadow-opacity: 1;
+  shadow-radius: ${({ theme }) => theme.rem(30)};
+  elevation: 12;
+  overflow: visible;
+`;
+
+export const CharacterImage = styled.Image`
+  width: ${({ theme }) => theme.rem(124)};
+  height: ${({ theme }) => theme.rem(124)};
+  resize-mode: contain;
+`;
+
+export const CodeOwnerRow = styled.View`
+  flex-direction: row;
+  align-items: center;
+  gap: ${({ theme }) => theme.rem(10)};
+  align-self: stretch;
+`;
+
+export const CodeOwnerTexts = styled.View`
+  flex-direction: row;
+  align-items: center;
+  gap: ${({ theme }) => theme.rem(4)};
+`;
+
+export const FriendName = styled.Text`
+  color: ${({ theme }) => theme.grayscale.white};
+  ${({ theme }) => theme.typography["title3-semibold"]};
+`;
+
+export const FriendCodeLabel = styled.Text`
+  color: ${({ theme }) => theme.grayscale.gray200};
+  ${({ theme }) => theme.typography["title3-medium"]};
+`;
+
+export const CodeDisplay = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  align-self: stretch;
+  padding-top: ${({ theme }) => theme.rem(8)};
+  padding-bottom: ${({ theme }) => theme.rem(8)};
+  padding-right: ${({ theme }) => theme.rem(8)};
+  padding-left: ${({ theme }) => theme.rem(16)};
+  border-radius: ${({ theme }) => theme.rem(20)};
+  border-width: 1px;
+  border-color: ${({ theme }) => theme.grayscale.gray700};
+  background-color: ${({ theme }) => theme.grayscale.black};
+  gap: ${({ theme }) => theme.rem(8)};
+`;
+
+export const CodeText = styled.Text`
+  color: ${({ theme }) => theme.grayscale.gray50};
+  ${({ theme }) => theme.typography.b2};
+`;
+
+export const CopyButton = styled.TouchableOpacity<{ active?: boolean }>`
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding-vertical: ${({ theme }) => theme.rem(10)};
+  padding-horizontal: ${({ theme }) => theme.rem(14)};
+  border-radius: 40px;
+  background-color: ${({ theme }) => theme.grayscale.gray800};
+  border-width: 1px;
+  border-color: ${({ active, theme }) =>
+		active ? theme.grayscale.gray500 : "transparent"};
+  gap: ${({ theme }) => theme.rem(4)};
+`;
+
+export const CopyButtonText = styled.Text<{ active?: boolean }>`
+  color: ${({ active, theme }) =>
+		active ? theme.grayscale.white : theme.grayscale.gray200};
+  ${({ theme }) => theme.typography["title2-medium"]};
+`;
+
+export const CopyButtonIcon = styled.View`
+  margin-left: 0;
+`;
+
+export const InfoText = styled.Text`
+  color: ${({ theme }) => theme.grayscale.gray200};
+  text-align: center;
+  ${({ theme }) => theme.typography.b3};
+  align-self: stretch;
+`;
+
+export const PromptRow = styled.View`
+  flex-direction: row;
+  align-items: center;
+  gap: ${({ theme }) => theme.rem(4)};
+  align-self: stretch;
+`;
+
+export const PromptQuestion = styled.Text`
+  color: ${({ theme }) => theme.grayscale.white};
+  ${({ theme }) => theme.typography["title3-semibold"]};
+`;
+
+export const PromptAction = styled.Text`
+  color: ${({ theme }) => theme.grayscale.gray200};
+  ${({ theme }) => theme.typography["title3-medium"]};
+`;
+
+export const CodeEntryContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  align-self: stretch;
+  padding-vertical: ${({ theme }) => theme.rem(8)};
+  padding-right: ${({ theme }) => theme.rem(8)};
+  padding-left: ${({ theme }) => theme.rem(16)};
+  border-radius: 20px;
+  border-width: 1px;
+  border-color: ${({ theme }) => theme.grayscale.gray700};
+  background-color: ${({ theme }) => theme.grayscale.black};
+  gap: ${({ theme }) => theme.rem(8)};
+`;
+
+export const CodeEntryInput = styled.TextInput.attrs(() => ({}))`
+  flex: 1;
+  color: ${({ theme }) => theme.grayscale.gray50};
+  ${({ theme }) => theme.typography.b2};
+  align-items: center;
+`;
+
+export const CodeEntryButton = styled.TouchableOpacity`
+  height: ${({ theme }) => theme.rem(44)};
+  padding-vertical: ${({ theme }) => theme.rem(10)};
+  padding-horizontal: ${({ theme }) => theme.rem(14)};
+  border-radius: 40px;
+  background-color: ${({ theme }) => theme.grayscale.gray800};
+  align-items: center;
+  justify-content: center;
+`;
+
+export const CodeEntryButtonText = styled.Text`
+  color: ${({ theme }) => theme.grayscale.gray200};
+  ${({ theme }) => theme.typography["title2-medium"]};
+`;

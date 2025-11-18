@@ -13,12 +13,15 @@ const CHARACTER_NAMES: readonly CharacterName[] = [
 	"파파",
 ] as const;
 
-export function useUserCharacter() {
-	const { data } = useQuery({
+const useUserInfoQuery = () =>
+	useQuery({
 		queryKey: USER_INFO_QUERY_KEY,
 		queryFn: getUserInfo,
 		staleTime: 1000 * 60 * 5,
 	});
+
+export function useUserCharacter() {
+	const { data } = useUserInfoQuery();
 
 	const apiName = data?.characterInfo?.name;
 
@@ -27,6 +30,21 @@ export function useUserCharacter() {
 	}
 
 	return DEFAULT_CHARACTER;
+}
+
+export function useUserConnectCode() {
+	const { data } = useUserInfoQuery();
+	return data?.connectCode ?? "";
+}
+
+export function useUserNickname() {
+	const { data } = useUserInfoQuery();
+	return data?.nickname ?? "";
+}
+
+export function useUserProfileImageUrl() {
+	const { data } = useUserInfoQuery();
+	return data?.profileImageUrl ?? null;
 }
 
 export function useInvalidateUserInfo() {

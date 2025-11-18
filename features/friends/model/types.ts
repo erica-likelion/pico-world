@@ -9,5 +9,5 @@ export interface FriendMessage {
 export interface FriendRequest {
 	id: string;
 	name: string;
-	avatarUrl?: string;
+	profileImageUrl?: string;
 }

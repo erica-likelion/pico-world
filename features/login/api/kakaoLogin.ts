@@ -31,7 +31,8 @@ export const kakaoLogin = async (
 
 	await AsyncStorage.setItem("accessToken", accessToken);
 	await AsyncStorage.setItem("refreshToken", refreshToken);
-
+	console.log("accessToken", accessToken);
+	console.log("refreshToken", refreshToken);
 	const setupNotifications = async () => {
 		const token = await registerForPushNotificationsAsync();
 		if (token) {
