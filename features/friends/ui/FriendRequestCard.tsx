@@ -3,32 +3,30 @@ import * as S from "@/features/friends/style/FriendRequestCard.styles";
 import { Avatar, Button } from "@/shared/ui";
 
 interface FriendRequestCardProps {
-	profileName: string;
 	request: FriendRequest;
 	onAccept: (request: FriendRequest) => void;
 	onReject: (requestId: string) => void;
-	timeLabel?: string;
+	timeLabel: string;
 }
 
 export function FriendRequestCard({
-	profileName,
 	request,
 	onAccept,
 	onReject,
-	timeLabel = "1시간 전",
+	timeLabel,
 }: FriendRequestCardProps) {
 	return (
 		<S.Container>
 			<S.Header>
 				<S.Title>
-					<S.TitleStrong>{profileName}님 </S.TitleStrong>
+					<S.TitleStrong>{request.name}님 </S.TitleStrong>
 					<S.TitleText>의 새로운 친구 요청이 있어요.</S.TitleText>
 				</S.Title>
 				<S.Time>{timeLabel}</S.Time>
 			</S.Header>
 
 			<S.User>
-				<Avatar size="small" imageUrl={request.avatarUrl} />
+				<Avatar size="small" imageUrl={request.profileImageUrl ?? undefined} />
 				<S.UserName>{request.name}</S.UserName>
 			</S.User>
 

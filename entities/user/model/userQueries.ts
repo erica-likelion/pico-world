@@ -42,6 +42,11 @@ export function useUserNickname() {
 	return data?.nickname ?? "";
 }
 
+export function useUserProfileImageUrl() {
+	const { data } = useUserInfoQuery();
+	return data?.profileImageUrl ?? null;
+}
+
 export function useInvalidateUserInfo() {
 	const queryClient = useQueryClient();
 	return () => queryClient.invalidateQueries({ queryKey: USER_INFO_QUERY_KEY });

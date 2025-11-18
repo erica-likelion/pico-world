@@ -1,22 +1,16 @@
 import { axiosInstance } from "@/shared/api/axios";
+import type { ApiResponse } from "@/shared/types/api";
 
 interface SendFriendRequestParams {
 	connectCode: string;
 }
 
-interface SendFriendRequestResponse {
-	code: number;
-	message: string;
-	data: unknown;
-}
-
 export const sendFriendRequest = async (
 	params: SendFriendRequestParams,
-): Promise<SendFriendRequestResponse> => {
-	const response = await axiosInstance.post<SendFriendRequestResponse>(
+): Promise<ApiResponse<unknown>> => {
+	const response = await axiosInstance.post<unknown>(
 		"/api/v1/friends/request",
 		params,
 	);
-
-	return response.data;
+	return response;
 };

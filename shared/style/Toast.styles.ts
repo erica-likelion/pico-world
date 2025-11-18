@@ -1,5 +1,5 @@
-import styled from "styled-components/native";
 import { Animated } from "react-native";
+import styled from "styled-components/native";
 
 export const Container = styled.View`
   position: absolute;
@@ -10,14 +10,14 @@ export const Container = styled.View`
 `;
 
 export const ToastWrapper = styled(Animated.View)`
-  max-width: 80%;
-  padding: ${({ theme }) => theme.rem(12)} ${({ theme }) => theme.rem(16)};
+  width: 90%;
+  padding: ${({ theme }) => theme.rem(20)};
   border-radius: ${({ theme }) => theme.rem(24)};
-  background-color: rgba(16, 16, 16, 0.9);
+  background-color: ${({ theme }) => theme.grayscale.gray800};
 `;
 
 export const ToastText = styled(Animated.Text)`
-  color: #ffffff;
-  font-size: ${({ theme }) => theme.rem(14)};
-  text-align: center;
+  color: ${({ theme }) => theme.grayscale.white};
+  ${({ theme }) => theme.typography["title3-medium"]};
+  text-align: start;
 `;

@@ -2,7 +2,7 @@ import { axiosInstance } from "@/shared/api/axios";
 
 export interface GreetingData {
 	message: string;
-	characterName: string;
+	characterName: string | null;
 	context: string;
 	hasRecordedToday: boolean | null;
 }

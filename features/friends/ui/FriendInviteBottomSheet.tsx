@@ -1,5 +1,13 @@
 import { Character } from "@/entities/character/model/character";
-import { useUserNickname } from "@/entities/user/model/userQueries";
+import {
+	CharacterName,
+	DEFAULT_CHARACTER,
+} from "@/entities/character/model/characterMessages";
+import {
+	useUserNickname,
+	useUserProfileImageUrl,
+} from "@/entities/user/model/userQueries";
+import { getFriends } from "@/features/friends/api/getFriends";
 import { getGreeting } from "@/features/friends/api/getGreeting";
 import { sendFriendRequest } from "@/features/friends/api/sendFriendRequest";
 import { useInviteCodeCopy } from "@/features/friends/model/hooks/useInviteCodeCopy";
@@ -12,9 +20,9 @@ import {
 	type BottomSheetRef,
 } from "@/shared/ui/bottomSheet/CustomBottomSheet";
 import { Divider } from "@/shared/ui/Divider";
-import { useMutation } from "@tanstack/react-query";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { TextInput, TouchableOpacity } from "react-native";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { TextInput, TouchableOpacity, View } from "react-native";
 import { useTheme } from "styled-components/native";
 
 interface FriendInviteBottomSheetProps {
@@ -27,13 +35,14 @@ interface FriendInviteBottomSheetProps {
 
 export function FriendInviteBottomSheet({
 	bottomSheetRef,
-	snapPoints = ["80%"],
+	snapPoints = ["82%"],
 	profileName,
 	inviteCode,
 	onEnterCode,
 }: FriendInviteBottomSheetProps) {
 	const theme = useTheme();
 	const nickname = useUserNickname();
+	const profileImageUrl = useUserProfileImageUrl();
 	const { isCopied, handleCopy } = useInviteCodeCopy({ inviteCode });
 	const [enteredCode, setEnteredCode] = useState("");
 	const codeInputRef = useRef<TextInput>(null);
@@ -45,33 +54,50 @@ export function FriendInviteBottomSheet({
 		setIsToastVisible(true);
 	}, []);
 
-	// 인사
-	const { data: greetingData, mutate: fetchGreeting } = useMutation({
-		mutationFn: () => getGreeting("friend-invite"),
+	const FRIEND_LIMIT = 5;
+	const { data: friends = [] } = useQuery({
+		queryKey: ["friends"],
+		queryFn: getFriends,
+	});
+
+	//인사
+	const { data: greetingData } = useQuery({
+		queryKey: ["greeting", "friend-invite"],
+		queryFn: () => getGreeting("friend-invite"),
+		retry: false,
 	});
 
 	// 친구 요청
 	const { mutate: sendFriendRequestMutate } = useMutation({
 		mutationFn: sendFriendRequest,
 		onSuccess: (data) => {
-			console.log("친구 요청 성공:", data);
 			const trimmed = enteredCode.trim();
+			showToast("친구 요청을 보냈어요!");
 			bottomSheetRef.current?.close();
 			onEnterCode?.(trimmed);
 			setEnteredCode("");
 		},
-		onError: (error) => {
-			console.error("친구 요청 실패:", error);
-			showToast("친구 요청 실패");
+		onError: (error: unknown) => {
+			let errorMessage = "친구 요청에 실패했습니다.";
+
+			if (error && typeof error === "object" && "response" in error) {
+				const axiosError = error as {
+					response?: { data?: { message?: string } };
+				};
+				if (axiosError.response?.data?.message) {
+					errorMessage = axiosError.response.data.message;
+				}
+			} else if (error instanceof Error) {
+				errorMessage = error.message;
+			}
+
+			showToast(errorMessage);
 		},
 	});
 
-	useEffect(() => {
-		fetchGreeting();
-	}, [fetchGreeting]);
-
 	const AICharacter = useMemo(() => {
-		const characterName = greetingData?.characterName || "츠츠";
+		const characterName: CharacterName =
+			(greetingData?.characterName as CharacterName) || DEFAULT_CHARACTER;
 		return (
 			Character.find((char) => char.name === characterName) || Character[0]
 		);
@@ -88,11 +114,14 @@ export function FriendInviteBottomSheet({
 			return;
 		}
 
+		if (friends.length >= FRIEND_LIMIT) {
+			showToast("친구가 이미 꽉찼어요");
+			return;
+		}
+
 		const requestCode = {
 			connectCode: trimmed,
 		};
-
-		console.log("친구 요청 전송:", requestCode);
 		sendFriendRequestMutate(requestCode);
 	};
 
@@ -123,7 +152,7 @@ export function FriendInviteBottomSheet({
 					</S.CharacterWrapper>
 
 					<S.CodeOwnerRow>
-						<Avatar size="small" />
+						<Avatar size="small" imageUrl={profileImageUrl ?? undefined} />
 						<S.CodeOwnerTexts>
 							<S.FriendName>{nickname}</S.FriendName>
 							<S.FriendCodeLabel>님의 초대 코드</S.FriendCodeLabel>
@@ -148,14 +177,6 @@ export function FriendInviteBottomSheet({
 					<TouchableOpacity activeOpacity={0.8} onPress={handleFocusCodeEntry}>
 						<S.PromptAction>초대 코드 입력하기</S.PromptAction>
 					</TouchableOpacity>
-					<Toast
-						visible={isToastVisible}
-						message={toastMessage}
-						onHide={() => {
-							setIsToastVisible(false);
-							setToastMessage("");
-						}}
-					/>
 				</S.PromptRow>
 
 				<S.CodeEntryContainer>
@@ -178,6 +199,16 @@ export function FriendInviteBottomSheet({
 					</S.CodeEntryButton>
 				</S.CodeEntryContainer>
 			</S.Container>
+			<View style={{ position: "absolute", bottom: 30, left: 0, right: 0 }}>
+				<Toast
+					visible={isToastVisible}
+					message={toastMessage}
+					onHide={() => {
+						setIsToastVisible(false);
+						setToastMessage("");
+					}}
+				/>
+			</View>
 		</CustomBottomSheet>
 	);
 }
