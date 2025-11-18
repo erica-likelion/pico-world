@@ -1,4 +1,4 @@
-import { useUserCharacter } from "@/entities/user/model/userQueries";
+import { getFeedback } from "@/entities/character/api/feedback";
 import { getEmotionRecord } from "@/features/journal/api/emotion";
 import { useRecordFlow } from "@/features/record/model/useRecordFlow";
 import {
@@ -7,17 +7,15 @@ import {
 	EmotionWrite,
 } from "@/features/record/ui";
 import { useHideBottomNav } from "@/shared/hooks/useHideBottomNav";
-import type { EmotionChip } from "@/shared/types";
-import { ConfirmModal, EditCompleteModal, Toast } from "@/shared/ui";
+import { ConfirmModal, Toast } from "@/shared/ui";
 import { TopNav } from "@/widgets/TopNav/ui";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 
 export default function RecordEdit() {
 	const {
 		phase,
 		selectedEmotion,
-		setSelectedEmotion,
 		text,
 		setText,
 		isFriendOnly,
@@ -29,19 +27,16 @@ export default function RecordEdit() {
 		isToastVisible,
 		toastMessage,
 		handleToastHide,
+		initializeRecord,
+		aiFeedbackCount,
+		showConfirmModal,
+		handleConfirmFeedback,
+		handleCancelFeedback,
 	} = useRecordFlow();
 	const router = useRouter();
 	const params = useLocalSearchParams();
-	const userCharacter = useUserCharacter();
 	useHideBottomNav();
-	const [isEditCompleteModalVisible, setIsEditCompleteModalVisible] =
-		useState(false);
-	const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
-	const [todayCount] = useState(1);
 
-	const handleComplete = () => {
-		setIsEditCompleteModalVisible(true);
-	};
 	useEffect(() => {
 		const id = params.id as string | undefined;
 		if (!id) return;
@@ -50,42 +45,20 @@ export default function RecordEdit() {
 			const fetched = await getEmotionRecord(id);
 			if (!fetched) return;
 
-			// construct EmotionChip-like object
-			const chip: EmotionChip = {
-				label: fetched.emotion_name,
-				mainColor: fetched.main_color,
-				subColor: fetched.sub_color,
-				textColor: fetched.text_color,
+			const feedbackData = await getFeedback(Number(id));
+
+			const initialData = {
+				...fetched,
+				ai_feedback_count: feedbackData.attemptsUsed,
 			};
 
-			// populate flow
-			setSelectedEmotion(chip);
-			setText(fetched.record);
-			setIsFriendOnly(fetched.is_shared);
+			initializeRecord(initialData);
 		})();
-	}, [params.id, setSelectedEmotion, setText, setIsFriendOnly]);
+	}, [params.id, initializeRecord]);
 
-	const handleJustEdit = () => {
-		setIsEditCompleteModalVisible(false);
-		setIsConfirmModalVisible(true);
-	};
-
-	const handleConfirmEdit = async () => {
-		// 이미 저장/수정은 OnSave에서 처리하므로 여기서는 모달 닫고 뒤로 이동만 처리
-		setIsConfirmModalVisible(false);
-		router.push("/journal");
-	};
-
-	const handleCancelEdit = () => {
-		setIsConfirmModalVisible(false);
-		router.push("/journal");
-	};
-
-	const handleGetNewResponse = () => {
-		// TODO: API 호출하여 캐릭터 답변 다시 받기
-		setIsEditCompleteModalVisible(false);
-		router.push("/journal");
-	};
+	const handleComplete = useCallback(() => {
+		router.push(`/journal/detail?id=${params.id}`);
+	}, [router, params.id]);
 
 	if (phase === "explore") {
 		return (
@@ -114,6 +87,15 @@ export default function RecordEdit() {
 					visible={isToastVisible}
 					onHide={handleToastHide}
 				/>
+				<ConfirmModal
+					isVisible={showConfirmModal}
+					title={`AI 피드백을 받으시겠습니까? (${aiFeedbackCount}/3)`}
+					description="피드백은 최대 3번까지 받을 수 있습니다."
+					confirmText="다시 받기"
+					cancelText="취소"
+					onConfirm={handleConfirmFeedback}
+					onCancel={handleCancelFeedback}
+				/>
 			</>
 		);
 	}
@@ -124,22 +106,6 @@ export default function RecordEdit() {
 				<EmotionComplete
 					selectedEmotion={selectedEmotion}
 					onComplete={handleComplete}
-				/>
-				<EditCompleteModal
-					isVisible={isEditCompleteModalVisible}
-					onJustEdit={handleJustEdit}
-					onGetNewResponse={handleGetNewResponse}
-					characterName={userCharacter}
-					todayCount={todayCount}
-				/>
-				<ConfirmModal
-					isVisible={isConfirmModalVisible}
-					title="수정 완료"
-					description="기록이 수정되었습니다."
-					confirmText="확인"
-					cancelText="취소"
-					onConfirm={handleConfirmEdit}
-					onCancel={handleCancelEdit}
 				/>
 			</>
 		);
