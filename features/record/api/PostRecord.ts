@@ -11,9 +11,7 @@ interface PostRecordRequest {
 }
 
 interface PostRecordResponse {
-	code: number;
-	data: null;
-	message: string;
+	record_id: number;
 }
 
 export const postRecord = async (

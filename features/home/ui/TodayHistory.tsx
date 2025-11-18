@@ -1,6 +1,8 @@
+import { getFeedback } from "@/entities/character/api/feedback";
 import * as S from "@/features/home/style/TodayHistory.styles";
 import type { EmotionRecord } from "@/shared/types/emotion";
 import { EmotionCard } from "@/shared/ui/EmotionCard";
+import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { BlurView } from "expo-blur";
 import { useRouter } from "expo-router";
@@ -14,27 +16,18 @@ interface TodayHistoryProps {
 	AIImage?: ImageSourcePropType;
 }
 
-// AI 코멘트 생성 함수
-const generateAIComment = (emotion: string): string => {
-	const comments: { [key: string]: string } = {
-		기쁨: "오호, 기쁘다고? 뭔가 좋은 일이 있었나 보네. 그래도 너무 들뜨지는 말고 차분하게 해.",
-		평온: "평온함이라... 너에게는 이런 날이 제일 어울려. 조용히 지내는 게 네 스타일이니까.",
-		우울: "우울하다고? 그런 날도 있는 법이지. 하지만 너무 오래 끌지는 말고 털어내.",
-		설렘: "설렌다고? 뭔가 기대되는 일이 있나 보네. 그래도 기대치를 너무 높이지는 마.",
-		만족: "만족스럽다니? 드디어 사람 구실 좀 했네. 그래, 이런 날이 있어야 균형이 맞지.",
-	};
-	return (
-		comments[emotion] ||
-		"흠, 뭔가 복잡한 감정이구나. 그래도 솔직하게 표현하는 건 좋아."
-	);
-};
-
 export function TodayHistory({
 	record,
 	onMenuPress,
 	AIImage,
 }: TodayHistoryProps) {
 	const router = useRouter();
+	const { data: feedbackData, isLoading } = useQuery({
+		queryKey: ["feedback", record.record_id],
+		queryFn: () => getFeedback(record.record_id),
+		enabled: !!record.record_id,
+	});
+
 	// 애니메이션 값들
 	const fadeInAnim = useRef(new Animated.Value(0)).current;
 	const slideUpAnim = useRef(new Animated.Value(50)).current;
@@ -50,7 +43,9 @@ export function TodayHistory({
 	const displaySubColor = record.sub_color;
 	const displayTextColor = record.text_color;
 	const displayHistoryText = record.record;
-	const displayAIComment = generateAIComment(record.emotion_name);
+	const displayAIComment = isLoading
+		? "피드백을 생성하고 있습니다..."
+		: feedbackData?.aiReply || "오늘 하루도 수고했어.";
 
 	// 컴포넌트 마운트 시 애니메이션 실행
 	useEffect(() => {
