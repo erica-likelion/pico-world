@@ -15,6 +15,7 @@ export default function JournalDetail() {
 	useHideBottomNav();
 	const router = useRouter();
 	const { id } = useLocalSearchParams<{ id: string }>();
+	console.log(id);
 
 	const { data: record, isLoading: isRecordLoading } = useQuery({
 		queryKey: ["emotionRecord", id],
@@ -60,7 +61,7 @@ export default function JournalDetail() {
 				{isRecordLoading ? (
 					<ActivityIndicator style={{ marginTop: 100 }} />
 				) : record ? (
-					<TodayHistory record={record} AIImage={characterImage} />
+					<TodayHistory recordId={record.record_id} AIImage={characterImage} />
 				) : (
 					<View
 						style={{

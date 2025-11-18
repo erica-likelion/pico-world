@@ -1,14 +1,13 @@
+import * as JournalListS from "@/features/journal/style/EmotionRecordList.styles";
 import { EmotionRecordCard } from "@/features/journal/ui/EmotionRecordCard";
 import LeftSmIcon from "@/shared/assets/icons/left-sm.svg";
 import RightSmIcon from "@/shared/assets/icons/right-sm.svg";
 import type { EmotionRecord } from "@/shared/types/emotion";
 import { Button } from "@/shared/ui/Button";
-import { useRouter, type Href } from "expo-router";
+import { type Href, useRouter } from "expo-router";
 import { useMemo, useRef } from "react";
-import { ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 import { useTheme } from "styled-components/native";
-
-import * as JournalListS from "@/features/journal/style/EmotionRecordList.styles";
 
 const ICON_HIT_SLOP = { top: 8, bottom: 8, left: 8, right: 8 } as const;
 
@@ -17,6 +16,7 @@ interface EmotionRecordListProps {
 	monthLabel: string;
 	onPrevMonth: () => void;
 	onNextMonth: () => void;
+	isNextMonthDisabled?: boolean;
 	onMenuPress?: (record: EmotionRecord) => void;
 }
 
@@ -25,6 +25,7 @@ export const EmotionRecordList = ({
 	monthLabel,
 	onPrevMonth,
 	onNextMonth,
+	isNextMonthDisabled = false,
 	onMenuPress,
 }: EmotionRecordListProps) => {
 	const scrollViewRef = useRef<ScrollView>(null);
@@ -35,8 +36,18 @@ export const EmotionRecordList = ({
 		scrollViewRef.current?.scrollTo({ y: 0, animated: true });
 	};
 
-	const filteredRecords = useMemo(() => {
-		return records;
+	const groupedRecords = useMemo(() => {
+		return records.reduce(
+			(acc, record) => {
+				const date = record.created_at.split("T")[0];
+				if (!acc[date]) {
+					acc[date] = [];
+				}
+				acc[date].push(record);
+				return acc;
+			},
+			{} as Record<string, EmotionRecord[]>,
+		);
 	}, [records]);
 
 	if (records.length === 0) {
@@ -57,11 +68,16 @@ export const EmotionRecordList = ({
 					<JournalListS.IconButton
 						onPress={onNextMonth}
 						hitSlop={ICON_HIT_SLOP}
+						disabled={isNextMonthDisabled}
 					>
 						<RightSmIcon
 							width={24}
 							height={24}
-							color={theme.grayscale.gray200}
+							color={
+								isNextMonthDisabled
+									? theme.grayscale.gray700
+									: theme.grayscale.gray200
+							}
 						/>
 					</JournalListS.IconButton>
 				</JournalListS.MonthHeader>
@@ -93,26 +109,37 @@ export const EmotionRecordList = ({
 						<JournalListS.IconButton
 							onPress={onNextMonth}
 							hitSlop={ICON_HIT_SLOP}
+							disabled={isNextMonthDisabled}
 						>
 							<RightSmIcon
 								width={24}
 								height={24}
-								color={theme.grayscale.gray200}
+								color={
+									isNextMonthDisabled
+										? theme.grayscale.gray700
+										: theme.grayscale.gray200
+								}
 							/>
 						</JournalListS.IconButton>
 					</JournalListS.MonthHeader>
-					{filteredRecords.map((record) => (
-						<JournalListS.CardWrapper key={record.record_id}>
-							<EmotionRecordCard
-								record={record}
-								onPress={() =>
-									router.push(`/journal/detail?id=${record.record_id}` as Href)
-								}
-								onMenuPress={() => {
-									onMenuPress?.(record);
-								}}
-							/>
-						</JournalListS.CardWrapper>
+					{Object.entries(groupedRecords).map(([date, dailyRecords]) => (
+						<View key={date} style={{ width: "100%" }}>
+							{dailyRecords.map((record) => (
+								<JournalListS.CardWrapper key={record.record_id}>
+									<EmotionRecordCard
+										record={record}
+										onPress={() =>
+											router.push(
+												`/journal/detail?id=${record.record_id}` as Href,
+											)
+										}
+										onMenuPress={() => {
+											onMenuPress?.(record);
+										}}
+									/>
+								</JournalListS.CardWrapper>
+							))}
+						</View>
 					))}
 					<JournalListS.Footer>
 						<JournalListS.FooterText>
