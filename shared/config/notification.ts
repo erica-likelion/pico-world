@@ -1,5 +1,18 @@
+import { sendFcmToken } from "@/shared/api/notification";
 import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
+import { Platform } from "react-native";
+
+// 앱이 포그라운드 상태일 때 알림을 어떻게 처리할지 설정합니다.
+Notifications.setNotificationHandler({
+	handleNotification: async () => ({
+		shouldShowAlert: true,
+		shouldPlaySound: true,
+		shouldSetBadge: false,
+		shouldShowBanner: true,
+		shouldShowList: true,
+	}),
+});
 
 export async function registerForPushNotificationsAsync() {
 	const { status: existingStatus } = await Notifications.getPermissionsAsync();
@@ -27,12 +40,21 @@ export async function registerForPushNotificationsAsync() {
 		);
 	}
 
-	const { data: expoPushToken } = await Notifications.getExpoPushTokenAsync({
-		projectId,
-	});
 	const fcmToken = await Notifications.getDevicePushTokenAsync();
-	console.log("Expo Push Token:", expoPushToken);
 	console.log("FCM Push Token:", fcmToken.data);
+
+	if (fcmToken.data) {
+		await sendFcmToken(fcmToken.data);
+	}
+
+	if (Platform.OS === "android") {
+		Notifications.setNotificationChannelAsync("default", {
+			name: "default",
+			importance: Notifications.AndroidImportance.MAX,
+			vibrationPattern: [0, 250, 250, 250],
+			lightColor: "#FFF231F7C",
+		});
+	}
 
 	return fcmToken.data;
 }

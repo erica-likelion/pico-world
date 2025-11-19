@@ -1,15 +1,20 @@
+import { registerForPushNotificationsAsync } from "@/shared/config/notification";
 import { navigationTheme, theme } from "@/shared/config/theme/theme";
+import { useAuthStore } from "@/shared/store/auth";
+import { useDeepLinkStore } from "@/shared/store/deepLink";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { BottomNav } from "@/widgets/BottomNav/ui";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ThemeProvider } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import * as Notifications from "expo-notifications";
 import { useFonts } from "expo-font";
-import { Stack, usePathname } from "expo-router";
+import { Href, Stack, usePathname, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
@@ -35,9 +40,12 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-	const { isVisible } = useBottomNavStore();
+	const router = useRouter();
 	const pathname = usePathname();
-	const isLogin = pathname.startsWith("/login");
+	const { isVisible } = useBottomNavStore();
+	const { isLoggedIn, setIsLoggedIn } = useAuthStore();
+	const notificationListener = useRef<Notifications.Subscription | null>(null);
+	const responseListener = useRef<Notifications.Subscription | null>(null);
 
 	const [loaded, error] = useFonts({
 		"Pretendard-Bold": require("@/shared/assets/fonts/Pretendard-Bold.ttf"),
@@ -46,21 +54,86 @@ function RootLayoutNav() {
 		"Pretendard-Regular": require("@/shared/assets/fonts/Pretendard-Regular.ttf"),
 		...FontAwesome.font,
 	});
+	useEffect(() => {
+		const checkAuthStatus = async () => {
+			try {
+				const accessToken = await AsyncStorage.getItem("accessToken");
+				setIsLoggedIn(!!accessToken);
+			} catch (e) {
+				setIsLoggedIn(false);
+			}
+		};
+		checkAuthStatus();
+	}, [setIsLoggedIn]);
+
+	useEffect(() => {
+		if (isLoggedIn === null) {
+			return;
+		}
+		const inAuthGroup = pathname.startsWith("/login");
+
+		if (!isLoggedIn && !inAuthGroup) {
+			router.replace("/login");
+		} else if (isLoggedIn && inAuthGroup) {
+			router.replace("/home");
+		}
+	}, [isLoggedIn, pathname, router]);
+
+	useEffect(() => {
+		if (loaded && isLoggedIn !== null) {
+			SplashScreen.hideAsync();
+		}
+	}, [loaded, isLoggedIn]);
+
+	// 4. 알림 리스너 설정
+	useEffect(() => {
+		registerForPushNotificationsAsync();
+
+		notificationListener.current =
+			Notifications.addNotificationReceivedListener((notification) => {
+				console.log("알림 수신:", notification);
+			});
+
+		responseListener.current =
+			Notifications.addNotificationResponseReceivedListener(
+				async (response) => {
+					console.log("사용자 알림 반응:", response);
+					const url = response.notification.request.content.data?.url as
+						| string
+						| undefined;
+
+					if (!url) return;
+
+					if (isLoggedIn) {
+						router.push(url as Href);
+					} else {
+						const { setPendingDestination } = useDeepLinkStore.getState();
+						setPendingDestination(url);
+						router.push("/login");
+					}
+				},
+			);
+
+		return () => {
+			if (notificationListener.current) {
+				notificationListener.current.remove();
+			}
+			if (responseListener.current) {
+				responseListener.current.remove();
+			}
+		};
+	}, [isLoggedIn, router]);
 
 	useEffect(() => {
 		if (error) throw error;
 	}, [error]);
 
-	useEffect(() => {
-		if (loaded) {
-			SplashScreen.hideAsync();
-		}
-	}, [loaded]);
-
-	if (!loaded) {
+	// 폰트 로드 및 인증 확인 전에는 아무것도 렌더링하지 않음 (스플래시 화면 표시)
+	if (!loaded || isLoggedIn === null) {
 		return null;
 	}
 
+	const isLogin = pathname.startsWith("/login");
 	const Layout = isLogin ? View : SafeAreaView;
 
 	return (
