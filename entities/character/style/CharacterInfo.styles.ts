@@ -63,6 +63,7 @@ export const CharacterImageView = styled.View`
 export const CharacterImage = styled.Image<{ boxShadow: string }>`
   width: ${({ theme }) => theme.rem(160)};
   height: ${({ theme }) => theme.rem(160)};
+  resize-mode: cover;
   shadow-color: ${({ boxShadow }) => boxShadow};
   shadow-offset: 0px 0px;
   shadow-opacity: 1;

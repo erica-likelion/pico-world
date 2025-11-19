@@ -18,8 +18,8 @@ export function WithdrawModal({
 			<S.WithdrawModalContainer>
 				<S.WithdrawModalText>회원탈퇴 하시겠습니까?</S.WithdrawModalText>
 				<S.ButtonRow>
-					<Button color="white" size="medium" text="확인" onPress={onConfirm} />
 					<Button color="gray" size="medium" text="취소" onPress={onCancel} />
+					<Button color="white" size="medium" text="확인" onPress={onConfirm} />
 				</S.ButtonRow>
 			</S.WithdrawModalContainer>
 		</Modal>

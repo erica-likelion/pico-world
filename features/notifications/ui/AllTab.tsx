@@ -1,6 +1,6 @@
 import React from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
-import { Notification } from "../model/types";
+import type { Notification } from "../model/types";
 import { NotificationItem } from "./NotificationItem";
 
 interface AllTabProps {
@@ -36,15 +36,17 @@ export const AllTab = ({
 	}
 
 	return (
-		<FlatList
-			data={notifications}
-			renderItem={({ item }) => <NotificationItem item={item} />}
-			keyExtractor={(item) => item.notificationId.toString()}
-			onEndReached={() => hasNextPage && fetchNextPage()}
-			onEndReachedThreshold={0.5}
-			ListFooterComponent={hasNextPage ? <ActivityIndicator /> : null}
-			ItemSeparatorComponent={() => <View style={{ height: 24 }} />}
-			style={{ backgroundColor: "black" }}
-		/>
+		<View style={{ marginTop: 24 }}>
+			<FlatList
+				data={notifications}
+				renderItem={({ item }) => <NotificationItem item={item} />}
+				keyExtractor={(item) => item.notificationId.toString()}
+				onEndReached={() => hasNextPage && fetchNextPage()}
+				onEndReachedThreshold={0.5}
+				ListFooterComponent={hasNextPage ? <ActivityIndicator /> : null}
+				ItemSeparatorComponent={() => <View style={{ height: 24 }} />}
+				style={{ backgroundColor: "black" }}
+			/>
+		</View>
 	);
 };

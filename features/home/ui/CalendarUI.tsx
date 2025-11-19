@@ -51,10 +51,10 @@ const CustomDay = ({
 		new Date(date.dateString).getTime() > new Date(today).getTime();
 
 	const customColor = dayColors[date.dateString];
-	const backgroundColor = isToday
-		? "#191919"
-		: customColor?.bg
-			? customColor.bg
+	const backgroundColor = customColor?.bg
+		? customColor.bg
+		: isToday
+			? "#191919"
 			: "transparent";
 
 	const borderRadius = isToday ? 10 : 40;
@@ -82,9 +82,11 @@ const CustomDay = ({
 				style={{
 					color: isDisabled
 						? "#525252"
-						: isToday
-							? "#FFFFFF"
-							: (customColor?.text ?? "#CECECE"),
+						: customColor?.text
+							? customColor?.text
+							: isToday
+								? "#FFFFFF"
+								: "#CECECE",
 				}}
 			>
 				{date.day}

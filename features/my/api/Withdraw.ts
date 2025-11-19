@@ -9,8 +9,6 @@ interface WithdrawResponse {
 
 export const withdraw = async (): Promise<void> => {
 	await axiosInstance.delete<WithdrawResponse>("/api/v1/users/me");
-
 	await AsyncStorage.multiRemove(["accessToken", "refreshToken"]);
-
 	return void 0;
 };

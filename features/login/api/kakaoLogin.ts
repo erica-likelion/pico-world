@@ -60,8 +60,6 @@ export const kakaoLogin = async (
 
 			const profileUrl = rawUrl?.replace(/^http:\/\//, "https://");
 
-			console.log("카카오 프로필 URL:", profileUrl);
-
 			if (!profileUrl) return;
 
 			await axiosInstance.patch("/api/v1/users/me/profile-image", {
