@@ -21,8 +21,14 @@ import {
 } from "@/shared/ui/bottomSheet/CustomBottomSheet";
 import { Divider } from "@/shared/ui/Divider";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useCallback, useMemo, useRef, useState } from "react";
-import { TextInput, TouchableOpacity, View } from "react-native";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+	Keyboard,
+	Platform,
+	TextInput,
+	TouchableOpacity,
+	View,
+} from "react-native";
 import { useTheme } from "styled-components/native";
 
 interface FriendInviteBottomSheetProps {
@@ -35,7 +41,7 @@ interface FriendInviteBottomSheetProps {
 
 export function FriendInviteBottomSheet({
 	bottomSheetRef,
-	snapPoints = ["82%"],
+	snapPoints = ["75%", "90%"],
 	profileName,
 	inviteCode,
 	onEnterCode,
@@ -48,6 +54,7 @@ export function FriendInviteBottomSheet({
 	const codeInputRef = useRef<TextInput>(null);
 	const [isToastVisible, setIsToastVisible] = useState(false);
 	const [toastMessage, setToastMessage] = useState("");
+	const [keyboardHeight, setKeyboardHeight] = useState(0);
 
 	const showToast = useCallback((message: string) => {
 		setToastMessage(message);
@@ -125,12 +132,29 @@ export function FriendInviteBottomSheet({
 		sendFriendRequestMutate(requestCode);
 	};
 
+	useEffect(() => {
+		const show = Keyboard.addListener(
+			Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow",
+			(e) => setKeyboardHeight(e.endCoordinates.height),
+		);
+		const hide = Keyboard.addListener(
+			Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide",
+			() => setKeyboardHeight(0),
+		);
+		return () => {
+			show.remove();
+			hide.remove();
+		};
+	}, []);
+
 	return (
 		<CustomBottomSheet
 			bottomSheetRef={bottomSheetRef}
 			snapPoints={snapPoints}
 			initialIndex={-1}
 			enableScroll
+			keyboardBehavior="extend"
+			keyboardBlurBehavior="restore"
 			containerStyle={{ zIndex: 1000, elevation: 1000 }}
 		>
 			<S.Container>
@@ -198,8 +222,9 @@ export function FriendInviteBottomSheet({
 						<S.CodeEntryButtonText>친구 요청 보내기</S.CodeEntryButtonText>
 					</S.CodeEntryButton>
 				</S.CodeEntryContainer>
+				{keyboardHeight > 0 && <View style={{ height: 300 }} />}
 			</S.Container>
-			<View style={{ position: "absolute", bottom: 30, left: 0, right: 0 }}>
+			<View style={{ position: "relative", bottom: 40, left: 0, right: 0 }}>
 				<Toast
 					visible={isToastVisible}
 					message={toastMessage}
