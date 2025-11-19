@@ -1,11 +1,12 @@
 import { useEmotionAnalysis } from "@/features/record/model/useEmotionAnalysis";
 import * as S from "@/features/record/style/EmotionCanvas.styles";
 import { EmotionResult } from "@/features/record/ui/EmotionResult";
+import { getEmotionCoordinate } from "@/features/report/lib/emotionCoordinates";
 import type { EmotionChip } from "@/shared/types";
 import { EmotionGradientCanvas } from "@/shared/ui/emotion";
 import { BlurMask, Circle, Group, Line } from "@shopify/react-native-skia";
 import type React from "react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import {
 	Dimensions,
 	StyleSheet,
@@ -22,6 +23,7 @@ interface TouchPoint {
 
 interface EmotionCanvasProps {
 	onProceed: (chip: EmotionChip) => void;
+	initialEmotion?: EmotionChip | null;
 }
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -29,20 +31,55 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const BRUSH_SIZE = 60;
 const ALPHA_PER_TOUCH = 0.5;
 
-export const EmotionCanvas: React.FC<EmotionCanvasProps> = ({ onProceed }) => {
+export const EmotionCanvas: React.FC<EmotionCanvasProps> = ({
+	onProceed,
+	initialEmotion,
+}) => {
 	const [touchPoints, setTouchPoints] = useState<TouchPoint[]>([]);
 	const [canvasSize, setCanvasSize] = useState({
 		width: SCREEN_WIDTH,
 		height: SCREEN_HEIGHT,
 	});
 	const [selectedChip, setSelectedChip] = useState<number | null>(null);
+	const [isDrawingStarted, setIsDrawingStarted] = useState(false);
 	const isActiveRef = useRef(false);
 
 	const analysis = useEmotionAnalysis(touchPoints, canvasSize);
 
+	// 초기 감정 표시 여부
+	const isShowingInitialEmotion = !!initialEmotion && !isDrawingStarted;
+
+	// 초기 감정의 캔버스 위치 계산
+	const initialEmotionPosition = useMemo(() => {
+		if (!isShowingInitialEmotion || !initialEmotion?.label) return null;
+		return getEmotionCoordinate(
+			initialEmotion.label,
+			canvasSize.width,
+			canvasSize.height,
+		);
+	}, [isShowingInitialEmotion, initialEmotion, canvasSize]);
+
+	// 표시할 감정 칩
+	const emotionChips = useMemo(() => {
+		if (isDrawingStarted && analysis) {
+			return analysis.chips;
+		}
+		if (isShowingInitialEmotion && initialEmotion) {
+			return [initialEmotion];
+		}
+		return null;
+	}, [isDrawingStarted, analysis, isShowingInitialEmotion, initialEmotion]);
+
+	const currentSelectedChip = isDrawingStarted
+		? selectedChip
+		: isShowingInitialEmotion
+			? 0
+			: null;
+
 	const handleTouchStart = useCallback((event: GestureResponderEvent) => {
 		const { locationX: x, locationY: y } = event.nativeEvent;
 		isActiveRef.current = true;
+		setIsDrawingStarted(true);
 		setSelectedChip(null);
 		setTouchPoints([
 			{ id: Math.random().toString(), x, y, alpha: ALPHA_PER_TOUCH },
@@ -88,6 +125,19 @@ export const EmotionCanvas: React.FC<EmotionCanvasProps> = ({ onProceed }) => {
 						padding={20}
 					>
 						<Group blendMode="dstOut">
+							{/* 초기 감정 표시 */}
+							{initialEmotionPosition && (
+								<Circle
+									cx={initialEmotionPosition.x}
+									cy={initialEmotionPosition.y}
+									r={BRUSH_SIZE / 2}
+									color="rgba(255, 255, 255, 0.8)"
+								>
+									<BlurMask blur={16} style="normal" />
+								</Circle>
+							)}
+
+							{/* 터치 포인트 */}
 							{touchPoints.map((point, idx) => {
 								if (idx === 0) return null;
 								const prevPoint = touchPoints[idx - 1];
@@ -121,10 +171,10 @@ export const EmotionCanvas: React.FC<EmotionCanvasProps> = ({ onProceed }) => {
 				</View>
 			</S.CanvasContainer>
 
-			{analysis && (
+			{emotionChips && (
 				<EmotionResult
-					chips={analysis.chips}
-					selectedChip={selectedChip}
+					chips={emotionChips}
+					selectedChip={currentSelectedChip}
 					onChipSelect={setSelectedChip}
 					onProceed={onProceed}
 				/>

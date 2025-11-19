@@ -64,7 +64,10 @@ export default function RecordEdit() {
 		return (
 			<>
 				<TopNav title="기록 수정" leftIcon={true} />
-				<EmotionCanvas onProceed={handleProceedToWrite} />
+				<EmotionCanvas
+					onProceed={handleProceedToWrite}
+					initialEmotion={selectedEmotion}
+				/>
 			</>
 		);
 	}
