@@ -4,7 +4,7 @@ import type { CharacterName } from "@/entities/character/model/characterMessages
 import { getEmotionRecords } from "@/features/home/api/emotion";
 import { CalendarUI, ClickToJournal, TodayHistory } from "@/features/home/ui";
 import { deleteEmotionRecord } from "@/features/journal/api/emotion";
-import BellIcon from "@/shared/assets/icons/bell.svg";
+import { NotificationBell } from "@/features/notifications/ui/NotificationBell";
 import type { EmotionRecord } from "@/shared/types/emotion";
 import { CharacterBubble, MenuBottomSheet, Toast } from "@/shared/ui";
 import { formatDate } from "@/shared/utils/date";
@@ -129,7 +129,7 @@ export default function Home() {
 		>
 			<TopNav
 				title="홈"
-				rightIcon={<BellIcon />}
+				rightIcon={<NotificationBell />}
 				onRightPress={() => {
 					router.push("/notifications");
 				}}

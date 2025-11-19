@@ -23,8 +23,9 @@ export const ItemBox = styled.View`
   padding: ${({ theme }) => theme.rem(0)} ${({ theme }) => theme.rem(16)};
 `;
 
-export const ItemMessage = styled.Text`
-  color: ${({ theme }) => theme.grayscale.white};
+export const ItemMessage = styled.Text<{ isRead: boolean }>`
+  color: ${({ isRead, theme }) =>
+		isRead ? theme.grayscale.gray400 : theme.grayscale.white};
   ${({ theme }) => theme.typography["title2-medium"]};
 `;
 

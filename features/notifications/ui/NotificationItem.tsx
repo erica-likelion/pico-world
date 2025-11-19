@@ -45,7 +45,7 @@ export const NotificationItem = ({ item }: NotificationItemProps) => {
 			<S.ItemContainer>
 				<S.ItemTitle color={color}>{label}</S.ItemTitle>
 				<S.ItemBox>
-					<S.ItemMessage>{item.message}</S.ItemMessage>
+					<S.ItemMessage isRead={item.isRead}>{item.message}</S.ItemMessage>
 					<S.Time>{timeAgo}</S.Time>
 				</S.ItemBox>
 				<S.Line />
