@@ -11,7 +11,7 @@ export interface FriendFeedItem {
 	authorNickname: string;
 	isRead: boolean;
 	readCount: number;
-	requesterProfileImageUrl?: string | null;
+	authorProfileImageUrl: string | null;
 }
 
 export async function getFriendFeed(): Promise<FriendFeedItem[]> {

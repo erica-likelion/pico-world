@@ -188,7 +188,6 @@ export const CodeEntryContainer = styled.View`
   align-items: center;
   justify-content: space-between;
   align-self: stretch;
-  padding-vertical: ${({ theme }) => theme.rem(8)};
   padding-right: ${({ theme }) => theme.rem(8)};
   padding-left: ${({ theme }) => theme.rem(16)};
   border-radius: 20px;
@@ -196,13 +195,18 @@ export const CodeEntryContainer = styled.View`
   border-color: ${({ theme }) => theme.grayscale.gray700};
   background-color: ${({ theme }) => theme.grayscale.black};
   gap: ${({ theme }) => theme.rem(8)};
+  height: ${({ theme }) => theme.rem(60)};
 `;
 
 export const CodeEntryInput = styled.TextInput.attrs(() => ({}))`
   flex: 1;
+  height: ${({ theme }) => theme.rem(24)};
   color: ${({ theme }) => theme.grayscale.gray50};
   ${({ theme }) => theme.typography.b2};
-  align-items: center;
+  padding-vertical: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: ${({ theme }) => theme.rem(20)};
 `;
 
 export const CodeEntryButton = styled.TouchableOpacity`

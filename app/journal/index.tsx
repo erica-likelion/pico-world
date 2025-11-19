@@ -6,7 +6,7 @@ import { MenuBottomSheet } from "@/shared/ui";
 import { formatDate } from "@/shared/utils/date";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { TopNav } from "@/widgets/TopNav/ui";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -59,7 +59,7 @@ export default function Journal() {
 
 	const handleEditPress = () => {
 		if (selectedRecord) {
-			router.push(`/record/edit?id=${selectedRecord.record_id}` as any);
+			router.push(`/record/edit?id=${selectedRecord.record_id}`);
 		}
 	};
 

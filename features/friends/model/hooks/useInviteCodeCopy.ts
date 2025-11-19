@@ -1,4 +1,4 @@
-import * as Clipboard from "expo-clipboard";
+import Clipboard from "@react-native-clipboard/clipboard";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 interface UseInviteCodeCopyOptions {
@@ -21,9 +21,9 @@ export function useInviteCodeCopy(options: UseInviteCodeCopyOptions) {
 		};
 	}, []);
 
-	const handleCopy = useCallback(async () => {
+	const handleCopy = useCallback(() => {
 		try {
-			await Clipboard.setStringAsync(inviteCode);
+			Clipboard.setString(inviteCode);
 			onCopy?.();
 			setIsCopied(true);
 
