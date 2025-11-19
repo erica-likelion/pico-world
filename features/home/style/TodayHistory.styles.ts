@@ -15,6 +15,7 @@ export const TodayHistoryContainer = styled.View`
 `;
 
 export const MyHistoryBox = styled.Pressable`
+  width: ${({ theme }) => theme.rem(350)};
   display: flex;
   padding: ${({ theme }) => theme.rem(20)};
   flex-direction: column;
@@ -124,3 +125,4 @@ export const CharacterText = styled.Text<{ $textColor: string }>`
   color: ${({ $textColor }) => $textColor};
   ${({ theme }) => theme.typography.b3};
 `;
+43;

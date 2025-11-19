@@ -1,6 +1,6 @@
 import { getFeedback } from "@/entities/character/api/feedback";
+import { getRecordById } from "@/features/record/api/getRecordById";
 import * as S from "@/features/home/style/TodayHistory.styles";
-import type { EmotionRecord } from "@/shared/types/emotion";
 import { EmotionCard } from "@/shared/ui/EmotionCard";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -8,24 +8,37 @@ import { BlurView } from "expo-blur";
 import { useRouter } from "expo-router";
 import { useEffect, useRef } from "react";
 import type { ImageSourcePropType } from "react-native";
-import { Animated, Easing, TouchableOpacity } from "react-native";
+import {
+	ActivityIndicator,
+	Animated,
+	Easing,
+	TouchableOpacity,
+	View,
+} from "react-native";
 
 interface TodayHistoryProps {
-	record: EmotionRecord;
+	recordId: number;
 	onMenuPress: () => void;
 	AIImage?: ImageSourcePropType;
 }
 
 export function TodayHistory({
-	record,
+	recordId,
 	onMenuPress,
 	AIImage,
 }: TodayHistoryProps) {
 	const router = useRouter();
-	const { data: feedbackData, isLoading } = useQuery({
-		queryKey: ["feedback", record.record_id],
-		queryFn: () => getFeedback(record.record_id),
-		enabled: !!record.record_id,
+
+	const { data: record, isLoading: isRecordLoading } = useQuery({
+		queryKey: ["emotionRecord", recordId],
+		queryFn: () => getRecordById(recordId.toString()),
+		enabled: !!recordId,
+	});
+
+	const { data: feedbackData, isLoading: isFeedbackLoading } = useQuery({
+		queryKey: ["feedback", recordId],
+		queryFn: () => getFeedback(recordId),
+		enabled: !!record, // Enable only after record is fetched
 	});
 
 	// 애니메이션 값들
@@ -35,6 +48,80 @@ export function TodayHistory({
 	const characterSlideAnim = useRef(new Animated.Value(30)).current;
 	const characterFadeAnim = useRef(new Animated.Value(0)).current;
 
+	// 컴포넌트 마운트 시 애니메이션 실행
+	useEffect(() => {
+		if (!isRecordLoading && record) {
+			// 애니메이션 초기화
+			fadeInAnim.setValue(0);
+			slideUpAnim.setValue(50);
+			scaleAnim.setValue(0.9);
+			characterSlideAnim.setValue(30);
+			characterFadeAnim.setValue(0);
+
+			// 감정 기록 박스 애니메이션 (동시 실행)
+			Animated.parallel([
+				Animated.timing(fadeInAnim, {
+					toValue: 1,
+					duration: 600,
+					easing: Easing.out(Easing.quad),
+					useNativeDriver: true,
+				}),
+				Animated.timing(slideUpAnim, {
+					toValue: 0,
+					duration: 600,
+					easing: Easing.out(Easing.back(1.2)),
+					useNativeDriver: true,
+				}),
+				Animated.timing(scaleAnim, {
+					toValue: 1,
+					duration: 600,
+					easing: Easing.out(Easing.back(1.1)),
+					useNativeDriver: true,
+				}),
+			]).start();
+
+			// 캐릭터 코멘트 박스 애니메이션 (0.3초 후 시작)
+			const timer = setTimeout(() => {
+				Animated.parallel([
+					Animated.timing(characterFadeAnim, {
+						toValue: 1,
+						duration: 500,
+						easing: Easing.out(Easing.quad),
+						useNativeDriver: true,
+					}),
+					Animated.timing(characterSlideAnim, {
+						toValue: 0,
+						duration: 500,
+						easing: Easing.out(Easing.back(1.2)),
+						useNativeDriver: true,
+					}),
+				]).start();
+			}, 300);
+
+			return () => clearTimeout(timer);
+		}
+	}, [
+		isRecordLoading,
+		record,
+		fadeInAnim,
+		scaleAnim,
+		slideUpAnim,
+		characterFadeAnim,
+		characterSlideAnim,
+	]);
+
+	if (isRecordLoading) {
+		return (
+			<View style={{ height: 300, justifyContent: "center" }}>
+				<ActivityIndicator />
+			</View>
+		);
+	}
+
+	if (!record) {
+		return null; // Or some error/empty state
+	}
+
 	const createdAt = new Date(record.created_at);
 	const displayDate = format(createdAt, "yyyy.MM.dd");
 	const displayTime = format(createdAt, "HH:mm");
@@ -43,67 +130,9 @@ export function TodayHistory({
 	const displaySubColor = record.sub_color;
 	const displayTextColor = record.text_color;
 	const displayHistoryText = record.record;
-	const displayAIComment = isLoading
+	const displayAIComment = isFeedbackLoading
 		? "피드백을 생성하고 있습니다..."
 		: feedbackData?.aiReply || "오늘 하루도 수고했어.";
-
-	// 컴포넌트 마운트 시 애니메이션 실행
-	useEffect(() => {
-		// 애니메이션 초기화
-		fadeInAnim.setValue(0);
-		slideUpAnim.setValue(50);
-		scaleAnim.setValue(0.9);
-		characterSlideAnim.setValue(30);
-		characterFadeAnim.setValue(0);
-
-		// 감정 기록 박스 애니메이션 (동시 실행)
-		Animated.parallel([
-			Animated.timing(fadeInAnim, {
-				toValue: 1,
-				duration: 600,
-				easing: Easing.out(Easing.quad),
-				useNativeDriver: true,
-			}),
-			Animated.timing(slideUpAnim, {
-				toValue: 0,
-				duration: 600,
-				easing: Easing.out(Easing.back(1.2)),
-				useNativeDriver: true,
-			}),
-			Animated.timing(scaleAnim, {
-				toValue: 1,
-				duration: 600,
-				easing: Easing.out(Easing.back(1.1)),
-				useNativeDriver: true,
-			}),
-		]).start();
-
-		// 캐릭터 코멘트 박스 애니메이션 (0.3초 후 시작)
-		const timer = setTimeout(() => {
-			Animated.parallel([
-				Animated.timing(characterFadeAnim, {
-					toValue: 1,
-					duration: 500,
-					easing: Easing.out(Easing.quad),
-					useNativeDriver: true,
-				}),
-				Animated.timing(characterSlideAnim, {
-					toValue: 0,
-					duration: 500,
-					easing: Easing.out(Easing.back(1.2)),
-					useNativeDriver: true,
-				}),
-			]).start();
-		}, 300);
-
-		return () => clearTimeout(timer);
-	}, [
-		fadeInAnim,
-		scaleAnim,
-		slideUpAnim,
-		characterFadeAnim,
-		characterSlideAnim,
-	]); // date나 emotion이 바뀔 때마다 애니메이션 재실행
 
 	const handleMenuPress = () => {
 		onMenuPress();

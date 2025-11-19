@@ -1,19 +1,20 @@
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { Notification } from "@/features/notifications/model/types";
 import { useNotifications } from "@/features/notifications/model/useNotifications";
-import * as S from "@/features/notifications/style/Tab.styles";
 import { AllTab } from "@/features/notifications/ui/AllTab";
 import { FriendsTab } from "@/features/notifications/ui/FriendsTab";
 import { RepliesTab } from "@/features/notifications/ui/RepliesTab";
 import { useHideBottomNav } from "@/shared/hooks/useHideBottomNav";
 import { TopNav } from "@/widgets/TopNav/ui";
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { View } from "react-native";
+import { useTheme } from "styled-components/native";
 
-type TabName = "all" | "replies" | "friends";
+const Tab = createMaterialTopTabNavigator();
 
 export default function NotificationsScreen() {
 	useHideBottomNav();
-	const [activeTab, setActiveTab] = useState<TabName>("all");
+	const theme = useTheme();
 
 	const { data, fetchNextPage, hasNextPage, isLoading } = useNotifications();
 
@@ -29,55 +30,56 @@ export default function NotificationsScreen() {
 		return allNotifications.filter((n) => n.type.startsWith("FRIEND"));
 	}, [allNotifications]);
 
-	const tabs: {
-		name: TabName;
-		title: string;
-		component: React.FC<any>;
-		data: Notification[];
-	}[] = [
-		{ name: "all", title: "전체", component: AllTab, data: allNotifications },
-		{
-			name: "replies",
-			title: "답장",
-			component: RepliesTab,
-			data: repliesNotifications,
-		},
-		{
-			name: "friends",
-			title: "친구",
-			component: FriendsTab,
-			data: friendsNotifications,
-		},
-	];
-
-	const renderContent = () => {
-		const tab = tabs.find((t) => t.name === activeTab);
-		if (!tab) return null;
-
-		const { component, data } = tab;
-		return React.createElement(component, {
-			notifications: data,
-			isLoading,
-			fetchNextPage,
-			hasNextPage,
-		});
-	};
-
 	return (
 		<View style={{ flex: 1, backgroundColor: "black" }}>
 			<TopNav title="알림" leftIcon />
-			<S.TabContainer>
-				{tabs.map((tab) => (
-					<S.TabButton
-						key={tab.name}
-						active={activeTab === tab.name}
-						onPress={() => setActiveTab(tab.name)}
-					>
-						<S.TabLabel active={activeTab === tab.name}>{tab.title}</S.TabLabel>
-					</S.TabButton>
-				))}
-			</S.TabContainer>
-			<View style={{ flex: 1 }}>{renderContent()}</View>
+			<Tab.Navigator
+				screenOptions={{
+					tabBarStyle: {
+						backgroundColor: theme.grayscale.black,
+					},
+					tabBarIndicatorStyle: {
+						backgroundColor: theme.grayscale.white,
+					},
+					tabBarLabelStyle: {
+						fontFamily: "Pretendard-Bold",
+						fontSize: 16,
+					},
+					tabBarActiveTintColor: theme.grayscale.white,
+					tabBarInactiveTintColor: theme.grayscale.gray400,
+				}}
+			>
+				<Tab.Screen name="All" options={{ title: "전체" }}>
+					{() => (
+						<AllTab
+							notifications={allNotifications}
+							isLoading={isLoading}
+							fetchNextPage={fetchNextPage}
+							hasNextPage={hasNextPage}
+						/>
+					)}
+				</Tab.Screen>
+				<Tab.Screen name="Replies" options={{ title: "답장" }}>
+					{() => (
+						<RepliesTab
+							notifications={repliesNotifications}
+							isLoading={isLoading}
+							fetchNextPage={fetchNextPage}
+							hasNextPage={hasNextPage}
+						/>
+					)}
+				</Tab.Screen>
+				<Tab.Screen name="Friends" options={{ title: "친구" }}>
+					{() => (
+						<FriendsTab
+							notifications={friendsNotifications}
+							isLoading={isLoading}
+							fetchNextPage={fetchNextPage}
+							hasNextPage={hasNextPage}
+						/>
+					)}
+				</Tab.Screen>
+			</Tab.Navigator>
 		</View>
 	);
 }

@@ -1,5 +1,5 @@
 import { FriendsContent } from "@/features/friends/ui";
-import BellIcon from "@/shared/assets/icons/bell.svg";
+import { NotificationBell } from "@/features/notifications/ui/NotificationBell";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { TopNav } from "@/widgets/TopNav/ui";
 import { useFocusEffect, useRouter } from "expo-router";
@@ -29,7 +29,7 @@ export default function Friends() {
 		<View style={{ flex: 1 }}>
 			<TopNav
 				title="친구"
-				rightIcon={<BellIcon />}
+				rightIcon={<NotificationBell />}
 				onRightPress={handleNotificationPress}
 			/>
 			<ScrollView

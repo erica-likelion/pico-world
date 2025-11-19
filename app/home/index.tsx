@@ -4,7 +4,7 @@ import type { CharacterName } from "@/entities/character/model/characterMessages
 import { getEmotionRecords } from "@/features/home/api/emotion";
 import { CalendarUI, ClickToJournal, TodayHistory } from "@/features/home/ui";
 import { deleteEmotionRecord } from "@/features/journal/api/emotion";
-import BellIcon from "@/shared/assets/icons/bell.svg";
+import { NotificationBell } from "@/features/notifications/ui/NotificationBell";
 import type { EmotionRecord } from "@/shared/types/emotion";
 import { CharacterBubble, MenuBottomSheet, Toast } from "@/shared/ui";
 import { formatDate } from "@/shared/utils/date";
@@ -56,24 +56,20 @@ export default function Home() {
 		refetch,
 		isLoading,
 	} = useQuery<EmotionRecord[]>({
-		queryKey: ["emotionRecords", currentMonth],
-		queryFn: () => getEmotionRecords(currentMonth),
+		queryKey: ["emotionRecords"],
+		queryFn: getEmotionRecords,
 	});
 
 	const selectedRecord = useMemo(() => {
-		if (selectedDate.startsWith(currentMonth)) {
-			const recordForSelectedDate = emotionRecords.find((r) => {
-				const recordDate = new Date(r.created_at);
-				const utc =
-					recordDate.getTime() + recordDate.getTimezoneOffset() * 60000;
-				const kstOffset = 9 * 60 * 60000;
-				const kstDate = new Date(utc + kstOffset);
-				return format(kstDate, "yyyy-MM-dd") === selectedDate;
-			});
-			return recordForSelectedDate || null;
-		}
-		return null;
-	}, [emotionRecords, selectedDate, currentMonth]);
+		const recordForSelectedDate = emotionRecords.find((r) => {
+			const recordDate = new Date(r.created_at);
+			const utc = recordDate.getTime() + recordDate.getTimezoneOffset() * 60000;
+			const kstOffset = 9 * 60 * 60000;
+			const kstDate = new Date(utc + kstOffset);
+			return format(kstDate, "yyyy-MM-dd") === selectedDate;
+		});
+		return recordForSelectedDate || null;
+	}, [emotionRecords, selectedDate]);
 
 	useFocusEffect(
 		useCallback(() => {
@@ -85,7 +81,7 @@ export default function Home() {
 		mutationFn: deleteEmotionRecord,
 		onSuccess: () => {
 			queryClient.invalidateQueries({
-				queryKey: ["emotionRecords", currentMonth],
+				queryKey: ["emotionRecords"],
 			});
 			bottomSheetRef.current?.dismiss();
 		},
@@ -118,10 +114,8 @@ export default function Home() {
 	const characterName = greetingData?.characterName as
 		| CharacterName
 		| undefined;
-	console.log("characterName", characterName);
 	const characterImage = useMemo(() => {
 		const foundCharacter = Character.find((c) => c.name === characterName);
-		console.log("characterImage", characterImage);
 		return foundCharacter ? foundCharacter.image : undefined;
 	}, [characterName]);
 
@@ -133,7 +127,7 @@ export default function Home() {
 		>
 			<TopNav
 				title="홈"
-				rightIcon={<BellIcon />}
+				rightIcon={<NotificationBell />}
 				onRightPress={() => {
 					router.push("/notifications");
 				}}
@@ -152,7 +146,7 @@ export default function Home() {
 					<ActivityIndicator style={{ marginVertical: 20 }} />
 				) : isTodayHistory && selectedRecord ? (
 					<TodayHistory
-						record={selectedRecord}
+						recordId={selectedRecord.record_id}
 						AIImage={characterImage}
 						onMenuPress={() => bottomSheetRef.current?.present()}
 					/>

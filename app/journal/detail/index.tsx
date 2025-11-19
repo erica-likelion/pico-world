@@ -37,7 +37,7 @@ export default function JournalDetail() {
 
 	const handleEditPress = () => {
 		if (id) {
-			router.push(`/record/edit?id=${id}` as any);
+			router.push(`/record/edit?id=${id}`);
 		}
 	};
 
@@ -60,7 +60,7 @@ export default function JournalDetail() {
 				{isRecordLoading ? (
 					<ActivityIndicator style={{ marginTop: 100 }} />
 				) : record ? (
-					<TodayHistory record={record} AIImage={characterImage} />
+					<TodayHistory recordId={record.record_id} AIImage={characterImage} />
 				) : (
 					<View
 						style={{

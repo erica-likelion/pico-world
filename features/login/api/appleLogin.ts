@@ -1,3 +1,5 @@
+import { updateNickname } from "@/features/my/api/EditName";
+import { getUserInfo } from "@/features/my/api/MyInfo";
 import { axiosInstance } from "@/shared/api/axios";
 import { sendFcmToken } from "@/shared/api/notification";
 import { registerForPushNotificationsAsync } from "@/shared/config/notification";
@@ -13,12 +15,12 @@ interface AppleLoginResponse {
 	accessToken: string;
 	refreshToken: string;
 	isOnboardingNeeded: boolean;
+	email: string;
 }
 
 export const appleLogin = async (
 	params: AppleLoginRequest,
 ): Promise<boolean> => {
-	console.log("appleLogin params:", params);
 	const response = await axiosInstance.post<AppleLoginResponse>(
 		"/api/v1/auth/apple/login",
 		params,
@@ -26,7 +28,6 @@ export const appleLogin = async (
 			headers: { Authorization: "" }, // 로그인 요청엔 기존 토큰 제거
 		},
 	);
-
 	const { accessToken, refreshToken, isOnboardingNeeded } = response.data;
 
 	await AsyncStorage.setItem("accessToken", accessToken);
@@ -38,6 +39,11 @@ export const appleLogin = async (
 			await sendFcmToken(token);
 		}
 	};
+
+	const userEmail = await getUserInfo();
+	const defaultEmail = userEmail.email.split("@")[0];
+
+	await updateNickname({ nickname: defaultEmail });
 	setupNotifications();
 
 	return isOnboardingNeeded;

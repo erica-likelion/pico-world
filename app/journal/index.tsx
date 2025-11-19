@@ -9,7 +9,7 @@ import { TopNav } from "@/widgets/TopNav/ui";
 import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFocusEffect, useRouter } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { View } from "react-native";
 
 export default function Journal() {
@@ -25,22 +25,26 @@ export default function Journal() {
 		return new Date(now.getFullYear(), now.getMonth(), 1);
 	});
 
-	const monthQueryKey = `${currentMonth.getFullYear()}-${String(
-		currentMonth.getMonth() + 1,
-	).padStart(2, "0")}`;
-
-	const { data: records = [] } = useQuery<EmotionRecord[]>({
-		queryKey: ["emotionRecords", monthQueryKey],
-		queryFn: () => getEmotionRecords(monthQueryKey),
+	const { data: allRecords = [], isFetching } = useQuery<EmotionRecord[]>({
+		queryKey: ["emotionRecords"],
+		queryFn: getEmotionRecords,
 	});
+
+	const monthlyRecords = useMemo(() => {
+		return allRecords.filter((record) => {
+			const recordDate = new Date(record.created_at);
+			return (
+				recordDate.getFullYear() === currentMonth.getFullYear() &&
+				recordDate.getMonth() === currentMonth.getMonth()
+			);
+		});
+	}, [allRecords, currentMonth]);
 
 	useFocusEffect(
 		useCallback(() => {
 			show();
-			queryClient.invalidateQueries({
-				queryKey: ["emotionRecords", monthQueryKey],
-			});
-		}, [show, queryClient, monthQueryKey]),
+			queryClient.invalidateQueries({ queryKey: ["emotionRecords"] });
+		}, [show, queryClient]),
 	);
 
 	const handleRecordSelect = (record: EmotionRecord) => {
@@ -62,9 +66,7 @@ export default function Journal() {
 	const deleteRecordMutation = useMutation({
 		mutationFn: deleteEmotionRecord,
 		onSuccess: () => {
-			queryClient.invalidateQueries({
-				queryKey: ["emotionRecords", monthQueryKey],
-			});
+			queryClient.invalidateQueries({ queryKey: ["emotionRecords"] });
 			setSelectedRecord(null);
 			bottomSheetRef.current?.dismiss();
 		},
@@ -79,6 +81,16 @@ export default function Journal() {
 		}
 	};
 
+	const isNextMonthDisabled = useMemo(() => {
+		const now = new Date();
+		const nextMonth = new Date(
+			currentMonth.getFullYear(),
+			currentMonth.getMonth() + 1,
+			1,
+		);
+		return nextMonth > now;
+	}, [currentMonth]);
+
 	const handlePrevMonth = () => {
 		setCurrentMonth(
 			(prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1),
@@ -86,21 +98,25 @@ export default function Journal() {
 	};
 
 	const handleNextMonth = () => {
+		if (isNextMonthDisabled) return;
 		setCurrentMonth(
 			(prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1),
 		);
 	};
 
-	const monthLabel = `${currentMonth.getMonth() + 1}월`;
+	const monthLabel = `${currentMonth.getFullYear()}년 ${
+		currentMonth.getMonth() + 1
+	}월`;
 
 	return (
 		<View style={{ flex: 1 }}>
 			<TopNav title="기록" />
 			<EmotionRecordList
-				records={records}
+				records={isFetching ? [] : monthlyRecords}
 				monthLabel={monthLabel}
 				onPrevMonth={handlePrevMonth}
 				onNextMonth={handleNextMonth}
+				isNextMonthDisabled={isNextMonthDisabled}
 				onMenuPress={handleRecordSelect}
 			/>
 			{selectedRecord && (

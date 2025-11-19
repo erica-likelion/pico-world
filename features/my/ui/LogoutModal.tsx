@@ -18,8 +18,8 @@ export function LogoutModal({
 			<S.LogoutModalContainer>
 				<S.LogoutModalText>로그아웃 하시겠습니까?</S.LogoutModalText>
 				<S.ButtonRow>
-					<Button color="white" size="medium" text="확인" onPress={onConfirm} />
 					<Button color="gray" size="medium" text="취소" onPress={onCancel} />
+					<Button color="white" size="medium" text="확인" onPress={onConfirm} />
 				</S.ButtonRow>
 			</S.LogoutModalContainer>
 		</Modal>
