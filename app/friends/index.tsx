@@ -1,4 +1,3 @@
-import { useFriendsNavigation } from "@/features/friends/model/hooks/useFriendsNavigation";
 import { FriendsContent } from "@/features/friends/ui";
 import BellIcon from "@/shared/assets/icons/bell.svg";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
@@ -10,7 +9,6 @@ import { ScrollView, View } from "react-native";
 export default function Friends() {
 	const { show } = useBottomNavStore();
 	const router = useRouter();
-	const { handleAddFriendPress, handleProfilePress } = useFriendsNavigation();
 	const scrollViewRef = useRef<ScrollView>(null);
 
 	useFocusEffect(
@@ -39,12 +37,7 @@ export default function Friends() {
 				contentContainerStyle={{ alignItems: "center", flexGrow: 1 }}
 				showsVerticalScrollIndicator={false}
 			>
-				<FriendsContent
-					onProfilePress={handleProfilePress}
-					onAddFriendPress={handleAddFriendPress}
-					onScrollToTop={handleScrollToTop}
-					profileName="하룰라라"
-				/>
+				<FriendsContent onScrollToTop={handleScrollToTop} />
 			</ScrollView>
 		</View>
 	);

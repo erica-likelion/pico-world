@@ -1,5 +1,5 @@
 import { axiosInstance } from "@/shared/api/axios";
-import { ApiResponse } from "@/shared/types/api";
+import type { ApiResponse } from "@/shared/types/api";
 
 interface RemoveFriendParams {
 	connectCode: string;

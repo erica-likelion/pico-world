@@ -75,6 +75,7 @@ export function CustomBottomSheet({
 				<ContentWrapper
 					style={{ flex: 1 }}
 					contentContainerStyle={{ flexGrow: 1 }}
+					keyboardShouldPersistTaps="handled"
 				>
 					{children}
 				</ContentWrapper>

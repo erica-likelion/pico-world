@@ -1,5 +1,5 @@
 import {
-	CharacterName,
+	type CharacterName,
 	DEFAULT_CHARACTER,
 } from "@/entities/character/model/characterMessages";
 import { useHasRecordedToday } from "@/entities/emotion/model/emotionQueries";
@@ -8,12 +8,13 @@ import {
 	useUserNickname,
 	useUserProfileImageUrl,
 } from "@/entities/user/model/userQueries";
-import { getFriendFeed } from "@/features/friends/api/getFriendFeed";
-import { getFriendRequests } from "@/features/friends/api/getFriendRequests";
-import { getFriends, type Friend } from "@/features/friends/api/getFriends";
-import { getGreeting } from "@/features/friends/api/getGreeting";
-import { removeFriend } from "@/features/friends/api/removeFriend";
-import { respondToFriendRequest } from "@/features/friends/api/respondToFriendRequest";
+import type { Friend } from "@/features/friends/api/getFriends";
+import {
+	useFriendRequestResponse,
+	useGetFriends,
+	useRemoveFriend,
+	useToast,
+} from "@/features/friends/model/hooks";
 import type { FriendRequest } from "@/features/friends/model/types";
 import * as S from "@/features/friends/style/FriendsContent.styles";
 import { FriendBottomSheet } from "@/features/friends/ui/FriendBottomSheet";
@@ -30,66 +31,74 @@ import {
 } from "@/shared/ui";
 import { formatTimeAgo } from "@/shared/utils/date";
 import type { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 import { useTheme } from "styled-components/native";
 
 interface FriendsContentProps {
-	onProfilePress: () => void;
-	onAddFriendPress: () => void;
 	onScrollToTop?: () => void;
-	profileName: string;
 }
 
 const FRIEND_LIMIT = 5;
 
-export function FriendsContent({
-	onProfilePress,
-	onAddFriendPress,
-	onScrollToTop,
-	profileName,
-}: FriendsContentProps) {
+export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 	const theme = useTheme();
 	const nickname = useUserNickname();
 	const profileImageUrl = useUserProfileImageUrl();
 	const hasRecordedToday = useHasRecordedToday();
+	const inviteCode = useUserConnectCode();
+	const { friends, friendRequests, friendFeed, greeting } = useGetFriends();
 
-	const { data: friendsData, error: friendsError } = useQuery({
-		queryKey: ["friends"],
-		queryFn: getFriends,
-	});
-
-	const queryClient = useQueryClient();
-
-	const { data: friendRequestsData = [], error: friendRequestsError } =
-		useQuery({
-			queryKey: ["friendRequests"],
-			queryFn: getFriendRequests,
-		});
-
-	const { data: greetingData } = useQuery({
-		queryKey: ["greeting", "friend-reminder"],
-		queryFn: () => getGreeting("friend-reminder"),
-	});
-
-	const { data: friendFeedData = [] } = useQuery({
-		queryKey: ["friendFeed"],
-		queryFn: getFriendFeed,
-	});
-
-	const acceptedFriends = friendsData ?? [];
-	const addFriendBottomSheetRef = useRef<BottomSheetModal>(null);
-	const menuBottomSheetRef = useRef<BottomSheetModal>(null);
+	const {
+		isVisible: isToastVisible,
+		message: toastMessage,
+		show: showToast,
+		hide: hideToast,
+	} = useToast();
 	const [selectedFriend, setSelectedFriend] = useState<FriendRequest | null>(
 		null,
 	);
 	const [friendNotifications, setFriendNotifications] = useState<
 		Record<string, boolean>
 	>({});
+	const addFriendBottomSheetRef = useRef<BottomSheetModal>(null);
+	const menuBottomSheetRef = useRef<BottomSheetModal>(null);
 	const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-	const [isToastVisible, setIsToastVisible] = useState(false);
-	const [toastMessage, setToastMessage] = useState("");
+
+	const acceptedFriends = friends.data ?? [];
+	const friendRequestsData = friendRequests.data ?? [];
+	const friendFeedData = friendFeed.data ?? [];
+	const greetingData = greeting.data;
+
+	const friendCount = acceptedFriends.length;
+	const friendAddProgress = `${friendCount}/${FRIEND_LIMIT}`;
+
+	const characterName: CharacterName =
+		(greetingData?.characterName as CharacterName) || DEFAULT_CHARACTER;
+	const greetingMessage =
+		greetingData?.message ||
+		"Pico World는 친구랑 할 때 더 재밌는 거 알지? 5명까지 초대할 수 있으니 같이 기록해봐.";
+
+	const showToastWithAutoHide = useCallback(
+		(message: string) => {
+			showToast(message);
+			if (toastTimerRef.current) {
+				clearTimeout(toastTimerRef.current);
+			}
+			toastTimerRef.current = setTimeout(() => {
+				hideToast();
+			}, 2000);
+		},
+		[showToast, hideToast],
+	);
+
+	const { friendAccept, friendReject } = useFriendRequestResponse({
+		onError: showToastWithAutoHide,
+	});
+	const { disconnectFriend } = useRemoveFriend({
+		onSuccess: () => showToastWithAutoHide("친구를 끊었습니다."),
+		onError: showToastWithAutoHide,
+	});
 
 	useEffect(() => {
 		setFriendNotifications({});
@@ -101,151 +110,49 @@ export function FriendsContent({
 		};
 	}, []);
 
-	const friendCount = acceptedFriends.length;
-	const friendAddProgress = `${friendCount}/${FRIEND_LIMIT}`;
-	const inviteCode = useUserConnectCode();
-
-	const characterName: CharacterName =
-		(greetingData?.characterName as CharacterName) || DEFAULT_CHARACTER;
-	const greetingMessage =
-		greetingData?.message ||
-		"Pico World는 친구랑 할 때 더 재밌는 거 알지? 5명까지 초대할 수 있으니 같이 기록해봐.";
-
-	//친구 요청 수락/거절
-	const { mutate: respondToRequest } = useMutation({
-		mutationFn: respondToFriendRequest,
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["friends"] });
-			queryClient.invalidateQueries({ queryKey: ["friendRequests"] });
-		},
-		onError: (error: unknown) => {
-			const errorMessage =
-				error instanceof Error
-					? error.message
-					: "친구 요청 응답에 실패했습니다.";
-			showToast(errorMessage);
-		},
-	});
-
-	//친국 끊기
-	const { mutate: removeFriendMutate } = useMutation({
-		mutationFn: removeFriend,
-		onSuccess: () => {
-			// 친구 목록 갱신
-			queryClient.invalidateQueries({ queryKey: ["friends"] });
-			showToast("친구를 끊었습니다.");
-		},
-		onError: (error: unknown) => {
-			const errorMessage =
-				error instanceof Error ? error.message : "친구 끊기에 실패했습니다.";
-			showToast(errorMessage);
-		},
-	});
-
-	const showToast = useCallback((message: string) => {
-		setToastMessage(message);
-		setIsToastVisible(true);
-		if (toastTimerRef.current) {
-			clearTimeout(toastTimerRef.current);
+	useEffect(() => {
+		if (friends.error) {
+			console.error("친구 목록 조회 실패:", friends.error);
+			showToastWithAutoHide("친구 목록을 불러오는데 실패했습니다.");
 		}
-		toastTimerRef.current = setTimeout(() => {
-			setIsToastVisible(false);
-			setToastMessage("");
-		}, 2000);
-	}, []);
+	}, [friends.error, showToastWithAutoHide]);
 
 	useEffect(() => {
-		if (friendsError) {
-			console.error("친구 목록 조회 실패:", friendsError);
-			showToast("친구 목록을 불러오는데 실패했습니다.");
+		if (friendRequests.error) {
+			console.error("친구 요청 목록 조회 실패:", friendRequests.error);
+			showToastWithAutoHide("친구 요청 목록을 불러오는데 실패했습니다.");
 		}
-	}, [friendsError, showToast]);
+	}, [friendRequests.error, showToastWithAutoHide]);
 
-	useEffect(() => {
-		if (friendRequestsError) {
-			console.error("친구 요청 목록 조회 실패:", friendRequestsError);
-			showToast("친구 요청 목록을 불러오는데 실패했습니다.");
-		}
-	}, [friendRequestsError, showToast]);
-
-	//친구 요청 거절
-	const handleRejectRequest = useCallback(
-		(id: string) => {
-			const requestId = parseInt(id, 10);
-			if (isNaN(requestId)) {
-				showToast("잘못된 요청 ID입니다.");
-				return;
-			}
-			respondToRequest({ requestId, accept: false });
-			showToast("친구 요청을 거절했습니다.");
-		},
-		[respondToRequest, showToast],
-	);
-
-	//친구 요청 수락
 	const handleAcceptRequest = useCallback(
 		(request: FriendRequest) => {
 			const requestId = parseInt(request.id, 10);
-			if (isNaN(requestId)) {
-				showToast("잘못된 요청 ID입니다.");
+			if (Number.isNaN(requestId)) {
+				showToastWithAutoHide("잘못된 요청 ID입니다.");
 				return;
 			}
-			respondToRequest({ requestId, accept: true });
-			showToast("친구 요청을 수락했습니다.");
+			friendAccept(requestId);
+			showToastWithAutoHide("친구 요청을 수락했습니다.");
 		},
-		[respondToRequest, showToast],
+		[friendAccept, showToastWithAutoHide],
 	);
 
-	//친구 추가 버튼 클릭
+	const handleRejectRequest = useCallback(
+		(id: string) => {
+			const requestId = parseInt(id, 10);
+			if (Number.isNaN(requestId)) {
+				showToastWithAutoHide("잘못된 요청 ID입니다.");
+				return;
+			}
+			friendReject(requestId);
+			showToastWithAutoHide("친구 요청을 거절했습니다.");
+		},
+		[friendReject, showToastWithAutoHide],
+	);
+
 	const handleAddFriendButtonPress = useCallback(() => {
 		addFriendBottomSheetRef.current?.present();
 	}, []);
-
-	//초대 코드 입력
-	const handleEnterInviteCode = useCallback(
-		(code: string) => {
-			if (code.length === 0) {
-				return;
-			}
-			onAddFriendPress();
-			showToast("친구 요청을 보냈어요!");
-		},
-		[onAddFriendPress, showToast],
-	);
-
-	//푸시 알림 토글
-	const handleToggleFriendNotifications = useCallback(
-		(friendId: string) => {
-			if (!friendId) {
-				return;
-			}
-			setFriendNotifications((prev) => {
-				const current = prev[friendId] ?? true;
-				const next = !current;
-				showToast(
-					next ? "푸시 알림을 받습니다." : "푸시 알림을 받지 않습니다.",
-				);
-				return {
-					...prev,
-					[friendId]: next,
-				};
-			});
-		},
-		[showToast],
-	);
-
-	//친구 끊기
-	const handleRemoveFriend = useCallback(
-		(connectCode: string) => {
-			if (!connectCode) {
-				return;
-			}
-			removeFriendMutate({ connectCode });
-			showToast("친구를 끊었습니다.");
-		},
-
-		[removeFriendMutate, showToast],
-	);
 
 	const openFriendBottomSheet = useCallback((friend: Friend) => {
 		setSelectedFriend({
@@ -255,6 +162,33 @@ export function FriendsContent({
 		});
 		menuBottomSheetRef.current?.present();
 	}, []);
+
+	const handleToggleFriendNotifications = useCallback(
+		(friendId: string) => {
+			if (!friendId) {
+				return;
+			}
+			setFriendNotifications((prev) => {
+				const current = prev[friendId] ?? true;
+				const next = !current;
+				showToastWithAutoHide(
+					next ? "푸시 알림을 받습니다." : "푸시 알림을 받지 않습니다.",
+				);
+				return {
+					...prev,
+					[friendId]: next,
+				};
+			});
+		},
+		[showToastWithAutoHide],
+	);
+
+	const handleRemoveFriend = useCallback(
+		(connectCode: string) => {
+			disconnectFriend(connectCode);
+		},
+		[disconnectFriend],
+	);
 
 	return (
 		<S.Container>
@@ -295,35 +229,31 @@ export function FriendsContent({
 				<CharacterBubble character={characterName} message={greetingMessage} />
 			</S.Spacing>
 
-			{friendRequestsData.length > 0 && (
-				<>
-					{friendRequestsData.map((request, index) => (
-						<View key={request.requestId}>
+			{friendRequestsData.length > 0 &&
+				friendRequestsData.map((request, index) => (
+					<View key={request.requestId}>
+						<S.DividerSpacing>
+							<Divider size="large" />
+						</S.DividerSpacing>
+
+						<FriendRequestCard
+							request={{
+								id: request.requestId.toString(),
+								name: request.requesterNickname,
+								profileImageUrl: request.requesterProfileImageUrl ?? undefined,
+							}}
+							timeLabel={formatTimeAgo(request.createdAt)}
+							onAccept={handleAcceptRequest}
+							onReject={handleRejectRequest}
+						/>
+
+						{index === friendRequestsData.length - 1 && (
 							<S.DividerSpacing>
 								<Divider size="large" />
 							</S.DividerSpacing>
-
-							<FriendRequestCard
-								request={{
-									id: request.requestId.toString(),
-									name: request.requesterNickname,
-									profileImageUrl:
-										request.requesterProfileImageUrl ?? undefined,
-								}}
-								timeLabel={formatTimeAgo(request.createdAt)}
-								onAccept={handleAcceptRequest}
-								onReject={handleRejectRequest}
-							/>
-
-							{index === friendRequestsData.length - 1 && (
-								<S.DividerSpacing>
-									<Divider size="large" />
-								</S.DividerSpacing>
-							)}
-						</View>
-					))}
-				</>
-			)}
+						)}
+					</View>
+				))}
 
 			{friendFeedData.map((feed, index) => (
 				<View key={feed.recordId}>
@@ -332,7 +262,7 @@ export function FriendsContent({
 						date={formatTimeAgo(feed.createdAt)}
 						emotionLabel={feed.emotionName}
 						description={feed.record}
-						avatarUrl={feed.requesterProfileImageUrl ?? ""}
+						avatarUrl={feed.authorProfileImageUrl ?? ""}
 						mainColor={feed.mainColor}
 						textColor={feed.textColor}
 					/>
@@ -365,17 +295,16 @@ export function FriendsContent({
 				</S.FooterButtonWrapper>
 			</S.Footer>
 
-			<Toast
-				visible={isToastVisible}
-				message={toastMessage}
-				onHide={() => setIsToastVisible(false)}
-			/>
-
+			<View style={{ position: "absolute", bottom: 20, left: 0, right: 0 }}>
+				<Toast
+					visible={isToastVisible}
+					message={toastMessage}
+					onHide={hideToast}
+				/>
+			</View>
 			<FriendInviteBottomSheet
 				bottomSheetRef={addFriendBottomSheetRef}
-				profileName={profileName}
 				inviteCode={inviteCode}
-				onEnterCode={handleEnterInviteCode}
 			/>
 
 			<FriendBottomSheet

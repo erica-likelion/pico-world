@@ -102,12 +102,10 @@ export default function RecordEdit() {
 
 	if (phase === "complete") {
 		return (
-			<>
-				<EmotionComplete
-					selectedEmotion={selectedEmotion}
-					onComplete={handleComplete}
-				/>
-			</>
+			<EmotionComplete
+				selectedEmotion={selectedEmotion}
+				onComplete={handleComplete}
+			/>
 		);
 	}
 }

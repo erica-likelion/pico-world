@@ -1,16 +1,15 @@
-import { Character } from "@/entities/character/model/character";
-import {
-	CharacterName,
-	DEFAULT_CHARACTER,
-} from "@/entities/character/model/characterMessages";
 import {
 	useUserNickname,
 	useUserProfileImageUrl,
 } from "@/entities/user/model/userQueries";
-import { getFriends } from "@/features/friends/api/getFriends";
-import { getGreeting } from "@/features/friends/api/getGreeting";
-import { sendFriendRequest } from "@/features/friends/api/sendFriendRequest";
-import { useInviteCodeCopy } from "@/features/friends/model/hooks/useInviteCodeCopy";
+import {
+	useFriendRequest,
+	useGetFriends,
+	useGreeting,
+	useInviteCodeCopy,
+	useKeyboardHeight,
+	useToast,
+} from "@/features/friends/model/hooks";
 import * as S from "@/features/friends/style/FriendInviteBottomSheet.styles";
 import { InviteCodeDisplay } from "@/features/friends/ui/FriendInviteBottomSheet/InviteCodeDisplay";
 import { SpeechBubble } from "@/features/friends/ui/FriendInviteBottomSheet/SpeechBubble";
@@ -20,31 +19,20 @@ import {
 	type BottomSheetRef,
 } from "@/shared/ui/bottomSheet/CustomBottomSheet";
 import { Divider } from "@/shared/ui/Divider";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-	Keyboard,
-	Platform,
-	TextInput,
-	TouchableOpacity,
-	View,
-} from "react-native";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Keyboard, TouchableOpacity, View, type TextInput } from "react-native";
 import { useTheme } from "styled-components/native";
 
 interface FriendInviteBottomSheetProps {
 	bottomSheetRef: BottomSheetRef;
 	snapPoints?: Array<string | number>;
-	profileName: string;
 	inviteCode: string;
-	onEnterCode?: (code: string) => void;
 }
 
 export function FriendInviteBottomSheet({
 	bottomSheetRef,
 	snapPoints = ["75%", "90%"],
-	profileName,
 	inviteCode,
-	onEnterCode,
 }: FriendInviteBottomSheetProps) {
 	const theme = useTheme();
 	const nickname = useUserNickname();
@@ -52,63 +40,42 @@ export function FriendInviteBottomSheet({
 	const { isCopied, handleCopy } = useInviteCodeCopy({ inviteCode });
 	const [enteredCode, setEnteredCode] = useState("");
 	const codeInputRef = useRef<TextInput>(null);
-	const [isToastVisible, setIsToastVisible] = useState(false);
-	const [toastMessage, setToastMessage] = useState("");
-	const [keyboardHeight, setKeyboardHeight] = useState(0);
-
-	const showToast = useCallback((message: string) => {
-		setToastMessage(message);
-		setIsToastVisible(true);
-	}, []);
+	const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const keyboardHeight = useKeyboardHeight();
+	const {
+		isVisible: isToastVisible,
+		message: toastMessage,
+		show: showToast,
+		hide: hideToast,
+	} = useToast();
+	const { message: greetingMessage, character: AICharacter } =
+		useGreeting("friend-invite");
 
 	const FRIEND_LIMIT = 5;
-	const { data: friends = [] } = useQuery({
-		queryKey: ["friends"],
-		queryFn: getFriends,
-	});
+	const { friends } = useGetFriends();
+	const friendsList = friends.data ?? [];
 
-	//인사
-	const { data: greetingData } = useQuery({
-		queryKey: ["greeting", "friend-invite"],
-		queryFn: () => getGreeting("friend-invite"),
-		retry: false,
-	});
+	const showToastWithAutoHide = useCallback(
+		(message: string) => {
+			showToast(message);
+			if (toastTimerRef.current) {
+				clearTimeout(toastTimerRef.current);
+			}
+			toastTimerRef.current = setTimeout(() => {
+				hideToast();
+			}, 2000);
+		},
+		[showToast, hideToast],
+	);
 
-	// 친구 요청
-	const { mutate: sendFriendRequestMutate } = useMutation({
-		mutationFn: sendFriendRequest,
-		onSuccess: (data) => {
-			const trimmed = enteredCode.trim();
-			showToast("친구 요청을 보냈어요!");
+	const { friendRequest } = useFriendRequest({
+		onSuccess: () => {
+			showToastWithAutoHide("친구 요청을 보냈어요!");
 			bottomSheetRef.current?.close();
-			onEnterCode?.(trimmed);
 			setEnteredCode("");
 		},
-		onError: (error: unknown) => {
-			let errorMessage = "친구 요청에 실패했습니다.";
-
-			if (error && typeof error === "object" && "response" in error) {
-				const axiosError = error as {
-					response?: { data?: { message?: string } };
-				};
-				if (axiosError.response?.data?.message) {
-					errorMessage = axiosError.response.data.message;
-				}
-			} else if (error instanceof Error) {
-				errorMessage = error.message;
-			}
-
-			showToast(errorMessage);
-		},
+		onError: showToastWithAutoHide,
 	});
-
-	const AICharacter = useMemo(() => {
-		const characterName: CharacterName =
-			(greetingData?.characterName as CharacterName) || DEFAULT_CHARACTER;
-		return (
-			Character.find((char) => char.name === characterName) || Character[0]
-		);
-	}, [greetingData?.characterName]);
 
 	const handleFocusCodeEntry = () => {
 		codeInputRef.current?.focus();
@@ -121,31 +88,15 @@ export function FriendInviteBottomSheet({
 			return;
 		}
 
-		if (friends.length >= FRIEND_LIMIT) {
-			showToast("친구가 이미 꽉찼어요");
-			return;
-		}
-
-		const requestCode = {
-			connectCode: trimmed,
-		};
-		sendFriendRequestMutate(requestCode);
+		Keyboard.dismiss();
+		friendRequest(trimmed, friendsList.length, FRIEND_LIMIT);
 	};
 
 	useEffect(() => {
-		const show = Keyboard.addListener(
-			Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow",
-			(e) => setKeyboardHeight(e.endCoordinates.height),
-		);
-		const hide = Keyboard.addListener(
-			Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide",
-			() => setKeyboardHeight(0),
-		);
-		return () => {
-			show.remove();
-			hide.remove();
-		};
-	}, []);
+		if (keyboardHeight === 0) {
+			bottomSheetRef.current?.snapToIndex(0);
+		}
+	}, [keyboardHeight, bottomSheetRef.current?.snapToIndex]);
 
 	return (
 		<CustomBottomSheet
@@ -165,9 +116,7 @@ export function FriendInviteBottomSheet({
 				</S.Header>
 
 				<S.ContentGroup>
-					<SpeechBubble
-						message={greetingData?.message || "친구랑 같이 열심히 기록해봐."}
-					/>
+					<SpeechBubble message={greetingMessage} />
 
 					<S.CharacterWrapper>
 						<S.CharacterGradient boxShadow={AICharacter.boxShadow}>
@@ -228,10 +177,7 @@ export function FriendInviteBottomSheet({
 				<Toast
 					visible={isToastVisible}
 					message={toastMessage}
-					onHide={() => {
-						setIsToastVisible(false);
-						setToastMessage("");
-					}}
+					onHide={hideToast}
 				/>
 			</View>
 		</CustomBottomSheet>

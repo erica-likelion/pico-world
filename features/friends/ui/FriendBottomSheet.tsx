@@ -4,8 +4,7 @@ import BellIcon from "@/shared/assets/icons/bell.svg";
 import RemoveFriendIcon from "@/shared/assets/icons/remove-minus-circle.svg";
 import { colors, grayscale } from "@/shared/config/theme/Colors";
 import * as S from "@/shared/style/MenuBottomSheet.styles";
-import { Avatar } from "@/shared/ui";
-import { Divider } from "@/shared/ui/Divider";
+import { Avatar, Divider } from "@/shared/ui";
 import {
 	CustomBottomSheet,
 	type BottomSheetRef,
