@@ -5,7 +5,6 @@ export function useKeyboardHeight() {
 	const [keyboardHeight, setKeyboardHeight] = useState(0);
 
 	useEffect(() => {
-		// 키보드 올라올 때
 		const show = Keyboard.addListener(
 			Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow",
 			(e) => setKeyboardHeight(e.endCoordinates.height),
