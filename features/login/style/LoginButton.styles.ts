@@ -11,6 +11,7 @@ export const LoginButtonContainer = styled.View`
   position: fixed;
   bottom: ${({ theme }) => theme.rem(34)};
   left: 0;
+  z-index: 10;
 `;
 
 export const KaKaoLoginButton = styled(Animated.View)`
