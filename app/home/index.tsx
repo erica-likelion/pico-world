@@ -174,7 +174,7 @@ export default function Home() {
 					bottomSheetRef={bottomSheetRef}
 					date={formatDate(selectedRecord.created_at, { korean: true })}
 					onEditPress={() => {
-						router.push(`/record/edit?id=${selectedRecord.record_id}` as any);
+						router.push(`/record/edit?id=${selectedRecord.record_id}`);
 					}}
 					onDeleteConfirm={handleDeleteConfirm}
 				/>

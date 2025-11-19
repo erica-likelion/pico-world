@@ -59,7 +59,7 @@ export default function Journal() {
 
 	const handleEditPress = () => {
 		if (selectedRecord) {
-			router.push(`/record/edit?id=${selectedRecord.record_id}` as any);
+			router.push(`/record/edit?id=${selectedRecord.record_id}`);
 		}
 	};
 
