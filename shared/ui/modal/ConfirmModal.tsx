@@ -1,5 +1,5 @@
 import * as S from "@/shared/style/ConfirmModal.styles";
-import { Button } from "@/shared/ui";
+import { Button } from "@/shared/ui/Button";
 import Modal from "react-native-modal";
 
 interface ConfirmModalProps {
