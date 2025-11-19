@@ -24,6 +24,7 @@ interface TextInputProps {
 	multiline?: boolean;
 	value?: string;
 	onChangeText?: (text: string) => void;
+	scrollEnabled?: boolean;
 }
 
 export function TextInput({
@@ -32,6 +33,7 @@ export function TextInput({
 	multiline = false,
 	value,
 	onChangeText,
+	scrollEnabled = true,
 }: TextInputProps) {
 	const theme = useTheme();
 
@@ -43,6 +45,7 @@ export function TextInput({
 			placeholderTextColor={theme.grayscale.gray400}
 			value={value}
 			onChangeText={onChangeText}
+			scrollEnabled={scrollEnabled}
 		/>
 	);
 }

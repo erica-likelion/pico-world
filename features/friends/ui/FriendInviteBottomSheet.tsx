@@ -7,12 +7,12 @@ import {
 	useGetFriends,
 	useGreeting,
 	useInviteCodeCopy,
-	useKeyboardHeight,
 	useToast,
 } from "@/features/friends/model/hooks";
 import * as S from "@/features/friends/style/FriendInviteBottomSheet.styles";
 import { InviteCodeDisplay } from "@/features/friends/ui/FriendInviteBottomSheet/InviteCodeDisplay";
 import { SpeechBubble } from "@/features/friends/ui/FriendInviteBottomSheet/SpeechBubble";
+import { useKeyboardHeight } from "@/shared/hooks/useKeyboardHeight";
 import { Avatar, Toast } from "@/shared/ui";
 import {
 	CustomBottomSheet,
