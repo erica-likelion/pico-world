@@ -1,6 +1,6 @@
 import * as S from "@/shared/style/DeleteModal.styles";
-import { Button } from "@/shared/ui";
 import Modal from "react-native-modal";
+import { Button } from "@/shared/ui/Button";
 
 interface DeleteModalProps {
 	isVisible: boolean;

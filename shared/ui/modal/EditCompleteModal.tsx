@@ -1,6 +1,6 @@
 import type { CharacterName } from "@/entities/character/model/characterMessages";
 import * as S from "@/shared/style/EditCompleteModal.styles";
-import { Button } from "@/shared/ui";
+import { Button } from "@/shared/ui/Button";
 import Modal from "react-native-modal";
 
 interface EditCompleteModalProps {
