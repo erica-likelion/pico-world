@@ -12,7 +12,11 @@ export const NotificationBell = () => {
 			<BellIcon width={24} height={24} color={theme.grayscale.white} />
 			{unreadCount !== undefined && unreadCount > 0 && (
 				<S.BadgeContainer>
-					<S.BadgeText>{unreadCount}</S.BadgeText>
+					{unreadCount >= 8 ? (
+						<S.BadgeTextPlus>9⁺</S.BadgeTextPlus>
+					) : (
+						<S.BadgeText>{unreadCount}</S.BadgeText>
+					)}
 				</S.BadgeContainer>
 			)}
 		</S.Container>

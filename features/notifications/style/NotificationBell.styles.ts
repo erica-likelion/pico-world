@@ -17,6 +17,12 @@ export const BadgeContainer = styled.View`
   padding: 2px;
 `;
 
+export const BadgeTextPlus = styled.Text`
+  color: white;
+  font-size: 12.5px;
+  font-weight: bold;
+`;
+
 export const BadgeText = styled.Text`
   color: white;
   font-size: 12px;

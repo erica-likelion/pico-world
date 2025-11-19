@@ -114,10 +114,8 @@ export default function Home() {
 	const characterName = greetingData?.characterName as
 		| CharacterName
 		| undefined;
-	console.log("characterName", characterName);
 	const characterImage = useMemo(() => {
 		const foundCharacter = Character.find((c) => c.name === characterName);
-		console.log("characterImage", characterImage);
 		return foundCharacter ? foundCharacter.image : undefined;
 	}, [characterName]);
 

@@ -30,33 +30,6 @@ export default function NotificationsScreen() {
 		return allNotifications.filter((n) => n.type.startsWith("FRIEND"));
 	}, [allNotifications]);
 
-	const renderAllTab = () => (
-		<AllTab
-			notifications={allNotifications}
-			isLoading={isLoading}
-			fetchNextPage={fetchNextPage}
-			hasNextPage={hasNextPage}
-		/>
-	);
-
-	const renderRepliesTab = () => (
-		<RepliesTab
-			notifications={repliesNotifications}
-			isLoading={isLoading}
-			fetchNextPage={fetchNextPage}
-			hasNextPage={hasNextPage}
-		/>
-	);
-
-	const renderFriendsTab = () => (
-		<FriendsTab
-			notifications={friendsNotifications}
-			isLoading={isLoading}
-			fetchNextPage={fetchNextPage}
-			hasNextPage={hasNextPage}
-		/>
-	);
-
 	return (
 		<View style={{ flex: 1, backgroundColor: "black" }}>
 			<TopNav title="알림" leftIcon />
@@ -76,21 +49,36 @@ export default function NotificationsScreen() {
 					tabBarInactiveTintColor: theme.grayscale.gray400,
 				}}
 			>
-				<Tab.Screen
-					name="All"
-					component={renderAllTab}
-					options={{ title: "전체" }}
-				/>
-				<Tab.Screen
-					name="Replies"
-					component={renderRepliesTab}
-					options={{ title: "답장" }}
-				/>
-				<Tab.Screen
-					name="Friends"
-					component={renderFriendsTab}
-					options={{ title: "친구" }}
-				/>
+				<Tab.Screen name="All" options={{ title: "전체" }}>
+					{() => (
+						<AllTab
+							notifications={allNotifications}
+							isLoading={isLoading}
+							fetchNextPage={fetchNextPage}
+							hasNextPage={hasNextPage}
+						/>
+					)}
+				</Tab.Screen>
+				<Tab.Screen name="Replies" options={{ title: "답장" }}>
+					{() => (
+						<RepliesTab
+							notifications={repliesNotifications}
+							isLoading={isLoading}
+							fetchNextPage={fetchNextPage}
+							hasNextPage={hasNextPage}
+						/>
+					)}
+				</Tab.Screen>
+				<Tab.Screen name="Friends" options={{ title: "친구" }}>
+					{() => (
+						<FriendsTab
+							notifications={friendsNotifications}
+							isLoading={isLoading}
+							fetchNextPage={fetchNextPage}
+							hasNextPage={hasNextPage}
+						/>
+					)}
+				</Tab.Screen>
 			</Tab.Navigator>
 		</View>
 	);

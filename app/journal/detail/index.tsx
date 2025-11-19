@@ -15,7 +15,6 @@ export default function JournalDetail() {
 	useHideBottomNav();
 	const router = useRouter();
 	const { id } = useLocalSearchParams<{ id: string }>();
-	console.log(id);
 
 	const { data: record, isLoading: isRecordLoading } = useQuery({
 		queryKey: ["emotionRecord", id],
