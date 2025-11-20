@@ -31,7 +31,7 @@ interface FriendInviteBottomSheetProps {
 
 export function FriendInviteBottomSheet({
 	bottomSheetRef,
-	snapPoints = ["75%", "90%"],
+	snapPoints = ["80%", "90%"],
 	inviteCode,
 }: FriendInviteBottomSheetProps) {
 	const theme = useTheme();
@@ -71,7 +71,9 @@ export function FriendInviteBottomSheet({
 	const { friendRequest } = useFriendRequest({
 		onSuccess: () => {
 			showToastWithAutoHide("친구 요청을 보냈어요!");
-			bottomSheetRef.current?.close();
+			setTimeout(() => {
+				bottomSheetRef.current?.close();
+			}, 1500);
 			setEnteredCode("");
 		},
 		onError: showToastWithAutoHide,
