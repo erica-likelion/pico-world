@@ -1,6 +1,7 @@
 import { appleLogin } from "@/features/login/api/appleLogin";
 import { kakaoLogin } from "@/features/login/api/kakaoLogin";
 import * as S from "@/features/login/style/LoginButton.styles";
+import { registerForPushNotificationsAsync } from "@/shared/config/notification";
 import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
 import { useAuthStore } from "@/shared/store/auth";
 import { useDeepLinkStore } from "@/shared/store/deepLink";
@@ -30,6 +31,8 @@ export function LoginButton() {
 
 	const handleLoginSuccess = (isOnboardingNeeded: boolean) => {
 		setIsLoggedIn(true);
+		registerForPushNotificationsAsync(); // 로그인 성공 후 FCM 토큰 등록/전송
+
 		if (pendingDestination) {
 			router.replace(pendingDestination as Href);
 			clearPendingDestination();
