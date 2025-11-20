@@ -54,43 +54,39 @@ function RootLayoutNav() {
 		...FontAwesome.font,
 	});
 
-	// 0. 앱 시작 시 알림 초기화
+	// 앱 초기화 로직
 	useEffect(() => {
-		const initializeNotifications = async () => {
-			// 알림 권한 요청 및 토큰 등록
-			await registerForPushNotificationsAsync();
+		const initializeApp = async () => {
+			// 1. 인증 상태 확인
+			const accessToken = await AsyncStorage.getItem("accessToken");
+			const isUserLoggedIn = !!accessToken;
+			setIsLoggedIn(isUserLoggedIn);
 
-			// 백그라운드 메시지 핸들러
+			// 2. 알림 리스너 설정 (로그인 여부와 관계 없이)
 			messaging().setBackgroundMessageHandler(async (remoteMessage) => {
 				console.log("백그라운드 메시지 수신:", remoteMessage);
 			});
+			messaging().onMessage(async (remoteMessage) => {
+				console.log("포그라운드 메시지 수신:", remoteMessage);
+				alert("메시지 수신" + remoteMessage);
+			});
 
-			// 포그라운드 메시지 리스너
-			const unsubscribeOnMessage = messaging().onMessage(
-				async (remoteMessage) => {
-					console.log("포그라운드 메시지 수신:", remoteMessage);
-					alert("메시지 수신" + remoteMessage);
-				},
-			);
+			messaging().onNotificationOpenedApp(async (remoteMessage) => {
+				console.log("백그라운드/종료 알림 탭:", remoteMessage);
+				const url = remoteMessage.data?.url as string | undefined;
+				if (!url) return;
 
-			// 백그라운드에서 알림 탭 리스너
-			const unsubscribeOnNotificationOpenedApp =
-				messaging().onNotificationOpenedApp(async (remoteMessage) => {
-					console.log("백그라운드/종료 알림 탭:", remoteMessage);
-					const url = remoteMessage.data?.url as string | undefined;
-					if (!url) return;
+				// 이 시점의 로그인 상태를 다시 확인
+				const currentIsLoggedIn = !!(await AsyncStorage.getItem("accessToken"));
+				if (currentIsLoggedIn) {
+					router.push(url as Href);
+				} else {
+					const { setPendingDestination } = useDeepLinkStore.getState();
+					setPendingDestination(url);
+					router.push("/login");
+				}
+			});
 
-					const { isLoggedIn: isUserLoggedIn } = useAuthStore.getState();
-					if (isUserLoggedIn) {
-						router.push(url as Href);
-					} else {
-						const { setPendingDestination } = useDeepLinkStore.getState();
-						setPendingDestination(url);
-						router.push("/login");
-					}
-				});
-
-			// 앱이 완전히 종료된 상태에서 알림 탭 처리
 			messaging()
 				.getInitialNotification()
 				.then(async (remoteMessage) => {
@@ -98,9 +94,9 @@ function RootLayoutNav() {
 						console.log("앱 종료 상태에서 알림 탭:", remoteMessage);
 						const url = remoteMessage.data?.url as string | undefined;
 						if (!url) return;
-
-						const accessToken = await AsyncStorage.getItem("accessToken");
-						if (accessToken) {
+						const currentIsLoggedIn =
+							!!(await AsyncStorage.getItem("accessToken"));
+						if (currentIsLoggedIn) {
 							router.push(url as Href);
 						} else {
 							const { setPendingDestination } = useDeepLinkStore.getState();
@@ -109,32 +105,24 @@ function RootLayoutNav() {
 					}
 				});
 
-			return () => {
-				unsubscribeOnMessage();
-				unsubscribeOnNotificationOpenedApp();
-			};
-		};
+			// 3. 로그인된 경우, FCM 토큰 등록
+			if (isUserLoggedIn) {
+				await registerForPushNotificationsAsync();
+			}
 
-		initializeNotifications();
-	}, [router]);
-
-	// 1. 앱 시작 시 인증 상태 확인
-	useEffect(() => {
-		const checkAuthStatus = async () => {
-			try {
-				const accessToken = await AsyncStorage.getItem("accessToken");
-				setIsLoggedIn(!!accessToken);
-			} catch (e) {
-				setIsLoggedIn(false);
+			// 4. 모든 준비가 끝나면 스플래시 화면 숨기기
+			if (loaded) {
+				await SplashScreen.hideAsync();
 			}
 		};
-		checkAuthStatus();
-	}, [setIsLoggedIn]);
 
-	// 2. 인증 상태에 따른 경로 보호
+		initializeApp();
+	}, [loaded, setIsLoggedIn, router]);
+
+	// 인증 상태에 따른 경로 보호
 	useEffect(() => {
 		if (isLoggedIn === null) {
-			return;
+			return; // 아직 인증 상태 확인 중
 		}
 		const inAuthGroup = pathname.startsWith("/login");
 
@@ -144,13 +132,6 @@ function RootLayoutNav() {
 			router.replace("/home");
 		}
 	}, [isLoggedIn, pathname, router]);
-
-	// 3. 폰트 로드 및 인증 확인 완료 후, 스플래시 화면 숨기기
-	useEffect(() => {
-		if (loaded && isLoggedIn !== null) {
-			SplashScreen.hideAsync();
-		}
-	}, [loaded, isLoggedIn]);
 
 	useEffect(() => {
 		if (error) throw error;
