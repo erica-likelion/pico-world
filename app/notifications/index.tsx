@@ -1,9 +1,7 @@
 import { useNotifications } from "@/features/notifications/model/useNotifications";
 import { AllTab } from "@/features/notifications/ui/AllTab";
 import { FriendsTab } from "@/features/notifications/ui/FriendsTab";
-import { NotificationPermissionModal } from "@/features/notifications/ui/NotificationPermissionModal";
 import { RepliesTab } from "@/features/notifications/ui/RepliesTab";
-import { registerForPushNotificationsAsync } from "@/shared/config/notification";
 import { useHideBottomNav } from "@/shared/hooks/useHideBottomNav";
 import { Button } from "@/shared/ui/Button";
 import { TopNav } from "@/widgets/TopNav/ui";
@@ -11,7 +9,7 @@ import messaging, {
 	AuthorizationStatus,
 } from "@react-native-firebase/messaging";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Linking, View } from "react-native";
 import styled, { useTheme } from "styled-components/native";
 
@@ -21,52 +19,25 @@ export default function NotificationsScreen() {
 	useHideBottomNav();
 	const theme = useTheme();
 
-	const [permissionStatus, setPermissionStatus] = useState<number>(
-		AuthorizationStatus.AUTHORIZED,
-	);
-	const [isModalVisible, setIsModalVisible] = useState(false);
+	const [permissionStatus, setPermissionStatus] = useState<
+		number | undefined
+	>();
+
+	useEffect(() => {
+		const checkPermission = async () => {
+			const authStatus = await messaging().hasPermission();
+			setPermissionStatus(authStatus);
+		};
+		checkPermission();
+	}, []);
 
 	const isPermissionGranted =
 		permissionStatus === AuthorizationStatus.AUTHORIZED ||
 		permissionStatus === AuthorizationStatus.PROVISIONAL;
 
-	const { data, fetchNextPage, hasNextPage, isLoading, refetch } =
-		useNotifications({ enabled: isPermissionGranted });
-
-	const checkPermission = useCallback(async () => {
-		const authStatus = await messaging().hasPermission();
-		setPermissionStatus(authStatus);
-		return authStatus;
-	}, []);
-
-	useEffect(() => {
-		const handleInitialPermissionCheck = async () => {
-			const authStatus = await checkPermission();
-			if (authStatus === AuthorizationStatus.NOT_DETERMINED) {
-				setIsModalVisible(true);
-			}
-		};
-		handleInitialPermissionCheck();
-	}, [checkPermission]);
-
-	const handleRequestPermission = async () => {
-		setIsModalVisible(false);
-
-		if (permissionStatus === AuthorizationStatus.DENIED) {
-			Linking.openSettings();
-			return;
-		}
-
-		await registerForPushNotificationsAsync();
-		const newStatus = await checkPermission();
-
-		if (
-			newStatus === AuthorizationStatus.AUTHORIZED ||
-			newStatus === AuthorizationStatus.PROVISIONAL
-		) {
-			refetch();
-		}
-	};
+	const { data, fetchNextPage, hasNextPage, isLoading } = useNotifications({
+		enabled: isPermissionGranted,
+	});
 
 	const allNotifications = useMemo(() => {
 		return data?.pages.flatMap((page) => page.notifications) ?? [];
@@ -85,11 +56,6 @@ export default function NotificationsScreen() {
 	return (
 		<View style={{ flex: 1, backgroundColor: "black" }}>
 			<TopNav title="알림" leftIcon />
-			<NotificationPermissionModal
-				visible={isModalVisible}
-				onClose={() => setIsModalVisible(false)}
-				onConfirm={handleRequestPermission}
-			/>
 
 			{isPermissionGranted ? (
 				<Tab.Navigator
@@ -148,18 +114,8 @@ export default function NotificationsScreen() {
 					</Description>
 					<Button
 						size="large"
-						onPress={() => {
-							if (permissionStatus === AuthorizationStatus.DENIED) {
-								Linking.openSettings();
-							} else {
-								setIsModalVisible(true);
-							}
-						}}
-						text={
-							permissionStatus === AuthorizationStatus.DENIED
-								? "설정에서 알림 켜기"
-								: "알림 켜기"
-						}
+						onPress={() => Linking.openSettings()}
+						text={"설정에서 알림 켜기"}
 					/>
 				</PermissionGuideContainer>
 			)}

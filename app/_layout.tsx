@@ -7,13 +7,7 @@ import { BottomNav } from "@/widgets/BottomNav/ui";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-	getInitialNotification,
-	getMessaging,
-	onMessage,
-	onNotificationOpenedApp,
-	setBackgroundMessageHandler,
-} from "@react-native-firebase/messaging";
+import messaging from "@react-native-firebase/messaging";
 import { ThemeProvider } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
@@ -32,11 +26,6 @@ export { ErrorBoundary } from "expo-router";
 SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
-const messagingInstance = getMessaging();
-
-setBackgroundMessageHandler(messagingInstance, async (remoteMessage) => {
-	console.log("백그라운드 메시지 수신:", remoteMessage);
-});
 
 export default function RootLayout() {
 	return (
@@ -65,6 +54,70 @@ function RootLayoutNav() {
 		...FontAwesome.font,
 	});
 
+	// 0. 앱 시작 시 알림 초기화
+	useEffect(() => {
+		const initializeNotifications = async () => {
+			// 알림 권한 요청 및 토큰 등록
+			await registerForPushNotificationsAsync();
+
+			// 백그라운드 메시지 핸들러
+			messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+				console.log("백그라운드 메시지 수신:", remoteMessage);
+			});
+
+			// 포그라운드 메시지 리스너
+			const unsubscribeOnMessage = messaging().onMessage(
+				async (remoteMessage) => {
+					console.log("포그라운드 메시지 수신:", remoteMessage);
+					alert("메시지 수신" + remoteMessage);
+				},
+			);
+
+			// 백그라운드에서 알림 탭 리스너
+			const unsubscribeOnNotificationOpenedApp =
+				messaging().onNotificationOpenedApp(async (remoteMessage) => {
+					console.log("백그라운드/종료 알림 탭:", remoteMessage);
+					const url = remoteMessage.data?.url as string | undefined;
+					if (!url) return;
+
+					const { isLoggedIn: isUserLoggedIn } = useAuthStore.getState();
+					if (isUserLoggedIn) {
+						router.push(url as Href);
+					} else {
+						const { setPendingDestination } = useDeepLinkStore.getState();
+						setPendingDestination(url);
+						router.push("/login");
+					}
+				});
+
+			// 앱이 완전히 종료된 상태에서 알림 탭 처리
+			messaging()
+				.getInitialNotification()
+				.then(async (remoteMessage) => {
+					if (remoteMessage) {
+						console.log("앱 종료 상태에서 알림 탭:", remoteMessage);
+						const url = remoteMessage.data?.url as string | undefined;
+						if (!url) return;
+
+						const accessToken = await AsyncStorage.getItem("accessToken");
+						if (accessToken) {
+							router.push(url as Href);
+						} else {
+							const { setPendingDestination } = useDeepLinkStore.getState();
+							setPendingDestination(url);
+						}
+					}
+				});
+
+			return () => {
+				unsubscribeOnMessage();
+				unsubscribeOnNotificationOpenedApp();
+			};
+		};
+
+		initializeNotifications();
+	}, [router]);
+
 	// 1. 앱 시작 시 인증 상태 확인
 	useEffect(() => {
 		const checkAuthStatus = async () => {
@@ -92,62 +145,12 @@ function RootLayoutNav() {
 		}
 	}, [isLoggedIn, pathname, router]);
 
-	// 3. 폰트 로드 및 인증 확인 완료 후, 모든 앱 초기화 로직 실행
+	// 3. 폰트 로드 및 인증 확인 완료 후, 스플래시 화면 숨기기
 	useEffect(() => {
 		if (loaded && isLoggedIn !== null) {
-			// 스플래시 화면 숨기기
 			SplashScreen.hideAsync();
-
-			// 포그라운드 메시지 리스너
-			const unsubscribeOnMessage = onMessage(
-				messagingInstance,
-				async (remoteMessage) => {
-					console.log("포그라운드 메시지 수신:", remoteMessage);
-					alert("메시지 수신" + remoteMessage);
-				},
-			);
-
-			// 백그라운드에서 알림 탭 리스너
-			const unsubscribeOnNotificationOpenedApp = onNotificationOpenedApp(
-				messagingInstance,
-				async (remoteMessage) => {
-					console.log("백그라운드/종료 알림 탭:", remoteMessage);
-					const url = remoteMessage.data?.url as string | undefined;
-					if (!url) return;
-
-					if (isLoggedIn) {
-						router.push(url as Href);
-					} else {
-						const { setPendingDestination } = useDeepLinkStore.getState();
-						setPendingDestination(url);
-						router.push("/login");
-					}
-				},
-			);
-
-			// 앱이 완전히 종료된 상태에서 알림 탭 처리
-			getInitialNotification(messagingInstance).then(async (remoteMessage) => {
-				if (remoteMessage) {
-					console.log("앱 종료 상태에서 알림 탭:", remoteMessage);
-					const url = remoteMessage.data?.url as string | undefined;
-					if (!url) return;
-
-					const accessToken = await AsyncStorage.getItem("accessToken");
-					if (accessToken) {
-						router.push(url as Href);
-					} else {
-						const { setPendingDestination } = useDeepLinkStore.getState();
-						setPendingDestination(url);
-					}
-				}
-			});
-
-			return () => {
-				unsubscribeOnMessage();
-				unsubscribeOnNotificationOpenedApp();
-			};
 		}
-	}, [loaded, isLoggedIn, router]);
+	}, [loaded, isLoggedIn]);
 
 	useEffect(() => {
 		if (error) throw error;
