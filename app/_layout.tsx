@@ -1,20 +1,24 @@
+import { useToast } from "@/features/friends/model/hooks/useToast";
 import { registerForPushNotificationsAsync } from "@/shared/config/notification";
 import { navigationTheme, theme } from "@/shared/config/theme/theme";
 import { useAuthStore } from "@/shared/store/auth";
 import { useDeepLinkStore } from "@/shared/store/deepLink";
+import { Toast } from "@/shared/ui/Toast";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { BottomNav } from "@/widgets/BottomNav/ui";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import messaging from "@react-native-firebase/messaging";
+import messaging, {
+	type FirebaseMessagingTypes,
+} from "@react-native-firebase/messaging";
 import { ThemeProvider } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
 import { type Href, Stack, usePathname, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
@@ -44,6 +48,12 @@ function RootLayoutNav() {
 	const pathname = usePathname();
 	const { isVisible } = useBottomNavStore();
 	const { isLoggedIn, setIsLoggedIn } = useAuthStore();
+	const {
+		isVisible: isToastVisible,
+		message: toastMessage,
+		show: showToast,
+		hide: hideToast,
+	} = useToast();
 	const isLogin = pathname.startsWith("/login");
 
 	const [loaded, error] = useFonts({
@@ -54,75 +64,81 @@ function RootLayoutNav() {
 		...FontAwesome.font,
 	});
 
-	// 앱 초기화 로직
+	const handleNotificationNavigation = useCallback(
+		async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
+			const { type, relatedId, url } = remoteMessage.data || {};
+			console.log("Handling notification navigation:", remoteMessage.data);
+
+			const currentIsLoggedIn = !!(await AsyncStorage.getItem("accessToken"));
+			if (!currentIsLoggedIn) {
+				const destination =
+					type === "ai_feedback"
+						? `/journal/edit?id=${relatedId}`
+						: typeof type === "string" && type.startsWith("FRIEND")
+							? "/friends"
+							: (url as string | undefined);
+				if (destination) {
+					const { setPendingDestination } = useDeepLinkStore.getState();
+					setPendingDestination(destination);
+					router.push("/login");
+				}
+				return;
+			}
+
+			if (type === "ai_feedback" && relatedId) {
+				router.push(`/journal/edit?id=${relatedId}` as Href);
+			} else if (typeof type === "string" && type.startsWith("FRIEND")) {
+				router.push("/friends");
+			} else if (url) {
+				router.push(url as Href);
+			}
+		},
+		[router],
+	);
+
 	useEffect(() => {
 		const initializeApp = async () => {
-			// 1. 인증 상태 확인
 			const accessToken = await AsyncStorage.getItem("accessToken");
 			const isUserLoggedIn = !!accessToken;
 			setIsLoggedIn(isUserLoggedIn);
 
-			// 2. 알림 리스너 설정 (로그인 여부와 관계 없이)
 			messaging().setBackgroundMessageHandler(async (remoteMessage) => {
 				console.log("백그라운드 메시지 수신:", remoteMessage);
 			});
+
 			messaging().onMessage(async (remoteMessage) => {
 				console.log("포그라운드 메시지 수신:", remoteMessage);
-				alert("메시지 수신" + remoteMessage);
-			});
-
-			messaging().onNotificationOpenedApp(async (remoteMessage) => {
-				console.log("백그라운드/종료 알림 탭:", remoteMessage);
-				const url = remoteMessage.data?.url as string | undefined;
-				if (!url) return;
-
-				// 이 시점의 로그인 상태를 다시 확인
-				const currentIsLoggedIn = !!(await AsyncStorage.getItem("accessToken"));
-				if (currentIsLoggedIn) {
-					router.push(url as Href);
-				} else {
-					const { setPendingDestination } = useDeepLinkStore.getState();
-					setPendingDestination(url);
-					router.push("/login");
+				const body = remoteMessage.notification?.body;
+				if (body) {
+					showToast(body);
 				}
 			});
 
+			messaging().onNotificationOpenedApp(handleNotificationNavigation);
+
 			messaging()
 				.getInitialNotification()
-				.then(async (remoteMessage) => {
+				.then((remoteMessage) => {
 					if (remoteMessage) {
-						console.log("앱 종료 상태에서 알림 탭:", remoteMessage);
-						const url = remoteMessage.data?.url as string | undefined;
-						if (!url) return;
-						const currentIsLoggedIn =
-							!!(await AsyncStorage.getItem("accessToken"));
-						if (currentIsLoggedIn) {
-							router.push(url as Href);
-						} else {
-							const { setPendingDestination } = useDeepLinkStore.getState();
-							setPendingDestination(url);
-						}
+						handleNotificationNavigation(remoteMessage);
 					}
 				});
 
-			// 3. 로그인된 경우, FCM 토큰 등록
 			if (isUserLoggedIn) {
 				await registerForPushNotificationsAsync();
 			}
 
-			// 4. 모든 준비가 끝나면 스플래시 화면 숨기기
 			if (loaded) {
 				await SplashScreen.hideAsync();
 			}
 		};
 
 		initializeApp();
-	}, [loaded, setIsLoggedIn, router]);
+	}, [loaded, setIsLoggedIn, showToast, handleNotificationNavigation]);
 
-	// 인증 상태에 따른 경로 보호
 	useEffect(() => {
 		if (isLoggedIn === null) {
-			return; // 아직 인증 상태 확인 중
+			return;
 		}
 		const inAuthGroup = pathname.startsWith("/login");
 
@@ -137,7 +153,6 @@ function RootLayoutNav() {
 		if (error) throw error;
 	}, [error]);
 
-	// 폰트 로드 및 인증 확인 전에는 아무것도 렌더링하지 않음 (스플래시 화면 표시)
 	if (!loaded || isLoggedIn === null) {
 		return null;
 	}
@@ -164,6 +179,21 @@ function RootLayoutNav() {
 							/>
 						</View>
 						{isVisible && <BottomNav />}
+						<View
+							style={{
+								position: "absolute",
+								bottom: 20,
+								left: 0,
+								right: 0,
+								alignItems: "center",
+							}}
+						>
+							<Toast
+								visible={isToastVisible}
+								message={toastMessage}
+								onHide={hideToast}
+							/>
+						</View>
 					</Layout>
 				</ThemeProvider>
 			</StyledThemeProvider>
