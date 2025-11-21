@@ -182,7 +182,7 @@ function RootLayoutNav() {
 						<View
 							style={{
 								position: "absolute",
-								bottom: 20,
+								bottom: 134,
 								left: 0,
 								right: 0,
 								alignItems: "center",
