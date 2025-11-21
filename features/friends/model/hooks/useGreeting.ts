@@ -4,12 +4,15 @@ import {
 	DEFAULT_CHARACTER,
 } from "@/entities/character/model/characterMessages";
 import { getGreeting } from "@/features/friends/api/getGreeting";
+import { useAuthStore } from "@/shared/store/auth";
 import { useQuery } from "@tanstack/react-query";
 
 export function useGreeting(context: string = "friend-invite") {
+	const { isLoggedIn } = useAuthStore();
 	const { data: greetingData } = useQuery({
 		queryKey: ["greeting", context],
 		queryFn: () => getGreeting(context),
+		enabled: !!isLoggedIn,
 	});
 
 	const characterName: CharacterName =

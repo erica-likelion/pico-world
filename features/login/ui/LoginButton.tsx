@@ -33,11 +33,11 @@ export function LoginButton() {
 		setIsLoggedIn(true);
 		registerForPushNotificationsAsync(); // 로그인 성공 후 FCM 토큰 등록/전송
 
-		if (pendingDestination) {
+		if (isOnboardingNeeded) {
+			router.replace("/onboarding");
+		} else if (pendingDestination) {
 			router.replace(pendingDestination as Href);
 			clearPendingDestination();
-		} else if (isOnboardingNeeded) {
-			router.replace("/onboarding");
 		} else {
 			router.replace("/home");
 		}
