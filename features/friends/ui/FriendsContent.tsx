@@ -198,7 +198,9 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 						logged={hasRecordedToday}
 						imageUrl={profileImageUrl ?? undefined}
 					/>
-					<S.ProfileLabel>{nickname}</S.ProfileLabel>
+					<S.ProfileLabel numberOfLines={1} ellipsizeMode="tail">
+						{nickname}
+					</S.ProfileLabel>
 				</S.ProfileButtonWrapper>
 
 				<S.FriendsList>
@@ -210,7 +212,9 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 								pressable
 								onPress={() => openFriendBottomSheet(friend)}
 							/>
-							<S.ProfileLabel>{friend.nickname}</S.ProfileLabel>
+							<S.ProfileLabel numberOfLines={1} ellipsizeMode="tail">
+								{friend.nickname}
+							</S.ProfileLabel>
 						</S.ProfileButtonWrapper>
 					))}
 
@@ -218,7 +222,7 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 						<S.ProfileButtonContent>
 							<FriendsPlusIcon width={theme.rem(64)} height={theme.rem(64)} />
 						</S.ProfileButtonContent>
-						<S.ProfileLabel numberOfLines={2} ellipsizeMode="tail">
+						<S.ProfileLabel numberOfLines={1} ellipsizeMode="tail">
 							친구 추가 {friendAddProgress}
 						</S.ProfileLabel>
 					</S.ProfileButtonWrapperPressable>
