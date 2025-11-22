@@ -1,25 +1,19 @@
-import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
-import * as S from "@/widgets/BottomNav/style/BottomNav.style";
-import { usePathname, useRouter, type Href } from "expo-router";
-import {
-	cloneElement,
-	isValidElement,
-	useState,
-	type ReactElement,
-	type ReactNode,
-} from "react";
-import { Animated, TouchableOpacity } from "react-native";
-import type { SvgProps } from "react-native-svg";
-import { useTheme } from "styled-components/native";
-
 import HouseIcon from "@/shared/assets/icons/house.svg";
 import LayersIcon from "@/shared/assets/icons/layers.svg";
 import QuotesIcon from "@/shared/assets/icons/quotes.svg";
 import SettingIcon from "@/shared/assets/icons/setting.svg";
 import UsersIcon from "@/shared/assets/icons/users.svg";
+import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
+import * as S from "@/widgets/BottomNav/style/BottomNav.style";
+import { type Href, usePathname, useRouter } from "expo-router";
+import { type ReactNode, useState } from "react";
+import { TouchableOpacity } from "react-native";
+import Reanimated from "react-native-reanimated";
+import type { SvgProps } from "react-native-svg";
+import { useTheme } from "styled-components/native";
 
 export interface NavItem {
-	icon: ReactNode;
+	icon: React.ComponentType<SvgProps>;
 	label: string;
 	route?: string; // 라우트 이름 (예: "Home", "Profile")
 	activeIcon?: ReactNode; // active 상태일 때 표시할 아이콘 (optional)
@@ -27,12 +21,12 @@ export interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-	{ icon: <HouseIcon />, label: "홈", route: "home" },
-	{ icon: <QuotesIcon />, label: "기록", route: "journal" },
-	{ icon: <UsersIcon />, label: "친구", route: "friends" },
-	{ icon: <LayersIcon />, label: "리포트", route: "report" },
-	{ icon: <SettingIcon />, label: "마이", route: "my" },
-];
+	{ icon: HouseIcon, label: "홈", route: "home" },
+	{ icon: QuotesIcon, label: "기록", route: "journal" },
+	{ icon: UsersIcon, label: "친구", route: "friends" },
+	{ icon: LayersIcon, label: "리포트", route: "report" },
+	{ icon: SettingIcon, label: "마이", route: "my" },
+] as const;
 
 interface BottomNavBarProps {
 	activeIndex?: number;
@@ -67,7 +61,8 @@ const NavItemComponent = ({
 	onPress: () => void;
 }) => {
 	const theme = useTheme();
-	const { scale, handlePressIn, handlePressOut } = usePressAnimation();
+	const { animatedStyle, handlePressIn, handlePressOut } = usePressAnimation();
+	const Icon = item.icon;
 
 	return (
 		<TouchableOpacity
@@ -76,20 +71,16 @@ const NavItemComponent = ({
 			onPressOut={handlePressOut}
 			activeOpacity={1}
 		>
-			<Animated.View style={{ transform: [{ scale }] }}>
+			<Reanimated.View style={animatedStyle}>
 				<S.NavItem>
 					<S.IconContainer>
-						{isValidElement(item.icon)
-							? cloneElement(item.icon as ReactElement<SvgProps>, {
-									color: isActive
-										? theme.grayscale.white
-										: theme.grayscale.gray500,
-								})
-							: item.icon}
+						<Icon
+							color={isActive ? theme.grayscale.white : theme.grayscale.gray500}
+						/>
 					</S.IconContainer>
 					<S.Label $active={isActive}>{item.label}</S.Label>
 				</S.NavItem>
-			</Animated.View>
+			</Reanimated.View>
 		</TouchableOpacity>
 	);
 };
@@ -134,7 +125,7 @@ export const BottomNav = ({
 
 		const item = NAV_ITEMS[index];
 		if (item.route) {
-			router.push(`/${item.route}` as Href);
+			router.replace(`/${item.route}` as Href);
 		}
 	};
 

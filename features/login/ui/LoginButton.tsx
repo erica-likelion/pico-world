@@ -19,12 +19,12 @@ export function LoginButton() {
 	const { setIsLoggedIn } = useAuthStore();
 
 	const {
-		scale: kakaoScale,
+		animatedStyle: kakaoAnimatedStyle,
 		handlePressIn: kakaoPressIn,
 		handlePressOut: kakaoPressOut,
 	} = usePressAnimation();
 	const {
-		scale: appleScale,
+		animatedStyle: appleAnimatedStyle,
 		handlePressIn: applePressIn,
 		handlePressOut: applePressOut,
 	} = usePressAnimation();
@@ -104,7 +104,7 @@ export function LoginButton() {
 				onPressOut={kakaoPressOut}
 				activeOpacity={1}
 			>
-				<S.KaKaoLoginButton style={{ transform: [{ scale: kakaoScale }] }}>
+				<S.KaKaoLoginButton style={kakaoAnimatedStyle}>
 					<S.KaKaoLogo />
 					<S.LoginButtonText isKakao>카카오로 계속하기</S.LoginButtonText>
 				</S.KaKaoLoginButton>
@@ -116,7 +116,7 @@ export function LoginButton() {
 					onPressOut={applePressOut}
 					activeOpacity={1}
 				>
-					<S.AppleLoginButton style={{ transform: [{ scale: appleScale }] }}>
+					<S.AppleLoginButton style={appleAnimatedStyle}>
 						<S.AppleLogo />
 						<S.LoginButtonText>Apple로 계속하기</S.LoginButtonText>
 					</S.AppleLoginButton>
