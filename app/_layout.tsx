@@ -86,11 +86,11 @@ function RootLayoutNav() {
 			}
 
 			if (type === "ai_feedback" && relatedId) {
-				router.push(`/journal/edit?id=${relatedId}` as Href);
+				router.replace(`/journal/edit?id=${relatedId}` as Href);
 			} else if (typeof type === "string" && type.startsWith("FRIEND")) {
-				router.push("/friends");
+				router.replace("/friends");
 			} else if (url) {
-				router.push(url as Href);
+				router.replace(url as Href);
 			}
 		},
 		[router],
