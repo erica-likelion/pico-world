@@ -67,6 +67,7 @@ export function MyPageSelect() {
 	const { mutate: WithdrawMutate } = useMutation({
 		mutationFn: withdraw,
 		onSuccess: () => {
+			setIsLoggedIn(false);
 			router.push("/login");
 		},
 		onError: (error) => {

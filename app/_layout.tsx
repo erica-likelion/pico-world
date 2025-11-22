@@ -144,8 +144,6 @@ function RootLayoutNav() {
 
 		if (!isLoggedIn && !inAuthGroup) {
 			router.replace("/login");
-		} else if (isLoggedIn && inAuthGroup) {
-			router.replace("/home");
 		}
 	}, [isLoggedIn, pathname, router]);
 

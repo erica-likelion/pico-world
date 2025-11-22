@@ -4,13 +4,17 @@ import { CharacterInfo } from "@/entities/character/ui";
 import { useInvalidateUserInfo } from "@/entities/user/model/userQueries";
 import { axiosInstance } from "@/shared/api/axios";
 import { useHideBottomNav } from "@/shared/hooks/useHideBottomNav";
+import { usePreloadAssets } from "@/shared/hooks/usePreloadAssets";
 import { Button } from "@/shared/ui";
 import { useMutation } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
-import { View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
+
+const characterImages = Character.map((char) => char.image);
 
 export default function Onboarding() {
+	const { isLoaded } = usePreloadAssets(characterImages);
 	const router = useRouter();
 	const { from } = useLocalSearchParams();
 	const [selectedCharacter, setSelectedCharacter] = useState<CharacterProps>(
@@ -63,6 +67,14 @@ export default function Onboarding() {
 			}
 		}
 	};
+
+	if (!isLoaded) {
+		return (
+			<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+				<ActivityIndicator size="large" />
+			</View>
+		);
+	}
 
 	return (
 		<View style={{ flex: 1 }}>
