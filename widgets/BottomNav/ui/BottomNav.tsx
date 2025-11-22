@@ -6,7 +6,7 @@ import UsersIcon from "@/shared/assets/icons/users.svg";
 import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
 import * as S from "@/widgets/BottomNav/style/BottomNav.style";
 import { type Href, usePathname, useRouter } from "expo-router";
-import { type ReactNode, useState } from "react";
+import React, { type ReactNode, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import Reanimated from "react-native-reanimated";
 import type { SvgProps } from "react-native-svg";
@@ -51,39 +51,51 @@ interface BottomNavBarProps {
  * />
  */
 // NavItem 컴포넌트 (usePressAnimation 사용)
-const NavItemComponent = ({
-	item,
-	isActive,
-	onPress,
-}: {
-	item: NavItem;
-	isActive: boolean;
-	onPress: () => void;
-}) => {
-	const theme = useTheme();
-	const { animatedStyle, handlePressIn, handlePressOut } = usePressAnimation();
-	const Icon = item.icon;
+const NavItemComponent = React.memo(
+	({
+		item,
+		isActive,
+		onPress,
+	}: {
+		item: NavItem;
+		isActive: boolean;
+		onPress: () => void;
+	}) => {
+		const theme = useTheme();
+		const { animatedStyle, handlePressIn, handlePressOut } =
+			usePressAnimation();
+		const Icon = item.icon;
 
-	return (
-		<TouchableOpacity
-			onPress={onPress}
-			onPressIn={handlePressIn}
-			onPressOut={handlePressOut}
-			activeOpacity={1}
-		>
-			<Reanimated.View style={animatedStyle}>
-				<S.NavItem>
-					<S.IconContainer>
-						<Icon
-							color={isActive ? theme.grayscale.white : theme.grayscale.gray500}
-						/>
-					</S.IconContainer>
-					<S.Label $active={isActive}>{item.label}</S.Label>
-				</S.NavItem>
-			</Reanimated.View>
-		</TouchableOpacity>
-	);
-};
+		return (
+			<TouchableOpacity
+				onPress={onPress}
+				onPressIn={handlePressIn}
+				onPressOut={handlePressOut}
+				activeOpacity={1}
+			>
+				<Reanimated.View style={animatedStyle}>
+					<S.NavItem>
+						<S.IconContainer>
+							<Icon
+								color={
+									isActive ? theme.grayscale.white : theme.grayscale.gray500
+								}
+							/>
+						</S.IconContainer>
+						<S.Label $active={isActive}>{item.label}</S.Label>
+					</S.NavItem>
+				</Reanimated.View>
+			</TouchableOpacity>
+		);
+	},
+	(prev, next) => {
+		return (
+			prev.isActive === next.isActive &&
+			prev.item === next.item &&
+			prev.onPress === next.onPress
+		);
+	},
+);
 
 export const BottomNav = ({
 	activeIndex: controlledActiveIndex,
