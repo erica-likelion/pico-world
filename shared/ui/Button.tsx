@@ -1,7 +1,8 @@
 import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
 import * as S from "@/shared/style/Button.style";
 import { useState } from "react";
-import { Animated, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
+import Reanimated from "react-native-reanimated";
 
 interface ButtonProps {
 	text: string;
@@ -35,7 +36,7 @@ export const Button = ({
 }: ButtonProps) => {
 	const [pressed, setPressed] = useState(false);
 	const {
-		scale,
+		animatedStyle,
 		handlePressIn: animatePressIn,
 		handlePressOut: animatePressOut,
 	} = usePressAnimation({
@@ -68,7 +69,7 @@ export const Button = ({
 			disabled={disabled}
 			activeOpacity={1}
 		>
-			<Animated.View style={{ transform: [{ scale }] }}>
+			<Reanimated.View style={animatedStyle}>
 				<S.Background
 					$size={size}
 					$color={color}
@@ -79,7 +80,7 @@ export const Button = ({
 						{text}
 					</S.Text>
 				</S.Background>
-			</Animated.View>
+			</Reanimated.View>
 		</TouchableOpacity>
 	);
 };

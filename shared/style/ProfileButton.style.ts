@@ -1,4 +1,5 @@
-import { Animated, Image, Pressable } from "react-native";
+import { Image, Pressable } from "react-native";
+import Reanimated from "react-native-reanimated";
 import styled from "styled-components/native";
 
 export const ProfileImage = styled(Image).attrs({
@@ -9,7 +10,7 @@ export const ProfileImage = styled(Image).attrs({
   border-radius: 999px;
 `;
 
-export const Container = styled(Animated.createAnimatedComponent(Pressable))`
+export const Container = styled(Reanimated.createAnimatedComponent(Pressable))`
   width: ${({ theme }) => theme.rem(64)};
   height: ${({ theme }) => theme.rem(64)};
   border-radius: 999px;

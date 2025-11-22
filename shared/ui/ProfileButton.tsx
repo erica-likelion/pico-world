@@ -28,7 +28,7 @@ export const ProfileButton = ({
 	onPress,
 	pressable = false,
 }: ProfileButtonProps) => {
-	const { scale, handlePressIn, handlePressOut } = usePressAnimation({
+	const { animatedStyle, handlePressIn, handlePressOut } = usePressAnimation({
 		disabled: !(logged || pressable),
 	});
 
@@ -45,7 +45,7 @@ export const ProfileButton = ({
 			onPress={handlePress}
 			onPressIn={handlePressIn}
 			onPressOut={handlePressOut}
-			style={{ transform: [{ scale }] }}
+			style={animatedStyle}
 			disabled={!(logged || pressable)}
 		>
 			{logged && <S.OuterBorder />}

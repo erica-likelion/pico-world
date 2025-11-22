@@ -4,7 +4,7 @@ import { PlusButton } from "@/shared/ui";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef } from "react";
 import { Animated, Pressable } from "react-native";
-import {
+import Reanimated, {
 	Easing,
 	useAnimatedStyle,
 	useSharedValue,
@@ -63,13 +63,10 @@ export function ClickToJournal({
 	onShowToast,
 }: ClickToJournalProps) {
 	const router = useRouter();
-	const { scale, handlePressIn, handlePressOut } = usePressAnimation();
+	const { animatedStyle, handlePressIn, handlePressOut } = usePressAnimation();
 	const fadeInAnim = useRef(new Animated.Value(0)).current;
 	const slideUpAnim = useRef(new Animated.Value(50)).current;
 	const scaleAnim = useRef(new Animated.Value(0.9)).current;
-	const animatedStyle = {
-		transform: [{ scale }],
-	};
 
 	useEffect(() => {
 		if (!date) return;
@@ -139,7 +136,7 @@ export function ClickToJournal({
 							justifyContent: "center",
 						}}
 					>
-						<Animated.View
+						<Reanimated.View
 							style={{
 								...animatedStyle,
 								alignItems: "center",
@@ -148,7 +145,7 @@ export function ClickToJournal({
 						>
 							<PlusButton />
 							<S.PlusIcon />
-						</Animated.View>
+						</Reanimated.View>
 					</Pressable>
 				</S.CircleIn>
 			</S.CircleOut>
