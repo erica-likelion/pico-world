@@ -27,12 +27,14 @@ interface FriendInviteBottomSheetProps {
 	bottomSheetRef: BottomSheetRef;
 	snapPoints?: Array<string | number>;
 	inviteCode: string;
+	onShowToast: (message: string) => void;
 }
 
 export function FriendInviteBottomSheet({
 	bottomSheetRef,
-	snapPoints = ["75%", "90%"],
+	snapPoints = ["80%", "90%"],
 	inviteCode,
+	onShowToast,
 }: FriendInviteBottomSheetProps) {
 	const theme = useTheme();
 	const nickname = useUserNickname();
@@ -70,7 +72,7 @@ export function FriendInviteBottomSheet({
 
 	const { friendRequest } = useFriendRequest({
 		onSuccess: () => {
-			showToastWithAutoHide("친구 요청을 보냈어요!");
+			onShowToast("친구 요청을 보냈어요!");
 			bottomSheetRef.current?.close();
 			setEnteredCode("");
 		},
