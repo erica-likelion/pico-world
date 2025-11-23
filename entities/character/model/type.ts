@@ -1,8 +1,6 @@
-import type { CharacterName } from "./characterMessages";
-
 export interface CharacterProps {
 	id?: number;
-	name: CharacterName;
+	name: string;
 	speech: string;
 	personality: string[];
 	image: number;

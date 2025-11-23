@@ -33,11 +33,11 @@ export function MyPageSelect() {
 	}, []);
 
 	useEffect(() => {
+		console.log(params.characterUpdated);
 		if (params.characterUpdated) {
 			handleShowToast("캐릭터가 변경되었어요! 새로운 기록을 남겨보세요.");
-			router.replace("/my");
 		}
-	}, [params.characterUpdated, router, handleShowToast]);
+	}, [params.characterUpdated, handleShowToast]);
 
 	const menuItems = [
 		{
@@ -143,7 +143,7 @@ export function MyPageSelect() {
 					onCancel={() => setWithdrawModalVisible(false)}
 				/>
 			)}
-			<View style={{ position: "absolute", left: 0, right: 0, bottom: 20 }}>
+			<View style={{ position: "absolute", left: 0, right: 0, bottom: 78 }}>
 				<Toast
 					message={toastMessage}
 					visible={isToastVisible}
