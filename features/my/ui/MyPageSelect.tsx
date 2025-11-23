@@ -11,7 +11,6 @@ import { useMutation } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
-// ... other imports
 
 export function MyPageSelect() {
 	const [isLoginModalVisible, setLoginModalVisible] = useState(false);
