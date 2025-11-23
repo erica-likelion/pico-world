@@ -16,6 +16,7 @@ export function LogoutModal({
 	return (
 		<Modal isVisible={isVisible}>
 			<S.LogoutModalContainer>
+				<S.LogoutTitle>로그아웃</S.LogoutTitle>
 				<S.LogoutModalText>로그아웃 하시겠습니까?</S.LogoutModalText>
 				<S.ButtonRow>
 					<Button color="gray" size="medium" text="취소" onPress={onCancel} />
