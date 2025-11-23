@@ -16,6 +16,7 @@ export function WithdrawModal({
 	return (
 		<Modal isVisible={isVisible}>
 			<S.WithdrawModalContainer>
+				<S.WithdrawTitle>회원탈퇴</S.WithdrawTitle>
 				<S.WithdrawModalText>회원탈퇴 하시겠습니까?</S.WithdrawModalText>
 				<S.ButtonRow>
 					<Button color="gray" size="medium" text="취소" onPress={onCancel} />

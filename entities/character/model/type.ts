@@ -1,9 +1,8 @@
-import type { ImageSourcePropType } from "react-native";
-
 export interface CharacterProps {
+	id?: number;
 	name: string;
 	speech: string;
 	personality: string[];
-	image: ImageSourcePropType;
+	image: number;
 	boxShadow: string;
 }

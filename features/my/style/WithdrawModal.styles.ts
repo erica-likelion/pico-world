@@ -1,13 +1,18 @@
 import styled from "styled-components/native";
 
 export const WithdrawModalContainer = styled.View`
-  width: 100%;
-  padding: ${({ theme }) => theme.rem(24)} 0;
-  background-color: ${({ theme }) => theme.grayscale.gray900};
-  border-radius: ${({ theme }) => theme.rem(12)};
+  padding: ${({ theme }) => theme.rem(16)};
+  background-color: ${({ theme }) => theme.grayscale.gray950};
+  border-radius: 36px;
   justify-items: center;
   align-items: center;
-  gap: ${({ theme }) => theme.rem(30)};
+  gap: ${({ theme }) => theme.rem(25)};
+`;
+
+export const WithdrawTitle = styled.Text`
+  ${({ theme }) => theme.typography["title2-semibold"]};
+  color: ${({ theme }) => theme.grayscale.white};
+  text-align: center;
 `;
 
 export const WithdrawModalText = styled.Text`

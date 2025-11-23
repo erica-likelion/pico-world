@@ -6,6 +6,7 @@ import { CalendarUI, ClickToJournal, TodayHistory } from "@/features/home/ui";
 import { deleteEmotionRecord } from "@/features/journal/api/emotion";
 import { NotificationBell } from "@/features/notifications/ui/NotificationBell";
 import { useAuthStore } from "@/shared/store/auth";
+import { MyCharacter } from "@/shared/store/myCharacter";
 import type { EmotionRecord } from "@/shared/types/emotion";
 import { CharacterBubble, MenuBottomSheet, Toast } from "@/shared/ui";
 import { formatDate } from "@/shared/utils/date";
@@ -32,6 +33,7 @@ export default function Home() {
 	const today = getTodayKST();
 	const queryClient = useQueryClient();
 	const { isLoggedIn } = useAuthStore();
+	const { name } = MyCharacter();
 
 	const [selectedDate, setSelectedDate] = useState<string>(today);
 	const [currentMonth, setCurrentMonth] = useState<string>(today.slice(0, 7));
@@ -115,9 +117,7 @@ export default function Home() {
 	const isTodayHistory = selectedRecord !== null;
 	const isSelectedDateToday = selectedDate === today;
 
-	const characterName = greetingData?.characterName as
-		| CharacterName
-		| undefined;
+	const characterName = (greetingData?.characterName as CharacterName) ?? name;
 	const characterImage = useMemo(() => {
 		const foundCharacter = Character.find((c) => c.name === characterName);
 		return foundCharacter ? foundCharacter.image : undefined;
@@ -142,7 +142,7 @@ export default function Home() {
 			>
 				<View style={{ width: "100%", paddingHorizontal: 16 }}>
 					<CharacterBubble
-						character={characterName ?? "츠츠"}
+						character={characterName}
 						message={greetingData?.message?.replace(/"/g, "") ?? "..."}
 					/>
 				</View>

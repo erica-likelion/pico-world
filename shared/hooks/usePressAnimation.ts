@@ -1,5 +1,8 @@
-import { useRef } from "react";
-import { Animated } from "react-native";
+import {
+	useAnimatedStyle,
+	useSharedValue,
+	withTiming,
+} from "react-native-reanimated";
 
 /**
  * 버튼이나 터치 가능한 요소의 누르기 애니메이션
@@ -20,28 +23,24 @@ export const usePressAnimation = (options?: {
 	disabled?: boolean;
 }) => {
 	const { scale = 0.95, duration = 150, disabled = false } = options || {};
-	const animatedScale = useRef(new Animated.Value(1)).current;
+	const scaleValue = useSharedValue(1);
 
 	const handlePressIn = () => {
 		if (!disabled) {
-			Animated.timing(animatedScale, {
-				toValue: scale,
-				useNativeDriver: true,
-				duration,
-			}).start();
+			scaleValue.value = withTiming(scale, { duration });
 		}
 	};
 
 	const handlePressOut = () => {
-		Animated.timing(animatedScale, {
-			toValue: 1,
-			useNativeDriver: true,
-			duration,
-		}).start();
+		scaleValue.value = withTiming(1, { duration });
 	};
 
+	const animatedStyle = useAnimatedStyle(() => ({
+		transform: [{ scale: scaleValue.value }],
+	}));
+
 	return {
-		scale: animatedScale,
+		animatedStyle,
 		handlePressIn,
 		handlePressOut,
 	};

@@ -8,7 +8,7 @@ import { useState } from "react";
 import { View } from "react-native";
 
 export default function NameEdit() {
-	const { name: initialName } = useLocalSearchParams<{ name?: string }>(); // ✅ 타입 명시
+	const { name: initialName } = useLocalSearchParams<{ name?: string }>();
 	const [name, setName] = useState(initialName || "피코");
 	const router = useRouter();
 	useHideBottomNav();

@@ -5,7 +5,9 @@ import { useInvalidateUserInfo } from "@/entities/user/model/userQueries";
 import { axiosInstance } from "@/shared/api/axios";
 import { useHideBottomNav } from "@/shared/hooks/useHideBottomNav";
 import { usePreloadAssets } from "@/shared/hooks/usePreloadAssets";
+import { MyCharacter } from "@/shared/store/myCharacter";
 import { Button } from "@/shared/ui";
+import { TopNav } from "@/widgets/TopNav/ui";
 import { useMutation } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
@@ -17,6 +19,7 @@ export default function Onboarding() {
 	const { isLoaded } = usePreloadAssets(characterImages);
 	const router = useRouter();
 	const { from } = useLocalSearchParams();
+	const { setName } = MyCharacter();
 	const [selectedCharacter, setSelectedCharacter] = useState<CharacterProps>(
 		Character[0],
 	);
@@ -33,6 +36,7 @@ export default function Onboarding() {
 			});
 		},
 		onSuccess: () => {
+			setName(selectedCharacter.name);
 			router.push("/home");
 		},
 		onError: (error) => {
@@ -48,7 +52,8 @@ export default function Onboarding() {
 		},
 		onSuccess: () => {
 			invalidateUserInfo();
-			router.back();
+			setName(selectedCharacter.name);
+			router.replace("/my?characterUpdated=true");
 		},
 	});
 
@@ -78,6 +83,15 @@ export default function Onboarding() {
 
 	return (
 		<View style={{ flex: 1 }}>
+			{from === "my" ? (
+				<TopNav
+					title="캐릭터 수정하기"
+					leftIcon
+					onLeftPress={() => router.push("/my")}
+				/>
+			) : (
+				<></>
+			)}
 			<CharacterInfo
 				characters={Character}
 				setSelectedCharacter={setSelectedCharacter}

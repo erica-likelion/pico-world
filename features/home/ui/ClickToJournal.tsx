@@ -4,7 +4,7 @@ import { PlusButton } from "@/shared/ui";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef } from "react";
 import { Animated, Pressable } from "react-native";
-import {
+import Reanimated, {
 	Easing,
 	useAnimatedStyle,
 	useSharedValue,
@@ -54,7 +54,7 @@ const AnimatedPlusingEffect = () => {
 interface ClickToJournalProps {
 	date: string;
 	isToday: boolean;
-	onShowToast: (message: string) => void; // Add onShowToast prop
+	onShowToast: (message: string) => void;
 }
 
 export function ClickToJournal({
@@ -63,21 +63,16 @@ export function ClickToJournal({
 	onShowToast,
 }: ClickToJournalProps) {
 	const router = useRouter();
-	const { scale, handlePressIn, handlePressOut } = usePressAnimation();
+	const { animatedStyle, handlePressIn, handlePressOut } = usePressAnimation();
 	const fadeInAnim = useRef(new Animated.Value(0)).current;
 	const slideUpAnim = useRef(new Animated.Value(50)).current;
 	const scaleAnim = useRef(new Animated.Value(0.9)).current;
-	const animatedStyle = {
-		transform: [{ scale }],
-	};
 
 	useEffect(() => {
 		if (!date) return;
 		fadeInAnim.setValue(0);
 		slideUpAnim.setValue(50);
 		scaleAnim.setValue(0.9);
-
-		//등장 애니메이션
 		Animated.parallel([
 			Animated.timing(fadeInAnim, {
 				toValue: 1,
@@ -101,7 +96,6 @@ export function ClickToJournal({
 	}, [date, fadeInAnim, scaleAnim, slideUpAnim]);
 
 	const handlePress = useCallback(() => {
-		// Wrap handlePress in useCallback
 		if (!isToday) {
 			onShowToast("감정 기록은 오늘 날짜만 가능합니다.");
 			return;
@@ -139,16 +133,18 @@ export function ClickToJournal({
 							justifyContent: "center",
 						}}
 					>
-						<Animated.View
-							style={{
-								...animatedStyle,
-								alignItems: "center",
-								justifyContent: "center",
-							}}
+						<Reanimated.View
+							style={[
+								animatedStyle,
+								{
+									alignItems: "center",
+									justifyContent: "center",
+								},
+							]}
 						>
 							<PlusButton />
 							<S.PlusIcon />
-						</Animated.View>
+						</Reanimated.View>
 					</Pressable>
 				</S.CircleIn>
 			</S.CircleOut>

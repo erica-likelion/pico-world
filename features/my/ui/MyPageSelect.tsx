@@ -4,24 +4,44 @@ import * as S from "@/features/my/style/MyPageSelect.styles";
 import { LogoutModal } from "@/features/my/ui/LogoutModal";
 import { WithdrawModal } from "@/features/my/ui/WithdrawModal";
 import { useAuthStore } from "@/shared/store/auth";
-import { Avatar, Divider } from "@/shared/ui";
+import { Avatar, Divider, Toast } from "@/shared/ui";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
-import React, { useCallback, useState } from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
+import { View } from "react-native";
 
 export function MyPageSelect() {
 	const [isLoginModalVisible, setLoginModalVisible] = useState(false);
 	const [isWithdrawModalVisible, setWithdrawModalVisible] = useState(false);
 	const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 	const { setIsLoggedIn } = useAuthStore();
-
+	const params = useLocalSearchParams();
 	const router = useRouter();
+
+	const [isToastVisible, setIsToastVisible] = useState(false);
+	const [toastMessage, setToastMessage] = useState("");
+
+	const handleShowToast = useCallback((message: string) => {
+		setToastMessage(message);
+		setIsToastVisible(true);
+	}, []);
+
+	const handleHideToast = useCallback(() => {
+		setIsToastVisible(false);
+	}, []);
+
+	useEffect(() => {
+		console.log(params.characterUpdated);
+		if (params.characterUpdated) {
+			handleShowToast("캐릭터가 변경되었어요! 새로운 기록을 남겨보세요.");
+		}
+	}, [params.characterUpdated, handleShowToast]);
 
 	const menuItems = [
 		{
-			label: "AI 캐릭터 수정",
+			label: "피코월드 캐릭터 수정",
 			onPress: () => {
 				router.push({ pathname: "/onboarding", params: { from: "my" } });
 			},
@@ -123,6 +143,13 @@ export function MyPageSelect() {
 					onCancel={() => setWithdrawModalVisible(false)}
 				/>
 			)}
+			<View style={{ position: "absolute", left: 0, right: 0, bottom: 78 }}>
+				<Toast
+					message={toastMessage}
+					visible={isToastVisible}
+					onHide={handleHideToast}
+				/>
+			</View>
 		</S.MyPageSelectWrapper>
 	);
 }

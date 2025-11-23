@@ -1,27 +1,24 @@
-import {
-	type CharacterName,
-	DEFAULT_CHARACTER,
-} from "@/entities/character/model/characterMessages";
+import type { CharacterName } from "@/entities/character/model/characterMessages";
 import { useHasRecordedToday } from "@/entities/emotion/model/emotionQueries";
 import {
 	useUserConnectCode,
 	useUserNickname,
 	useUserProfileImageUrl,
 } from "@/entities/user/model/userQueries";
-import type { Friend } from "@/features/friends/api/getFriends";
 import {
 	useFriendRequestResponse,
 	useGetFriends,
 	useRemoveFriend,
 	useToast,
 } from "@/features/friends/model/hooks";
-import type { FriendRequest } from "@/features/friends/model/types";
+import type { Friend, FriendRequest } from "@/features/friends/model/types";
 import * as S from "@/features/friends/style/FriendsContent.styles";
 import { FriendBottomSheet } from "@/features/friends/ui/FriendBottomSheet";
 import { FriendInviteBottomSheet } from "@/features/friends/ui/FriendInviteBottomSheet";
 import { FriendRequestCard } from "@/features/friends/ui/FriendRequestCard";
 import { FriendsCard } from "@/features/friends/ui/FriendsCard/FriendsCard";
 import FriendsPlusIcon from "@/shared/assets/icons/freinds-plus.svg";
+import { MyCharacter } from "@/shared/store/myCharacter";
 import {
 	Button,
 	CharacterBubble,
@@ -46,6 +43,7 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 	const nickname = useUserNickname();
 	const profileImageUrl = useUserProfileImageUrl();
 	const hasRecordedToday = useHasRecordedToday();
+	const { name } = MyCharacter();
 	const inviteCode = useUserConnectCode();
 	const { friends, friendRequests, friendFeed, greeting } = useGetFriends();
 
@@ -55,12 +53,7 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 		show: showToast,
 		hide: hideToast,
 	} = useToast();
-	const [selectedFriend, setSelectedFriend] = useState<FriendRequest | null>(
-		null,
-	);
-	const [friendNotifications, setFriendNotifications] = useState<
-		Record<string, boolean>
-	>({});
+	const [selectedFriend, setSelectedFriend] = useState<Friend | null>(null);
 	const addFriendBottomSheetRef = useRef<BottomSheetModal>(null);
 	const menuBottomSheetRef = useRef<BottomSheetModal>(null);
 	const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -74,7 +67,7 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 	const friendAddProgress = `${friendCount}/${FRIEND_LIMIT}`;
 
 	const characterName: CharacterName =
-		(greetingData?.characterName as CharacterName) || DEFAULT_CHARACTER;
+		(greetingData?.characterName as CharacterName) || name;
 	const greetingMessage =
 		greetingData?.message ||
 		"Pico World는 친구랑 할 때 더 재밌는 거 알지? 5명까지 초대할 수 있으니 같이 기록해봐.";
@@ -101,8 +94,6 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 	});
 
 	useEffect(() => {
-		setFriendNotifications({});
-
 		return () => {
 			if (toastTimerRef.current) {
 				clearTimeout(toastTimerRef.current);
@@ -155,33 +146,9 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 	}, []);
 
 	const openFriendBottomSheet = useCallback((friend: Friend) => {
-		setSelectedFriend({
-			id: friend.connectCode,
-			name: friend.nickname,
-			profileImageUrl: friend.profileImageUrl ?? undefined,
-		});
+		setSelectedFriend(friend);
 		menuBottomSheetRef.current?.present();
 	}, []);
-
-	const handleToggleFriendNotifications = useCallback(
-		(friendId: string) => {
-			if (!friendId) {
-				return;
-			}
-			setFriendNotifications((prev) => {
-				const current = prev[friendId] ?? true;
-				const next = !current;
-				showToastWithAutoHide(
-					next ? "푸시 알림을 받습니다." : "푸시 알림을 받지 않습니다.",
-				);
-				return {
-					...prev,
-					[friendId]: next,
-				};
-			});
-		},
-		[showToastWithAutoHide],
-	);
 
 	const handleRemoveFriend = useCallback(
 		(connectCode: string) => {
@@ -198,7 +165,9 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 						logged={hasRecordedToday}
 						imageUrl={profileImageUrl ?? undefined}
 					/>
-					<S.ProfileLabel>{nickname}</S.ProfileLabel>
+					<S.ProfileLabel numberOfLines={1} ellipsizeMode="tail">
+						{nickname}
+					</S.ProfileLabel>
 				</S.ProfileButtonWrapper>
 
 				<S.FriendsList>
@@ -210,7 +179,9 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 								pressable
 								onPress={() => openFriendBottomSheet(friend)}
 							/>
-							<S.ProfileLabel>{friend.nickname}</S.ProfileLabel>
+							<S.ProfileLabel numberOfLines={1} ellipsizeMode="tail">
+								{friend.nickname}
+							</S.ProfileLabel>
 						</S.ProfileButtonWrapper>
 					))}
 
@@ -218,7 +189,7 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 						<S.ProfileButtonContent>
 							<FriendsPlusIcon width={theme.rem(64)} height={theme.rem(64)} />
 						</S.ProfileButtonContent>
-						<S.ProfileLabel numberOfLines={2} ellipsizeMode="tail">
+						<S.ProfileLabel numberOfLines={1} ellipsizeMode="tail">
 							친구 추가 {friendAddProgress}
 						</S.ProfileLabel>
 					</S.ProfileButtonWrapperPressable>
@@ -310,15 +281,7 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 
 			<FriendBottomSheet
 				bottomSheetRef={menuBottomSheetRef}
-				friendId={selectedFriend?.id}
-				friendName={selectedFriend?.name ?? ""}
-				friendAvatarUrl={selectedFriend?.profileImageUrl ?? undefined}
-				notificationsEnabled={
-					selectedFriend
-						? (friendNotifications[selectedFriend.id] ?? true)
-						: true
-				}
-				onToggleNotifications={handleToggleFriendNotifications}
+				friend={selectedFriend}
 				onDeleteConfirm={handleRemoveFriend}
 			/>
 		</S.Container>

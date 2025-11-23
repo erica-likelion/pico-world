@@ -53,17 +53,15 @@ export const ImageScroll = styled.ScrollView`
 export const CharacterImageView = styled.View`
   width: ${screenWidth * 0.68}px;
   height: ${({ theme }) => theme.rem(213)};
-  display: flex;
   align-items: center;
   justify-content: center;
-
   margin-top: ${({ theme }) => theme.rem(10)};
   margin-bottom: ${({ theme }) => theme.rem(10)};
 `;
-export const CharacterImage = styled.Image<{ boxShadow: string }>`
+
+export const CharacterImageWrapper = styled.View<{ boxShadow: string }>`
   width: ${({ theme }) => theme.rem(160)};
   height: ${({ theme }) => theme.rem(160)};
-  resize-mode: cover;
   shadow-color: ${({ boxShadow }) => boxShadow};
   shadow-offset: 0px 0px;
   shadow-opacity: 1;
@@ -71,7 +69,11 @@ export const CharacterImage = styled.Image<{ boxShadow: string }>`
 
   /* Android 전용 그림자 */
   elevation: 8;
-  overflow: visible;
+`;
+
+export const CharacterImage = styled.Image`
+  width: 100%;
+  height: 100%;
 `;
 
 export const CharacterName = styled.Text`

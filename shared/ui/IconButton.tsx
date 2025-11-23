@@ -7,7 +7,8 @@ import {
 	type ReactNode,
 	useState,
 } from "react";
-import { Animated, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
+import Reanimated from "react-native-reanimated";
 import type { SvgProps } from "react-native-svg";
 
 interface IconButtonProps {
@@ -44,7 +45,7 @@ export const IconButton = ({
 }: IconButtonProps) => {
 	const [pressed, setPressed] = useState(false);
 	const {
-		scale,
+		animatedStyle,
 		handlePressIn: animatePressIn,
 		handlePressOut: animatePressOut,
 	} = usePressAnimation({
@@ -77,7 +78,7 @@ export const IconButton = ({
 			disabled={disabled}
 			activeOpacity={1}
 		>
-			<Animated.View style={{ transform: [{ scale }] }}>
+			<Reanimated.View style={animatedStyle}>
 				<S.Background $size={size} $pressed={pressed} $color={color}>
 					<S.IconContainer>
 						{isValidElement(icon)
@@ -87,7 +88,7 @@ export const IconButton = ({
 							: icon}
 					</S.IconContainer>
 				</S.Background>
-			</Animated.View>
+			</Reanimated.View>
 		</TouchableOpacity>
 	);
 };

@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/shared/store/auth";
 import { useNotifications } from "@/features/notifications/model/useNotifications";
 import { AllTab } from "@/features/notifications/ui/AllTab";
 import { FriendsTab } from "@/features/notifications/ui/FriendsTab";
@@ -23,6 +24,8 @@ export default function NotificationsScreen() {
 		number | undefined
 	>();
 
+	const { isLoggedIn } = useAuthStore();
+
 	useEffect(() => {
 		const checkPermission = async () => {
 			const authStatus = await messaging().hasPermission();
@@ -36,7 +39,7 @@ export default function NotificationsScreen() {
 		permissionStatus === AuthorizationStatus.PROVISIONAL;
 
 	const { data, fetchNextPage, hasNextPage, isLoading } = useNotifications({
-		enabled: isPermissionGranted,
+		enabled: isPermissionGranted && !!isLoggedIn,
 	});
 
 	const allNotifications = useMemo(() => {

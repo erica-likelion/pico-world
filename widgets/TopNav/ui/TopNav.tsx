@@ -7,7 +7,8 @@ import {
 	type ReactElement,
 	type ReactNode,
 } from "react";
-import { Animated, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
+import Reanimated from "react-native-reanimated";
 import type { SvgProps } from "react-native-svg";
 import { useTheme } from "styled-components/native";
 import * as S from "../style/TopNav.style";
@@ -70,13 +71,11 @@ export const TopNav = ({
 							onPressOut={leftAnimation.handlePressOut}
 							activeOpacity={1}
 						>
-							<Animated.View
-								style={{ transform: [{ scale: leftAnimation.scale }] }}
-							>
+							<Reanimated.View style={leftAnimation.animatedStyle}>
 								<S.IconContainer>
 									<LeftIcon color={theme.grayscale.white} />
 								</S.IconContainer>
-							</Animated.View>
+							</Reanimated.View>
 						</TouchableOpacity>
 					</S.LeftSection>
 
@@ -100,9 +99,7 @@ export const TopNav = ({
 								onPressOut={rightAnimation.handlePressOut}
 								activeOpacity={1}
 							>
-								<Animated.View
-									style={{ transform: [{ scale: rightAnimation.scale }] }}
-								>
+								<Reanimated.View style={rightAnimation.animatedStyle}>
 									<S.IconContainer>
 										{isValidElement(rightIcon)
 											? cloneElement(rightIcon as ReactElement<SvgProps>, {
@@ -110,7 +107,7 @@ export const TopNav = ({
 												})
 											: rightIcon}
 									</S.IconContainer>
-								</Animated.View>
+								</Reanimated.View>
 							</TouchableOpacity>
 						)}
 					</S.RightSection>
@@ -125,9 +122,7 @@ export const TopNav = ({
 							onPressOut={rightAnimation.handlePressOut}
 							activeOpacity={1}
 						>
-							<Animated.View
-								style={{ transform: [{ scale: rightAnimation.scale }] }}
-							>
+							<Reanimated.View style={rightAnimation.animatedStyle}>
 								<S.IconContainer>
 									{isValidElement(rightIcon)
 										? cloneElement(rightIcon as ReactElement<SvgProps>, {
@@ -135,7 +130,7 @@ export const TopNav = ({
 											})
 										: rightIcon}
 								</S.IconContainer>
-							</Animated.View>
+							</Reanimated.View>
 						</TouchableOpacity>
 					)}
 				</>

@@ -1,17 +1,29 @@
 import { axiosInstance } from "@/shared/api/axios";
 
-export const friendAlarmBlock = async (friendId: number) => {
-	await axiosInstance.post("api/v1/friends/notification/block", {
-		friendId: friendId,
-	});
-	console.log("알람 차단");
-	return;
+export const friendAlarmBlock = (connectCode: string) => {
+	return axiosInstance
+		.post("api/v1/friends/notification/block", {
+			connectCode: connectCode,
+		})
+		.then((response) => {
+			console.log(
+				"Friend alarm blocked successfully for connectCode:",
+				connectCode,
+			);
+			return response;
+		});
 };
 
-export const friendAlarmUnBlock = async (friendId: number) => {
-	await axiosInstance.post("api/v1/friends/notification/unblock", {
-		friendId: friendId,
-	});
-	console.log("알람 차단 해제");
-	return;
+export const friendAlarmUnBlock = (connectCode: string) => {
+	return axiosInstance
+		.delete("api/v1/friends/notification/unblock", {
+			data: { connectCode },
+		})
+		.then((response) => {
+			console.log(
+				"Friend alarm unblocked successfully for connectCode:",
+				connectCode,
+			);
+			return response;
+		});
 };

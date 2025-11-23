@@ -56,10 +56,9 @@ export function CharacterInfo({
 			>
 				{characters.map((character) => (
 					<S.CharacterImageView key={character.name}>
-						<S.CharacterImage
-							source={character.image}
-							boxShadow={character.boxShadow}
-						/>
+						<S.CharacterImageWrapper boxShadow={character.boxShadow}>
+							<S.CharacterImage source={character.image} resizeMode="cover" />
+						</S.CharacterImageWrapper>
 					</S.CharacterImageView>
 				))}
 			</S.ImageScroll>

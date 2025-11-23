@@ -1,6 +1,6 @@
 import AppleIcon from "@/shared/assets/icons/apple-logo.svg";
 import KaKaoIcon from "@/shared/assets/icons/kakao-logo.svg";
-import { Animated } from "react-native";
+import Reanimated from "react-native-reanimated";
 import styled from "styled-components/native";
 
 export const LoginButtonContainer = styled.View`
@@ -14,7 +14,7 @@ export const LoginButtonContainer = styled.View`
   z-index: 10;
 `;
 
-export const KaKaoLoginButton = styled(Animated.View)`
+export const KaKaoLoginButton = styled(Reanimated.View)`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -26,7 +26,7 @@ export const KaKaoLoginButton = styled(Animated.View)`
   gap: ${({ theme }) => theme.rem(8)};
 `;
 
-export const AppleLoginButton = styled(Animated.View)`
+export const AppleLoginButton = styled(Reanimated.View)`
   display: flex;
   flex-direction: row;
   align-items: center;
