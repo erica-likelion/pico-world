@@ -1,7 +1,8 @@
 import { getFeedback } from "@/entities/character/api/feedback";
-import { getRecordById } from "@/features/record/api/getRecordById";
 import * as S from "@/features/journal/style/TodayHistory.styles";
 import { EmotionRecordCard } from "@/features/journal/ui/EmotionRecordCard";
+import { getRecordById } from "@/features/record/api/getRecordById";
+import { useAuthStore } from "@/shared/store/auth";
 import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -18,17 +19,18 @@ interface TodayHistoryProps {
 export function TodayHistory({ recordId, AIImage }: TodayHistoryProps) {
 	const bottomSheetRef = useRef<BottomSheetModal>(null);
 	const theme = useTheme();
+	const { isLoggedIn } = useAuthStore();
 
 	const { data: record, isLoading: isRecordLoading } = useQuery({
 		queryKey: ["emotionRecord", recordId],
 		queryFn: () => getRecordById(recordId.toString()),
-		enabled: !!recordId,
+		enabled: !!recordId && !!isLoggedIn,
 	});
 
 	const { data: feedbackData, isLoading: isFeedbackLoading } = useQuery({
 		queryKey: ["feedback", recordId],
 		queryFn: () => getFeedback(recordId),
-		enabled: !!record, // Enable only after record is fetched
+		enabled: !!record && !!isLoggedIn,
 	});
 
 	// 애니메이션 값들
@@ -38,17 +40,14 @@ export function TodayHistory({ recordId, AIImage }: TodayHistoryProps) {
 	const characterSlideAnim = useRef(new Animated.Value(30)).current;
 	const characterFadeAnim = useRef(new Animated.Value(0)).current;
 
-	// 컴포넌트 마운트 시 애니메이션 실행
 	useEffect(() => {
 		if (!isRecordLoading && record) {
-			// 애니메이션 초기화
 			fadeInAnim.setValue(0);
 			slideUpAnim.setValue(50);
 			scaleAnim.setValue(0.9);
 			characterSlideAnim.setValue(30);
 			characterFadeAnim.setValue(0);
 
-			// 감정 기록 박스 애니메이션 (동시 실행)
 			Animated.parallel([
 				Animated.timing(fadeInAnim, {
 					toValue: 1,
@@ -70,7 +69,6 @@ export function TodayHistory({ recordId, AIImage }: TodayHistoryProps) {
 				}),
 			]).start();
 
-			// 캐릭터 코멘트 박스 애니메이션 (0.3초 후 시작)
 			const timer = setTimeout(() => {
 				Animated.parallel([
 					Animated.timing(characterFadeAnim, {
@@ -109,7 +107,7 @@ export function TodayHistory({ recordId, AIImage }: TodayHistoryProps) {
 	}
 
 	if (!record) {
-		return null; // Or some error/empty state
+		return null;
 	}
 
 	const createdAt = new Date(record.created_at);

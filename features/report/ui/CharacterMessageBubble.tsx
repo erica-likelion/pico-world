@@ -1,5 +1,6 @@
 import type { CharacterName } from "@/entities/character/model/characterMessages";
 import { getCharacterMessage } from "@/features/report/api/GetCharacterMessage";
+import { MyCharacter } from "@/shared/store/myCharacter";
 import { CharacterBubble } from "@/shared/ui/CharacterBubble";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -7,6 +8,7 @@ import { useEffect, useState } from "react";
 export const CharacterMessageBubble: React.FC = () => {
 	const [characterName, setCharacterName] = useState<CharacterName>("츠츠");
 	const [message, setMessage] = useState<string>("...");
+	const { name } = MyCharacter();
 
 	const characterMessageMutation = useMutation({
 		mutationFn: getCharacterMessage,
@@ -15,10 +17,7 @@ export const CharacterMessageBubble: React.FC = () => {
 
 			if (payload?.character_name) {
 				setCharacterName(payload.character_name as CharacterName);
-			} else {
-				setCharacterName("츠츠");
 			}
-
 			setMessage(payload?.message ?? "생각하는 중...");
 		},
 		onError: (error) => {
@@ -29,8 +28,10 @@ export const CharacterMessageBubble: React.FC = () => {
 	});
 
 	useEffect(() => {
+		console.log(name);
+		setCharacterName(name);
 		characterMessageMutation.mutate();
-	}, [characterMessageMutation.mutate]);
+	}, [characterMessageMutation.mutate, name]);
 
 	return <CharacterBubble character={characterName} message={message} />;
 };

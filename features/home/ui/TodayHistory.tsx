@@ -1,6 +1,7 @@
 import { getFeedback } from "@/entities/character/api/feedback";
-import { getRecordById } from "@/features/record/api/getRecordById";
 import * as S from "@/features/home/style/TodayHistory.styles";
+import { getRecordById } from "@/features/record/api/getRecordById";
+import { useAuthStore } from "@/shared/store/auth";
 import { EmotionCard } from "@/shared/ui/EmotionCard";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -28,17 +29,18 @@ export function TodayHistory({
 	AIImage,
 }: TodayHistoryProps) {
 	const router = useRouter();
+	const { isLoggedIn } = useAuthStore();
 
 	const { data: record, isLoading: isRecordLoading } = useQuery({
 		queryKey: ["emotionRecord", recordId],
 		queryFn: () => getRecordById(recordId.toString()),
-		enabled: !!recordId,
+		enabled: !!recordId && !!isLoggedIn,
 	});
 
 	const { data: feedbackData, isLoading: isFeedbackLoading } = useQuery({
 		queryKey: ["feedback", recordId],
 		queryFn: () => getFeedback(recordId),
-		enabled: !!record, // Enable only after record is fetched
+		enabled: !!record && !!isLoggedIn, // Enable only after record is fetched
 	});
 
 	// 애니메이션 값들
@@ -48,17 +50,14 @@ export function TodayHistory({
 	const characterSlideAnim = useRef(new Animated.Value(30)).current;
 	const characterFadeAnim = useRef(new Animated.Value(0)).current;
 
-	// 컴포넌트 마운트 시 애니메이션 실행
 	useEffect(() => {
 		if (!isRecordLoading && record) {
-			// 애니메이션 초기화
 			fadeInAnim.setValue(0);
 			slideUpAnim.setValue(50);
 			scaleAnim.setValue(0.9);
 			characterSlideAnim.setValue(30);
 			characterFadeAnim.setValue(0);
 
-			// 감정 기록 박스 애니메이션 (동시 실행)
 			Animated.parallel([
 				Animated.timing(fadeInAnim, {
 					toValue: 1,
@@ -119,7 +118,7 @@ export function TodayHistory({
 	}
 
 	if (!record) {
-		return null; // Or some error/empty state
+		return null;
 	}
 
 	const createdAt = new Date(record.created_at);

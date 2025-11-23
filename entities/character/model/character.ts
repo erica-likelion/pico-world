@@ -1,4 +1,6 @@
-export const Character = [
+import type { CharacterProps } from "@/entities/character/model/type";
+
+export const Character: CharacterProps[] = [
 	{
 		id: 1,
 		name: "츠츠",
