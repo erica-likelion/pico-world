@@ -38,12 +38,18 @@ function FriendBottomSheetContent({
 	const { blockedFriends } = useFriendAlarmStore();
 
 	const isBlocked = blockedFriends[friend.connectCode] ?? false;
+	console.log(
+		`[FriendBottomSheet] Friend: ${friend.nickname}, ConnectCode: ${friend.connectCode}, isBlocked: ${isBlocked}`,
+	);
 
 	const handleToggleNotifications = () => {
+		console.log("[FriendBottomSheet] handleToggleNotifications called.");
 		bottomSheetRef.current?.close();
 		if (isBlocked) {
+			console.log("[FriendBottomSheet] Calling unblock...");
 			unblock();
 		} else {
+			console.log("[FriendBottomSheet] Calling block...");
 			block();
 		}
 	};

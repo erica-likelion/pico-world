@@ -18,10 +18,8 @@ export const useFriendAlarm = (friend: Friend) => {
 			setBlocked(friend.connectCode, true);
 			return { previousState };
 		},
-		onError: (err, newTodo, context) => {
-			if (context) {
-				useFriendAlarmStore.setState({ blockedFriends: context.previousState });
-			}
+		onError: (err) => {
+			console.error("Failed to block friend alarm:", err);
 		},
 		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey: ["friends"] });
@@ -35,10 +33,8 @@ export const useFriendAlarm = (friend: Friend) => {
 			setBlocked(friend.connectCode, false);
 			return { previousState };
 		},
-		onError: (err, newTodo, context) => {
-			if (context) {
-				useFriendAlarmStore.setState({ blockedFriends: context.previousState });
-			}
+		onError: (err) => {
+			console.error("Failed to unblock friend alarm:", err);
 		},
 		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey: ["friends"] });

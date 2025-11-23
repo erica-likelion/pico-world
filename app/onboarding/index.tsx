@@ -53,7 +53,7 @@ export default function Onboarding() {
 		onSuccess: () => {
 			invalidateUserInfo();
 			setName(selectedCharacter.name);
-			router.back();
+			router.replace("/my?characterUpdated=true");
 		},
 	});
 
