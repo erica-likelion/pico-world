@@ -1,6 +1,7 @@
 import type { CharacterName } from "@/entities/character/model/characterMessages";
 import { DEFAULT_CHARACTER } from "@/entities/character/model/characterMessages";
 import { getUserInfo } from "@/features/my/api/MyInfo";
+import { useAuthStore } from "@/shared/store/auth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const USER_INFO_QUERY_KEY = ["userInfo"] as const;
@@ -13,12 +14,15 @@ const CHARACTER_NAMES: readonly CharacterName[] = [
 	"파파",
 ] as const;
 
-const useUserInfoQuery = () =>
-	useQuery({
+const useUserInfoQuery = () => {
+	const { isLoggedIn } = useAuthStore();
+	return useQuery({
 		queryKey: USER_INFO_QUERY_KEY,
 		queryFn: getUserInfo,
 		staleTime: 1000 * 60 * 5,
+		enabled: !!isLoggedIn,
 	});
+};
 
 export function useUserCharacter() {
 	const { data } = useUserInfoQuery();

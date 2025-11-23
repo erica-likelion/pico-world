@@ -11,12 +11,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { View } from "react-native";
+import { useAuthStore } from "@/shared/store/auth";
 
 export default function Journal() {
 	const { show } = useBottomNavStore();
 	const router = useRouter();
 	const bottomSheetRef = useRef<BottomSheetModal>(null);
 	const queryClient = useQueryClient();
+	const { isLoggedIn } = useAuthStore();
 	const [selectedRecord, setSelectedRecord] = useState<EmotionRecord | null>(
 		null,
 	);
@@ -28,6 +30,7 @@ export default function Journal() {
 	const { data: allRecords = [], isFetching } = useQuery<EmotionRecord[]>({
 		queryKey: ["emotionRecords"],
 		queryFn: getEmotionRecords,
+		enabled: !!isLoggedIn,
 	});
 
 	const monthlyRecords = useMemo(() => {

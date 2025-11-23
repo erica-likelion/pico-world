@@ -3,7 +3,9 @@ import { withdraw } from "@/features/my/api/Withdraw";
 import * as S from "@/features/my/style/MyPageSelect.styles";
 import { LogoutModal } from "@/features/my/ui/LogoutModal";
 import { WithdrawModal } from "@/features/my/ui/WithdrawModal";
+import { useAuthStore } from "@/shared/store/auth";
 import { Avatar, Divider } from "@/shared/ui";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
@@ -13,6 +15,7 @@ export function MyPageSelect() {
 	const [isLoginModalVisible, setLoginModalVisible] = useState(false);
 	const [isWithdrawModalVisible, setWithdrawModalVisible] = useState(false);
 	const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+	const { setIsLoggedIn } = useAuthStore();
 
 	const router = useRouter();
 
@@ -64,6 +67,7 @@ export function MyPageSelect() {
 	const { mutate: WithdrawMutate } = useMutation({
 		mutationFn: withdraw,
 		onSuccess: () => {
+			setIsLoggedIn(false);
 			router.push("/login");
 		},
 		onError: (error) => {
@@ -71,8 +75,9 @@ export function MyPageSelect() {
 		},
 	});
 
-	const handleLogout = () => {
-		router.push("/login");
+	const handleLogout = async () => {
+		await AsyncStorage.clear();
+		setIsLoggedIn(false);
 	};
 
 	const handleWithdraw = async () => {
