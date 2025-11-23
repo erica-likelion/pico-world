@@ -276,6 +276,7 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 			<FriendInviteBottomSheet
 				bottomSheetRef={addFriendBottomSheetRef}
 				inviteCode={inviteCode}
+				onShowToast={showToastWithAutoHide}
 			/>
 
 			<FriendBottomSheet
