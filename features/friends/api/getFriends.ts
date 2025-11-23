@@ -1,12 +1,5 @@
 import { axiosInstance } from "@/shared/api/axios";
-
-export interface Friend {
-	nickname: string;
-	profileImageUrl: string | null;
-	connectCode: string;
-	name: string;
-	hasRecordedToday: boolean;
-}
+import { Friend } from "@/features/friends/model/types";
 
 export async function getFriends(): Promise<Friend[]> {
 	const response = await axiosInstance.get<Friend[]>("/api/v1/friends");
