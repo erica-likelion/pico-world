@@ -1,38 +1,30 @@
-import Constants from "expo-constants";
-import * as Notifications from "expo-notifications";
+import { sendFcmToken } from "@/shared/api/notification";
+import {
+	AuthorizationStatus,
+	getMessaging,
+	getToken,
+	requestPermission,
+} from "@react-native-firebase/messaging";
 
 export async function registerForPushNotificationsAsync() {
-	const { status: existingStatus } = await Notifications.getPermissionsAsync();
-	let finalStatus = existingStatus;
+	const messaging = getMessaging();
+	const authStatus = await requestPermission(messaging);
 
-	if (existingStatus !== "granted") {
-		const { status } = await Notifications.requestPermissionsAsync();
-		finalStatus = status;
-	}
+	const enabled =
+		authStatus === AuthorizationStatus.AUTHORIZED ||
+		authStatus === AuthorizationStatus.PROVISIONAL;
 
-	if (finalStatus !== "granted") {
-		alert("푸시 알림 권한이 필요합니다.");
+	if (enabled) {
+		console.log("푸시 알림 권한이 허용되었습니다.");
+		const fcmToken = await getToken(messaging);
+		console.log("FCM Push Token:", fcmToken);
+
+		if (fcmToken) {
+			await sendFcmToken(fcmToken);
+		}
+		return fcmToken;
+	} else {
+		console.log("푸시 알림 권한이 거부되었습니다.");
 		return;
 	}
-
-	// 모든 경우를 대비한 안전한 projectId 추출
-	const projectId =
-		Constants?.expoConfig?.extra?.projectId ??
-		Constants?.manifest2?.extra?.projectId ??
-		"c7e63ad1-4f17-41fc-bb1e-44d4c64d9bfb";
-
-	if (!projectId) {
-		throw new Error(
-			"❌ No projectId found. Please set it in app.json or manually.",
-		);
-	}
-
-	const { data: expoPushToken } = await Notifications.getExpoPushTokenAsync({
-		projectId,
-	});
-	const fcmToken = await Notifications.getDevicePushTokenAsync();
-	console.log("Expo Push Token:", expoPushToken);
-	console.log("FCM Push Token:", fcmToken.data);
-
-	return fcmToken.data;
 }

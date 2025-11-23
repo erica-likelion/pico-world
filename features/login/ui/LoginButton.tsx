@@ -1,17 +1,23 @@
 import { appleLogin } from "@/features/login/api/appleLogin";
 import { kakaoLogin } from "@/features/login/api/kakaoLogin";
 import * as S from "@/features/login/style/LoginButton.styles";
+import { registerForPushNotificationsAsync } from "@/shared/config/notification";
 import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
+import { useAuthStore } from "@/shared/store/auth";
+import { useDeepLinkStore } from "@/shared/store/deepLink";
 import * as KakaoLogin from "@react-native-seoul/kakao-login";
 import { useMutation } from "@tanstack/react-query";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { CodedError } from "expo-modules-core";
-import { useRouter } from "expo-router";
+import { type Href, useRouter } from "expo-router";
 import { Platform, TouchableOpacity } from "react-native";
 
 export function LoginButton() {
 	const ios = Platform.OS === "ios";
 	const router = useRouter();
+	const { pendingDestination, clearPendingDestination } = useDeepLinkStore();
+	const { setIsLoggedIn } = useAuthStore();
+
 	const {
 		scale: kakaoScale,
 		handlePressIn: kakaoPressIn,
@@ -23,15 +29,23 @@ export function LoginButton() {
 		handlePressOut: applePressOut,
 	} = usePressAnimation();
 
+	const handleLoginSuccess = (isOnboardingNeeded: boolean) => {
+		setIsLoggedIn(true);
+		registerForPushNotificationsAsync(); // 로그인 성공 후 FCM 토큰 등록/전송
+		console.log(isOnboardingNeeded);
+		if (isOnboardingNeeded) {
+			router.replace("/onboarding");
+		} else if (pendingDestination) {
+			router.replace(pendingDestination as Href);
+			clearPendingDestination();
+		} else {
+			router.replace("/home");
+		}
+	};
+
 	const { mutate: kakaoLoginMutate } = useMutation({
 		mutationFn: kakaoLogin,
-		onSuccess: (isOnboardingNeeded) => {
-			if (isOnboardingNeeded) {
-				router.push("/onboarding");
-			} else {
-				router.push("/home");
-			}
-		},
+		onSuccess: handleLoginSuccess,
 		onError: (error) => {
 			console.error("Kakao login error", error);
 		},
@@ -39,13 +53,7 @@ export function LoginButton() {
 
 	const { mutate: appleLoginMutate } = useMutation({
 		mutationFn: appleLogin,
-		onSuccess: (isOnboardingNeeded) => {
-			if (isOnboardingNeeded) {
-				router.push("/onboarding");
-			} else {
-				router.push("/home");
-			}
-		},
+		onSuccess: handleLoginSuccess,
 		onError: (error) => {
 			console.error("Apple login error", error);
 		},

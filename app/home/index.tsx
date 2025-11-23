@@ -5,6 +5,7 @@ import { getEmotionRecords } from "@/features/home/api/emotion";
 import { CalendarUI, ClickToJournal, TodayHistory } from "@/features/home/ui";
 import { deleteEmotionRecord } from "@/features/journal/api/emotion";
 import { NotificationBell } from "@/features/notifications/ui/NotificationBell";
+import { useAuthStore } from "@/shared/store/auth";
 import type { EmotionRecord } from "@/shared/types/emotion";
 import { CharacterBubble, MenuBottomSheet, Toast } from "@/shared/ui";
 import { formatDate } from "@/shared/utils/date";
@@ -30,6 +31,7 @@ export default function Home() {
 	const bottomSheetRef = useRef<BottomSheetModal>(null);
 	const today = getTodayKST();
 	const queryClient = useQueryClient();
+	const { isLoggedIn } = useAuthStore();
 
 	const [selectedDate, setSelectedDate] = useState<string>(today);
 	const [currentMonth, setCurrentMonth] = useState<string>(today.slice(0, 7));
@@ -40,6 +42,7 @@ export default function Home() {
 	const { data: greetingData } = useQuery({
 		queryKey: ["greeting", "home"],
 		queryFn: () => fetchGreeting({ context: "home" }),
+		enabled: !!isLoggedIn,
 	});
 
 	const handleShowToast = useCallback((message: string) => {
@@ -58,6 +61,7 @@ export default function Home() {
 	} = useQuery<EmotionRecord[]>({
 		queryKey: ["emotionRecords"],
 		queryFn: getEmotionRecords,
+		enabled: !!isLoggedIn,
 	});
 
 	const selectedRecord = useMemo(() => {
