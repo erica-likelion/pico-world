@@ -1,17 +1,10 @@
-import type { CharacterProps } from "@/entities/character/model/type";
-import Chch from "../../../shared/assets/images/characters/chch.png";
-import Dongdong from "../../../shared/assets/images/characters/dongdong.png";
-import Lulu from "../../../shared/assets/images/characters/lulu.png";
-import Papa from "../../../shared/assets/images/characters/papa.png";
-import Tt from "../../../shared/assets/images/characters/tt.png";
-
-export const Character: CharacterProps[] = [
+export const Character = [
 	{
 		id: 1,
 		name: "츠츠",
 		speech: "누가 걱정해준대? 신경쓰여서 들어주는 거야.",
 		personality: ["츤데레", "시니컬", "속은 따뜻"],
-		image: Chch,
+		image: require("@/shared/assets/images/characters/chch.png"),
 		boxShadow: "rgba(246, 115, 31, 0.50)",
 	},
 	{
@@ -19,7 +12,7 @@ export const Character: CharacterProps[] = [
 		name: "루루",
 		speech: "완벽하지 않아도 괜찮아요. 존재만으로 충분해요.",
 		personality: ["다정", "파워F", "천사같은"],
-		image: Lulu,
+		image: require("@/shared/assets/images/characters/lulu.png"),
 		boxShadow: "rgba(255, 203, 186, 0.50)",
 	},
 	{
@@ -27,7 +20,7 @@ export const Character: CharacterProps[] = [
 		name: "동동",
 		speech: "어디에요? 누가 울렸어요. 나한테 말해줘요.",
 		personality: ["과보호", "연하", "집착"],
-		image: Dongdong,
+		image: require("@/shared/assets/images/characters/dongdong.png"),
 		boxShadow: "rgba(34, 156, 99, 0.50)",
 	},
 	{
@@ -35,7 +28,7 @@ export const Character: CharacterProps[] = [
 		name: "티티",
 		speech: "살아있다는 건 원래 일관성 없는 일이지.",
 		personality: ["철학적", "쌉T", "냉철한"],
-		image: Tt,
+		image: require("@/shared/assets/images/characters/tt.png"),
 		boxShadow: "rgba(85, 152, 224, 0.50)",
 	},
 	{
@@ -43,7 +36,7 @@ export const Character: CharacterProps[] = [
 		name: "파파",
 		speech: "인생은 결국 견디는 법을 배우는 과정이야.",
 		personality: ["아버지", "듬직한", "다정다감"],
-		image: Papa,
+		image: require("@/shared/assets/images/characters/papa.png"),
 		boxShadow: "rgba(255, 223, 131, 0.50)",
 	},
 ];
