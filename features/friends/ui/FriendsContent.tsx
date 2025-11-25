@@ -45,7 +45,7 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 	const hasRecordedToday = useHasRecordedToday();
 	const { name } = MyCharacter();
 	const inviteCode = useUserConnectCode();
-	const { friends, friendRequests, friendFeed, greeting } = useGetFriends();
+	const { friendList, friendRequests, friendFeed, greeting } = useGetFriends();
 
 	const {
 		isVisible: isToastVisible,
@@ -58,7 +58,7 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 	const menuBottomSheetRef = useRef<BottomSheetModal>(null);
 	const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-	const acceptedFriends = friends.data ?? [];
+	const acceptedFriends = friendList.data ?? [];
 	const friendRequestsData = friendRequests.data ?? [];
 	const friendFeedData = friendFeed.data ?? [];
 	const greetingData = greeting.data;
@@ -100,20 +100,6 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 			}
 		};
 	}, []);
-
-	useEffect(() => {
-		if (friends.error) {
-			console.error("친구 목록 조회 실패:", friends.error);
-			showToastWithAutoHide("친구 목록을 불러오는데 실패했습니다.");
-		}
-	}, [friends.error, showToastWithAutoHide]);
-
-	useEffect(() => {
-		if (friendRequests.error) {
-			console.error("친구 요청 목록 조회 실패:", friendRequests.error);
-			showToastWithAutoHide("친구 요청 목록을 불러오는데 실패했습니다.");
-		}
-	}, [friendRequests.error, showToastWithAutoHide]);
 
 	const handleAcceptRequest = useCallback(
 		(request: FriendRequest) => {

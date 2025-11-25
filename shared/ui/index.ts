@@ -6,6 +6,7 @@ export * from "@/shared/ui/CharacterBubble";
 export * from "@/shared/ui/Chip";
 export * from "@/shared/ui/Divider";
 export * from "@/shared/ui/emotion";
+export * from "@/shared/ui/ErrorToast";
 export * from "@/shared/ui/IconButton";
 export * from "@/shared/ui/modal/ConfirmModal";
 export * from "@/shared/ui/modal/DeleteModal";
