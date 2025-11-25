@@ -1,4 +1,5 @@
 import React from "react";
+import type { RefreshControlProps } from "react-native";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import type { Notification } from "../model/types";
 import { NotificationItem } from "./NotificationItem";
@@ -8,6 +9,7 @@ interface AllTabProps {
 	isLoading: boolean;
 	fetchNextPage: () => void;
 	hasNextPage?: boolean;
+	refreshControl: React.ReactElement<RefreshControlProps>;
 }
 
 export const AllTab = ({
@@ -15,6 +17,7 @@ export const AllTab = ({
 	isLoading,
 	fetchNextPage,
 	hasNextPage,
+	refreshControl,
 }: AllTabProps) => {
 	if (isLoading && !notifications.length) {
 		return <ActivityIndicator style={{ marginTop: 20 }} />;
@@ -46,6 +49,7 @@ export const AllTab = ({
 				ListFooterComponent={hasNextPage ? <ActivityIndicator /> : null}
 				ItemSeparatorComponent={() => <View style={{ height: 24 }} />}
 				style={{ backgroundColor: "black" }}
+				refreshControl={refreshControl}
 			/>
 		</View>
 	);

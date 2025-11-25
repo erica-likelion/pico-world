@@ -17,7 +17,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ActivityIndicator, ScrollView, View } from "react-native";
+import {
+	ActivityIndicator,
+	RefreshControl,
+	ScrollView,
+	View,
+} from "react-native";
 
 const getTodayKST = () => {
 	const now = new Date();
@@ -37,6 +42,7 @@ export default function Home() {
 
 	const [selectedDate, setSelectedDate] = useState<string>(today);
 	const [currentMonth, setCurrentMonth] = useState<string>(today.slice(0, 7));
+	const [refreshing, setRefreshing] = useState(false);
 
 	const [isToastVisible, setIsToastVisible] = useState(false);
 	const [toastMessage, setToastMessage] = useState("");
@@ -82,6 +88,13 @@ export default function Home() {
 			refetch();
 		}, [refetch]),
 	);
+
+	const onRefresh = useCallback(async () => {
+		setRefreshing(true);
+		await queryClient.refetchQueries({ queryKey: ["emotionRecords"] });
+		await queryClient.refetchQueries({ queryKey: ["greeting", "home"] });
+		setRefreshing(false);
+	}, [queryClient]);
 
 	const deleteRecordMutation = useMutation({
 		mutationFn: deleteEmotionRecord,
@@ -139,6 +152,14 @@ export default function Home() {
 			<ScrollView
 				contentContainerStyle={{ alignItems: "center" }}
 				showsVerticalScrollIndicator={false}
+				refreshControl={
+					<RefreshControl
+						refreshing={refreshing}
+						onRefresh={onRefresh}
+						tintColor="#ffffff"
+						colors={["#ffffff"]}
+					/>
+				}
 			>
 				<View style={{ width: "100%", paddingHorizontal: 16 }}>
 					<CharacterBubble

@@ -1,6 +1,7 @@
 import { getEmotionRecords } from "@/features/home/api/emotion";
 import { deleteEmotionRecord } from "@/features/journal/api/emotion";
 import { EmotionRecordList } from "@/features/journal/ui";
+import { useAuthStore } from "@/shared/store/auth";
 import type { EmotionRecord } from "@/shared/types/emotion";
 import { MenuBottomSheet } from "@/shared/ui";
 import { formatDate } from "@/shared/utils/date";
@@ -10,8 +11,7 @@ import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { View } from "react-native";
-import { useAuthStore } from "@/shared/store/auth";
+import { RefreshControl, View } from "react-native";
 
 export default function Journal() {
 	const { show } = useBottomNavStore();
@@ -26,11 +26,13 @@ export default function Journal() {
 		const now = new Date();
 		return new Date(now.getFullYear(), now.getMonth(), 1);
 	});
+	const [refreshing, setRefreshing] = useState(false);
 
 	const { data: allRecords = [], isFetching } = useQuery<EmotionRecord[]>({
 		queryKey: ["emotionRecords"],
 		queryFn: getEmotionRecords,
 		enabled: !!isLoggedIn,
+		placeholderData: (previousData) => previousData,
 	});
 
 	const monthlyRecords = useMemo(() => {
@@ -49,6 +51,12 @@ export default function Journal() {
 			queryClient.invalidateQueries({ queryKey: ["emotionRecords"] });
 		}, [show, queryClient]),
 	);
+
+	const onRefresh = useCallback(async () => {
+		setRefreshing(true);
+		await queryClient.refetchQueries({ queryKey: ["emotionRecords"] });
+		setRefreshing(false);
+	}, [queryClient]);
 
 	const handleRecordSelect = (record: EmotionRecord) => {
 		setSelectedRecord(record);
@@ -115,12 +123,20 @@ export default function Journal() {
 		<View style={{ flex: 1 }}>
 			<TopNav title="기록" />
 			<EmotionRecordList
-				records={isFetching ? [] : monthlyRecords}
+				records={monthlyRecords}
 				monthLabel={monthLabel}
 				onPrevMonth={handlePrevMonth}
 				onNextMonth={handleNextMonth}
 				isNextMonthDisabled={isNextMonthDisabled}
 				onMenuPress={handleRecordSelect}
+				refreshControl={
+					<RefreshControl
+						refreshing={refreshing}
+						onRefresh={onRefresh}
+						tintColor="#ffffff"
+						colors={["#ffffff"]}
+					/>
+				}
 			/>
 			{selectedRecord && (
 				<MenuBottomSheet
