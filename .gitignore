@@ -40,7 +40,6 @@ yarn-error.*
 # generated native folders
 ios/
 ios/GoogleService-Info.plist
-android/
 /ios
 
 # storybook
