@@ -16,7 +16,7 @@ export function useFriendRequestResponse({
 	const { mutate } = useMutation({
 		mutationFn: respondToFriendRequest,
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["friends"] });
+			queryClient.invalidateQueries({ queryKey: ["friendList"] });
 			queryClient.invalidateQueries({ queryKey: ["friendRequests"] });
 			onSuccess?.();
 		},

@@ -5,8 +5,8 @@ import {
 import * as S from "@/features/report/style/MonthlyEmotion.styles";
 import RightIcon from "@/shared/assets/icons/right.svg";
 import { theme } from "@/shared/config/theme/theme";
-import { useMutation } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { TouchableOpacity } from "react-native";
 
 interface MonthlyEmotionParams {
@@ -24,38 +24,30 @@ interface ComparisonData {
 }
 
 export const MonthlyEmotion: React.FC<MonthlyEmotionProps> = ({ onPress }) => {
-	const [comparison, setComparison] = useState<ComparisonData | null>(null);
-	const [isLoading, setIsLoading] = useState<boolean>(true);
-
-	const comparisonMutation = useMutation({
-		mutationFn: getComparison,
-		onSuccess: (comparisonData) => {
-			const extractEmotion = (section?: ComparisonSection | null) =>
-				section && section.representative_emotion !== "없음" ? section : null;
-
-			const thisMonth = extractEmotion(comparisonData.data.thisMonth);
-			const lastMonth = extractEmotion(comparisonData.data.lastMonth);
-
-			setComparison(
-				thisMonth
-					? {
-							thisMonth,
-							lastMonth,
-						}
-					: null,
-			);
-
-			setIsLoading(false);
-		},
-		onError: (error) => {
-			console.error(error);
-			setIsLoading(false);
+	const { data: comparisonData, isLoading } = useQuery({
+		queryKey: ["report", "comparison"],
+		queryFn: async () => {
+			const response = await getComparison();
+			return response.data;
 		},
 	});
 
-	useEffect(() => {
-		comparisonMutation.mutate();
-	}, [comparisonMutation.mutate]);
+	const comparison = useMemo<ComparisonData | null>(() => {
+		if (!comparisonData) return null;
+
+		const extractEmotion = (section?: ComparisonSection | null) =>
+			section && section.representative_emotion !== "없음" ? section : null;
+
+		const thisMonth = extractEmotion(comparisonData.thisMonth);
+		const lastMonth = extractEmotion(comparisonData.lastMonth);
+
+		return thisMonth
+			? {
+					thisMonth,
+					lastMonth,
+				}
+			: null;
+	}, [comparisonData]);
 
 	if (isLoading) {
 		return (

@@ -2,14 +2,17 @@ import { FriendsContent } from "@/features/friends/ui";
 import { NotificationBell } from "@/features/notifications/ui/NotificationBell";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { TopNav } from "@/widgets/TopNav/ui";
+import { useQueryClient } from "@tanstack/react-query";
 import { useFocusEffect, useRouter } from "expo-router";
-import { useCallback, useRef } from "react";
-import { ScrollView, View } from "react-native";
+import { useCallback, useRef, useState } from "react";
+import { RefreshControl, ScrollView, View } from "react-native";
 
 export default function Friends() {
 	const { show } = useBottomNavStore();
 	const router = useRouter();
 	const scrollViewRef = useRef<ScrollView>(null);
+	const [refreshing, setRefreshing] = useState(false);
+	const queryClient = useQueryClient();
 
 	useFocusEffect(
 		useCallback(() => {
@@ -25,6 +28,12 @@ export default function Friends() {
 		router.push("/notifications");
 	}, [router]);
 
+	const onRefresh = useCallback(async () => {
+		setRefreshing(true);
+		await queryClient.refetchQueries({ queryKey: ["friends"] });
+		setRefreshing(false);
+	}, [queryClient]);
+
 	return (
 		<View style={{ flex: 1 }}>
 			<TopNav
@@ -36,6 +45,14 @@ export default function Friends() {
 				ref={scrollViewRef}
 				contentContainerStyle={{ alignItems: "center", flexGrow: 1 }}
 				showsVerticalScrollIndicator={false}
+				refreshControl={
+					<RefreshControl
+						refreshing={refreshing}
+						onRefresh={onRefresh}
+						tintColor="#ffffff"
+						colors={["#ffffff"]}
+					/>
+				}
 			>
 				<FriendsContent onScrollToTop={handleScrollToTop} />
 			</ScrollView>

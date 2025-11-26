@@ -1,17 +1,18 @@
-import { useAuthStore } from "@/shared/store/auth";
 import { useNotifications } from "@/features/notifications/model/useNotifications";
 import { AllTab } from "@/features/notifications/ui/AllTab";
 import { FriendsTab } from "@/features/notifications/ui/FriendsTab";
 import { RepliesTab } from "@/features/notifications/ui/RepliesTab";
 import { useHideBottomNav } from "@/shared/hooks/useHideBottomNav";
+import { useAuthStore } from "@/shared/store/auth";
 import { Button } from "@/shared/ui/Button";
 import { TopNav } from "@/widgets/TopNav/ui";
 import messaging, {
 	AuthorizationStatus,
 } from "@react-native-firebase/messaging";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import React, { useEffect, useMemo, useState } from "react";
-import { Linking, View } from "react-native";
+import { useQueryClient } from "@tanstack/react-query";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Linking, RefreshControl, View } from "react-native";
 import styled, { useTheme } from "styled-components/native";
 
 const Tab = createMaterialTopTabNavigator();
@@ -19,10 +20,12 @@ const Tab = createMaterialTopTabNavigator();
 export default function NotificationsScreen() {
 	useHideBottomNav();
 	const theme = useTheme();
+	const queryClient = useQueryClient();
 
 	const [permissionStatus, setPermissionStatus] = useState<
 		number | undefined
 	>();
+	const [refreshing, setRefreshing] = useState(false);
 
 	const { isLoggedIn } = useAuthStore();
 
@@ -56,6 +59,12 @@ export default function NotificationsScreen() {
 		[allNotifications],
 	);
 
+	const onRefresh = useCallback(async () => {
+		setRefreshing(true);
+		await queryClient.refetchQueries({ queryKey: ["notifications"] });
+		setRefreshing(false);
+	}, [queryClient]);
+
 	return (
 		<View style={{ flex: 1, backgroundColor: "black" }}>
 			<TopNav title="알림" leftIcon />
@@ -84,6 +93,14 @@ export default function NotificationsScreen() {
 								isLoading={isLoading}
 								fetchNextPage={fetchNextPage}
 								hasNextPage={hasNextPage}
+								refreshControl={
+									<RefreshControl
+										refreshing={refreshing}
+										onRefresh={onRefresh}
+										tintColor="#ffffff"
+										colors={["#ffffff"]}
+									/>
+								}
 							/>
 						)}
 					</Tab.Screen>
@@ -94,6 +111,14 @@ export default function NotificationsScreen() {
 								isLoading={isLoading}
 								fetchNextPage={fetchNextPage}
 								hasNextPage={hasNextPage}
+								refreshControl={
+									<RefreshControl
+										refreshing={refreshing}
+										onRefresh={onRefresh}
+										tintColor="#ffffff"
+										colors={["#ffffff"]}
+									/>
+								}
 							/>
 						)}
 					</Tab.Screen>
@@ -104,6 +129,14 @@ export default function NotificationsScreen() {
 								isLoading={isLoading}
 								fetchNextPage={fetchNextPage}
 								hasNextPage={hasNextPage}
+								refreshControl={
+									<RefreshControl
+										refreshing={refreshing}
+										onRefresh={onRefresh}
+										tintColor="#ffffff"
+										colors={["#ffffff"]}
+									/>
+								}
 							/>
 						)}
 					</Tab.Screen>

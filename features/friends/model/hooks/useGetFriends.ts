@@ -8,34 +8,34 @@ import { useQuery } from "@tanstack/react-query";
 export function useGetFriends() {
 	const { isLoggedIn } = useAuthStore();
 
-	const friends = useQuery({
-		queryKey: ["friends"],
+	const friendList = useQuery({
+		queryKey: ["friends", "friendList"],
 		queryFn: getFriends,
 		enabled: !!isLoggedIn,
 	});
 
 	const friendRequests = useQuery({
-		queryKey: ["friendRequests"],
+		queryKey: ["friends", "friendRequests"],
 		queryFn: getFriendRequests,
 		enabled: !!isLoggedIn,
 	});
 
 	const friendFeed = useQuery({
-		queryKey: ["friendFeed"],
+		queryKey: ["friends", "friendFeed"],
 		queryFn: getFriendFeed,
 		enabled: !!isLoggedIn,
 	});
 
 	const greeting = useQuery({
-		queryKey: ["greeting", "friend-reminder"],
+		queryKey: ["friends", "greeting", "friend-reminder"],
 		queryFn: () => getGreeting("friend-reminder"),
 		enabled: !!isLoggedIn,
 	});
 
 	return {
-		friends: {
-			data: friends.data ?? [],
-			error: friends.error,
+		friendList: {
+			data: friendList.data ?? [],
+			error: friendList.error,
 		},
 
 		friendRequests: {

@@ -2,36 +2,40 @@ import type { CharacterName } from "@/entities/character/model/characterMessages
 import { getCharacterMessage } from "@/features/report/api/GetCharacterMessage";
 import { MyCharacter } from "@/shared/store/myCharacter";
 import { CharacterBubble } from "@/shared/ui/CharacterBubble";
-import { useMutation } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 
 export const CharacterMessageBubble: React.FC = () => {
-	const [characterName, setCharacterName] = useState<CharacterName>("츠츠");
-	const [message, setMessage] = useState<string>("...");
 	const { name } = MyCharacter();
 
-	const characterMessageMutation = useMutation({
-		mutationFn: getCharacterMessage,
-		onSuccess: (response) => {
-			const payload = response.data;
-
-			if (payload?.character_name) {
-				setCharacterName(payload.character_name as CharacterName);
-			}
-			setMessage(payload?.message ?? "생각하는 중...");
-		},
-		onError: (error) => {
-			console.error(error);
-			setCharacterName("츠츠");
-			setMessage("생각하는 중...");
+	const {
+		data: characterMessageData,
+		isLoading,
+		error,
+	} = useQuery({
+		queryKey: ["report", "characterMessage"],
+		queryFn: async () => {
+			const response = await getCharacterMessage();
+			return response.data;
 		},
 	});
 
-	useEffect(() => {
-		console.log(name);
-		setCharacterName(name);
-		characterMessageMutation.mutate();
-	}, [characterMessageMutation.mutate, name]);
+	const characterName = useMemo<CharacterName>(() => {
+		if (characterMessageData?.character_name) {
+			return characterMessageData.character_name as CharacterName;
+		}
+		return (name as CharacterName) ?? "츠츠";
+	}, [characterMessageData?.character_name, name]);
+
+	const message = useMemo<string>(() => {
+		if (isLoading) {
+			return "...";
+		}
+		if (error) {
+			return "생각하는 중...";
+		}
+		return characterMessageData?.message ?? "생각하는 중...";
+	}, [characterMessageData?.message, isLoading, error]);
 
 	return <CharacterBubble character={characterName} message={message} />;
 };

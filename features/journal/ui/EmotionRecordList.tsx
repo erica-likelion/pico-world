@@ -6,7 +6,8 @@ import type { EmotionRecord } from "@/shared/types/emotion";
 import { Button } from "@/shared/ui/Button";
 import { type Href, useRouter } from "expo-router";
 import { useMemo, useRef } from "react";
-import { ScrollView, View } from "react-native";
+import type { RefreshControlProps } from "react-native";
+import { RefreshControl, ScrollView, View } from "react-native";
 import { useTheme } from "styled-components/native";
 
 const ICON_HIT_SLOP = { top: 8, bottom: 8, left: 8, right: 8 } as const;
@@ -18,6 +19,7 @@ interface EmotionRecordListProps {
 	onNextMonth: () => void;
 	isNextMonthDisabled?: boolean;
 	onMenuPress?: (record: EmotionRecord) => void;
+	refreshControl?: React.ReactElement<RefreshControlProps>;
 }
 
 export const EmotionRecordList = ({
@@ -27,6 +29,7 @@ export const EmotionRecordList = ({
 	onNextMonth,
 	isNextMonthDisabled = false,
 	onMenuPress,
+	refreshControl,
 }: EmotionRecordListProps) => {
 	const scrollViewRef = useRef<ScrollView>(null);
 	const router = useRouter();
@@ -91,7 +94,11 @@ export const EmotionRecordList = ({
 	}
 
 	return (
-		<ScrollView ref={scrollViewRef} showsVerticalScrollIndicator={false}>
+		<ScrollView
+			ref={scrollViewRef}
+			showsVerticalScrollIndicator={false}
+			refreshControl={refreshControl}
+		>
 			<JournalListS.ScrollContent>
 				<JournalListS.ListContainer>
 					<JournalListS.MonthHeader>

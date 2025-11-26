@@ -5,14 +5,34 @@ import {
 	TopEmotion,
 } from "@/features/report/ui";
 import { TopNav } from "@/widgets/TopNav/ui";
+import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { ScrollView, View } from "react-native";
+import { useCallback, useState } from "react";
+import { RefreshControl, ScrollView, View } from "react-native";
 
 export default function Report() {
+	const [refreshing, setRefreshing] = useState(false);
+	const queryClient = useQueryClient();
+
+	const onRefresh = useCallback(async () => {
+		setRefreshing(true);
+		await queryClient.refetchQueries({ queryKey: ["report"] });
+		setRefreshing(false);
+	}, [queryClient]);
+
 	return (
 		<>
 			<TopNav title="리포트" />
-			<ScrollView>
+			<ScrollView
+				refreshControl={
+					<RefreshControl
+						refreshing={refreshing}
+						onRefresh={onRefresh}
+						tintColor="#ffffff"
+						colors={["#ffffff"]}
+					/>
+				}
+			>
 				<View style={{ width: "100%", paddingHorizontal: 16 }}>
 					<CharacterMessageBubble />
 					<MonthlyEmotion

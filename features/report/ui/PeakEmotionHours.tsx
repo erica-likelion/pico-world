@@ -1,33 +1,15 @@
-import {
-	getPeakHours,
-	type PeakHoursResponse,
-} from "@/features/report/api/GetPeakHours";
+import { getPeakHours } from "@/features/report/api/GetPeakHours";
 import * as S from "@/features/report/style/PeakEmotionHours.styles";
-import { useMutation } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 export const PeakEmotionHours: React.FC = () => {
-	const [peakEmotion, setPeakEmotion] = useState<PeakHoursResponse | null>(
-		null,
-	);
-	const [isLoading, setIsLoading] = useState<boolean>(true);
-
-	const peakEmotionMutation = useMutation({
-		mutationFn: getPeakHours,
-		onSuccess: (peakData) => {
-			setPeakEmotion(peakData.data);
-			setIsLoading(false);
-		},
-		onError: (error) => {
-			console.error(error);
-			setPeakEmotion(null);
-			setIsLoading(false);
+	const { data: peakEmotion, isLoading } = useQuery({
+		queryKey: ["report", "peakHours"],
+		queryFn: async () => {
+			const response = await getPeakHours();
+			return response.data;
 		},
 	});
-
-	useEffect(() => {
-		peakEmotionMutation.mutate();
-	}, [peakEmotionMutation.mutate]);
 
 	const renderDescription = () => {
 		if (isLoading) {

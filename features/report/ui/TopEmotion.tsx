@@ -6,8 +6,8 @@ import * as S from "@/features/report/style/TopEmotion.styles";
 import RightIcon from "@/shared/assets/icons/right.svg";
 import { theme } from "@/shared/config/theme/theme";
 import type { EmotionChip } from "@/shared/types";
-import { useMutation } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { TouchableOpacity } from "react-native";
 
 interface TopEmotionProps {
@@ -20,36 +20,27 @@ interface TopEmotionChip extends EmotionChip {
 }
 
 export const TopEmotion: React.FC<TopEmotionProps> = ({ onPress }) => {
-	const [emotionChip, setEmotionChip] = useState<TopEmotionChip[]>([]);
-	const [isLoading, setIsLoading] = useState<boolean>(true);
-
-	const topEmotionMutation = useMutation({
-		mutationFn: getTopEmotions,
-		onSuccess: (data) => {
-			const topEmotions = data.data;
-			const mapped = topEmotions.emotions.map((emotion: TopEmotionItem) => ({
-				label:
-					emotion.emotion_name && emotion.emotion_name !== "없음"
-						? emotion.emotion_name.replace(/_/g, " ")
-						: "없음",
-				count: emotion.count,
-				mainColor: emotion.main_color,
-				subColor: emotion.sub_color,
-			}));
-
-			setEmotionChip(mapped);
-			setIsLoading(false);
-		},
-		onError: (error) => {
-			console.error(error);
-			setEmotionChip([]);
-			setIsLoading(false);
+	const { data: topEmotionsData, isLoading } = useQuery({
+		queryKey: ["report", "topEmotions"],
+		queryFn: async () => {
+			const response = await getTopEmotions();
+			return response.data;
 		},
 	});
 
-	useEffect(() => {
-		topEmotionMutation.mutate();
-	}, [topEmotionMutation.mutate]);
+	const emotionChip = useMemo<TopEmotionChip[]>(() => {
+		if (!topEmotionsData) return [];
+
+		return topEmotionsData.emotions.map((emotion: TopEmotionItem) => ({
+			label:
+				emotion.emotion_name && emotion.emotion_name !== "없음"
+					? emotion.emotion_name.replace(/_/g, " ")
+					: "없음",
+			count: emotion.count,
+			mainColor: emotion.main_color,
+			subColor: emotion.sub_color,
+		}));
+	}, [topEmotionsData]);
 
 	return (
 		<S.Container>

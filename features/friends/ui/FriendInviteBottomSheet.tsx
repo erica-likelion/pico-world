@@ -54,8 +54,8 @@ export function FriendInviteBottomSheet({
 		useGreeting("friend-invite");
 
 	const FRIEND_LIMIT = 5;
-	const { friends } = useGetFriends();
-	const friendsList = friends.data ?? [];
+	const { friendList } = useGetFriends();
+	const friendsList = friendList?.data ?? [];
 
 	const showToastWithAutoHide = useCallback(
 		(message: string) => {
