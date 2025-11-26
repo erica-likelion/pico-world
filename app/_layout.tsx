@@ -129,6 +129,7 @@ function RootLayoutNav() {
 		initializeApp();
 	}, [loaded, setIsLoggedIn, showToast, handleNotificationNavigation]);
 
+	// 2. 인증 상태에 따른 경로 보호
 	useEffect(() => {
 		if (isLoggedIn === null) {
 			return;
