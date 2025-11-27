@@ -23,6 +23,12 @@ export const Description = styled.Text`
   text-align: center;
 `;
 
+export const SubDescription = styled.Text`
+  color: ${({ theme }) => theme.grayscale.gray200};
+  ${({ theme }) => theme.typography["title4-semibold"]};
+  text-align: center;
+`;
+
 export const ButtonRow = styled.View`
   width: 100%;
   flex-direction: row;

@@ -69,7 +69,7 @@ const getText = (theme: Theme, size?: string) => {
 		case "small":
 			return theme.typography["title4-bold"];
 		default:
-			return theme.typography["title1-bold"];
+			return theme.typography["title2-bold"];
 	}
 };
 

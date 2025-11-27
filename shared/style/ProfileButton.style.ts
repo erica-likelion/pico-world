@@ -51,7 +51,7 @@ export const Guard = styled.View`
   width: ${({ theme }) => theme.rem(64)};
   height: ${({ theme }) => theme.rem(64)};
   border-radius: 999px;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.6);
   position: absolute;
   align-items: center;
   justify-content: center;

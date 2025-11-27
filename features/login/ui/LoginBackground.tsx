@@ -12,7 +12,7 @@ export function LoginBackground() {
 			/>
 			<S.BackgroundBlur />
 			<S.Title>{`안녕하세요,
-피코월드를 시작해볼까요?`}</S.Title>
+Pico World를 시작해볼까요?`}</S.Title>
 			<S.EclipseImage
 				source={require("@/shared/assets/images/eclipse-wrapper.png")}
 				resizeMode="contain"

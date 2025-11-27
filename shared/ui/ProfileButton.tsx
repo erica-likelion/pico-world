@@ -51,15 +51,14 @@ export const ProfileButton = ({
 			{logged && <S.OuterBorder />}
 
 			<S.Background $logged={logged} $isDefault={shouldUseDefaultImage}>
+				<S.ProfileImage
+					source={shouldUseDefaultImage ? UserIconImage : { uri: imageUrl }}
+				/>
 				{logged && (
 					<S.Guard>
 						<S.Text>완료!</S.Text>
 					</S.Guard>
 				)}
-
-				<S.ProfileImage
-					source={shouldUseDefaultImage ? UserIconImage : { uri: imageUrl }}
-				/>
 			</S.Background>
 		</S.Container>
 	);

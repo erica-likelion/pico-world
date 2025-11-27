@@ -1,4 +1,5 @@
 import { getFeedback } from "@/entities/character/api/feedback";
+import { useUserCharacter } from "@/entities/user/model/userQueries";
 import { getEmotionRecord } from "@/features/journal/api/emotion";
 import { useRecordFlow } from "@/features/record/model/useRecordFlow";
 import {
@@ -10,7 +11,7 @@ import { useHideBottomNav } from "@/shared/hooks/useHideBottomNav";
 import { ConfirmModal, Toast } from "@/shared/ui";
 import { TopNav } from "@/widgets/TopNav/ui";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 
 export default function RecordEdit() {
 	const {
@@ -35,7 +36,12 @@ export default function RecordEdit() {
 	} = useRecordFlow();
 	const router = useRouter();
 	const params = useLocalSearchParams();
+	const userCharacter = useUserCharacter();
 	useHideBottomNav();
+
+	const characterDescription = useMemo(() => {
+		return `${userCharacter}(이)에게 답변을 다시 받을까요?`;
+	}, [userCharacter]);
 
 	useEffect(() => {
 		const id = params.id as string | undefined;
@@ -92,10 +98,11 @@ export default function RecordEdit() {
 				/>
 				<ConfirmModal
 					isVisible={showConfirmModal}
-					title={`AI 피드백을 받으시겠습니까? (${aiFeedbackCount}/3)`}
-					description="피드백은 최대 3번까지 받을 수 있습니다."
-					confirmText="다시 받기"
-					cancelText="취소"
+					title={`수정 완료`}
+					description={characterDescription}
+					subDescription={`오늘 ${aiFeedbackCount}/3`}
+					confirmText="답변 다시 받기"
+					cancelText="그냥 수정하기"
 					onConfirm={handleConfirmFeedback}
 					onCancel={handleCancelFeedback}
 				/>

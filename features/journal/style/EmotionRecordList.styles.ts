@@ -2,9 +2,7 @@ import styled from "styled-components/native";
 
 export const ScrollContent = styled.View`
   align-items: center;
-  padding-left: ${({ theme }) => theme.rem(16)};
-  padding-right: ${({ theme }) => theme.rem(16)};
-  padding-top: 0;
+  padding-horizontal: ${({ theme }) => theme.rem(16)};
   padding-bottom: ${({ theme }) => theme.rem(34)};
   width: 100%;
 `;
@@ -51,11 +49,7 @@ export const CardWrapper = styled.View`
 export const EmptyContainer = styled.View`
   flex: 1;
   align-items: center;
-`;
-
-export const EmptyText = styled.Text`
-  color: ${({ theme }) => theme.grayscale.white};
-  font-size: ${({ theme }) => theme.rem(16)};
+  padding-horizontal: ${({ theme }) => theme.rem(16)};
 `;
 
 export const EmptyMonthContainer = styled.View`
@@ -81,9 +75,8 @@ export const Footer = styled.View`
 `;
 
 export const FooterText = styled.Text`
-  color: ${({ theme }) => theme.grayscale.white};
-  font-size: ${({ theme }) => theme.rem(14)};
-  opacity: 0.6;
+  color: ${({ theme }) => theme.grayscale.gray500};
+  ${({ theme }) => theme.typography["title3-bold"]};
 `;
 
 export const ButtonWrapper = styled.View`

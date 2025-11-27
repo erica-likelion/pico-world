@@ -1,11 +1,11 @@
-import type { EmotionRecord } from "@/shared/types/emotion";
-import * as JournalS from "@/features/journal/style/EmotionRecordCard.styles";
+import * as S from "@/features/journal/style/EmotionRecordCard.styles";
 import MenuIcon from "@/shared/assets/icons/menu.svg";
 import * as EmotionCardStyles from "@/shared/style/EmotionCard.styles";
+import type { EmotionRecord } from "@/shared/types/emotion";
+import { format } from "date-fns";
 import { useId, useState } from "react";
 import { type LayoutChangeEvent, TouchableOpacity, View } from "react-native";
 import { Defs, RadialGradient, Rect, Stop, Svg } from "react-native-svg";
-import { format } from "date-fns";
 
 interface EmotionRecordCardProps {
 	record: EmotionRecord;
@@ -37,22 +37,10 @@ export const EmotionRecordCard = ({
 	};
 
 	return (
-		<TouchableOpacity
+		<S.EmotionRecordCardContainer
 			activeOpacity={0.9}
 			disabled={!onPress}
 			onPress={onPress}
-			style={{
-				display: "flex",
-				height: 193,
-				paddingTop: 59,
-				paddingBottom: 58,
-				justifyContent: "center",
-				alignItems: "center",
-				alignSelf: "stretch",
-				borderRadius: 32,
-				position: "relative",
-				overflow: "hidden",
-			}}
 			onLayout={(event: LayoutChangeEvent) => {
 				const { width, height } = event.nativeEvent.layout;
 				setCardSize({ width, height });
@@ -95,19 +83,19 @@ export const EmotionRecordCard = ({
 						zIndex: 10,
 					}}
 				>
-					<JournalS.JournalHeaderContainer>
-						<JournalS.JournalDateBox>
-							<JournalS.JournalEditDate
+					<S.JournalHeaderContainer>
+						<S.JournalDateBox>
+							<S.JournalEditDate
 								style={dateTextColor ? { color: dateTextColor } : undefined}
 							>
 								{formattedDate}
-							</JournalS.JournalEditDate>
-							<JournalS.JournalEditTime
+							</S.JournalEditDate>
+							<S.JournalEditTime
 								style={timeTextColor ? { color: timeTextColor } : undefined}
 							>
 								{formattedTime}
-							</JournalS.JournalEditTime>
-						</JournalS.JournalDateBox>
+							</S.JournalEditTime>
+						</S.JournalDateBox>
 						{onMenuPress && (
 							<TouchableOpacity onPress={handleMenuPress} activeOpacity={0.8}>
 								<MenuIcon
@@ -117,7 +105,7 @@ export const EmotionRecordCard = ({
 								/>
 							</TouchableOpacity>
 						)}
-					</JournalS.JournalHeaderContainer>
+					</S.JournalHeaderContainer>
 				</View>
 			)}
 
@@ -127,6 +115,6 @@ export const EmotionRecordCard = ({
 					{record.emotion_name}
 				</EmotionCardStyles.EmotionCardText>
 			</EmotionCardStyles.EmotionCardTextBox>
-		</TouchableOpacity>
+		</S.EmotionRecordCardContainer>
 	);
 };
