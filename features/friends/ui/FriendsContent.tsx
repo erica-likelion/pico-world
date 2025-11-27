@@ -145,11 +145,7 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 
 	return (
 		<S.Container>
-			<S.ProfileRow
-				horizontal
-				showsHorizontalScrollIndicator={false}
-				contentContainerStyle={{ alignItems: "center" }}
-			>
+			<S.ProfileRow horizontal showsHorizontalScrollIndicator={false}>
 				<S.ProfileRowContent>
 					<S.ProfileButtonWrapper>
 						<ProfileButton

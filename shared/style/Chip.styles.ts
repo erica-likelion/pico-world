@@ -26,3 +26,7 @@ export const CheckIcon = styled(CheckIconComponent).attrs(({ theme }) => ({
   width: ${({ theme }) => theme.rem(24)};
   height: ${({ theme }) => theme.rem(24)};
 `;
+
+export const ChipPressable = styled.Pressable`
+  margin-right: ${({ theme }) => theme.rem(10)};
+`;

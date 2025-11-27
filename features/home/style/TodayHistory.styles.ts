@@ -25,10 +25,7 @@ export const MyHistoryBox = styled.Pressable`
   border-radius: 34px;
   background-color: rgba(53, 53, 53, 0.6);
   shadow-color: rgba(0, 0, 0, 0.32);
-  shadow-offset: {
-    width: 0;
-    height: 7;
-  }
+  shadow-offset: 0px 7px;
   shadow-opacity: 0.32;
   shadow-radius: 14px;
   elevation: 10;
@@ -84,10 +81,7 @@ export const CharacterCommentBox = styled.View<{ $mainColor: string }>`
   background: ${({ $mainColor }) => $mainColor};
   margin-top: -${({ theme }) => theme.rem(32)};
   shadow-color: rgba(255, 255, 255);
-  shadow-offset: {
-    width: 0;
-    height: -6;
-  }
+  shadow-offset: 0px -6px;
   shadow-opacity: 0.3;
   shadow-radius: 19.1px;
   elevation: 10;

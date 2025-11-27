@@ -1,28 +1,6 @@
-/**
- * Chip component for selectable tags or categories.
- * 
- * @param {string} text - The text to display inside the chip.
- * @param {boolean} selected - Whether the chip is selected.
- * @param {(selected: boolean) => void} [setSelected] - Optional function to toggle selection state.
- * 
- * @returns {JSX.Element} The rendered Chip component.
- * @example
- *   const TestChip = ["Test", "Chip", "Component"];
-   const [selected, setSelected] = useState<boolean[]>(
-     Array(TestChip.length).fill(false)
-   );
- 
-   const toggleSelected = (index: number) => {
-     const newSelected = [...selected];
-     newSelected[index] = !newSelected[index];
-     setSelected(newSelected);
-   };
- */
-
 import * as S from "@/shared/style/Chip.styles";
 import { useEffect, useRef } from "react";
-import { Animated, Pressable } from "react-native";
-
+import { Animated } from "react-native";
 interface ChipProps {
 	text: string;
 	selected: boolean;
@@ -64,7 +42,7 @@ export function Chip({ text, selected, setSelected }: ChipProps) {
 	};
 
 	return (
-		<Pressable
+		<S.ChipPressable
 			onPress={handlePress}
 			onPressIn={handlePressIn}
 			onPressOut={handlePressOut}
@@ -79,6 +57,6 @@ export function Chip({ text, selected, setSelected }: ChipProps) {
 					<S.ChipText>{text}</S.ChipText>
 				</S.ChipContainer>
 			</Animated.View>
-		</Pressable>
+		</S.ChipPressable>
 	);
 }
