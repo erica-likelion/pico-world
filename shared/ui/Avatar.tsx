@@ -1,5 +1,5 @@
 import UserIconImage from "@/shared/assets/icons/user.png";
-import * as S from "@/shared/style/Avatar.style";
+import * as S from "@/shared/style/Avatar.styles";
 import { type AvatarSize, SIZE_MAP } from "@/shared/types";
 import { useDefaultImage } from "@/shared/utils/profileImage";
 

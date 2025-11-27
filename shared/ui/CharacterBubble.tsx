@@ -1,5 +1,5 @@
-import * as S from "@/shared/style/CharacterBubble.style";
 import type { CharacterName } from "@/entities/character/model/characterMessages";
+import * as S from "@/shared/style/CharacterBubble.styles";
 import type { ImageSourcePropType } from "react-native";
 import TypeWriter from "react-native-typewriter-effect";
 

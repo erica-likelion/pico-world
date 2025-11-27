@@ -1,6 +1,6 @@
 import UserIconImage from "@/shared/assets/icons/user.png";
 import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
-import * as S from "@/shared/style/ProfileButton.style";
+import * as S from "@/shared/style/ProfileButton.styles";
 import { useDefaultImage } from "@/shared/utils/profileImage";
 
 interface ProfileButtonProps {

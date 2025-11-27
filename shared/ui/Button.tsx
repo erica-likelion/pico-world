@@ -1,5 +1,5 @@
 import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
-import * as S from "@/shared/style/Button.style";
+import * as S from "@/shared/style/Button.styles";
 import { useState } from "react";
 import { TouchableOpacity } from "react-native";
 import Reanimated from "react-native-reanimated";
