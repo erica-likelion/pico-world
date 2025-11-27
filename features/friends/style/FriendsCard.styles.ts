@@ -72,7 +72,6 @@ export const ReadMoreButton = styled.View`
   margin-top: ${({ theme }) => theme.rem(8)};
   width: 100%;
   height: ${({ theme }) => theme.rem(16)};
-  align-self: flex-start;
   justify-content: center;
 `;
 

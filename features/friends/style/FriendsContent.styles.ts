@@ -8,13 +8,16 @@ export const Container = styled.View`
   padding-bottom: ${({ theme }) => theme.rem(40)};
 `;
 
-export const ProfileRow = styled.View`
-  flex-direction: row;
-  align-items: center;
+export const ProfileRow = styled.ScrollView`
   padding-vertical: ${({ theme }) => theme.rem(8)};
   padding-horizontal: ${({ theme }) => theme.rem(16)};
   margin-horizontal: ${({ theme }) => -theme.rem(16)};
   margin-bottom: ${({ theme }) => theme.rem(6)};
+`;
+
+export const ProfileRowContent = styled.View`
+  flex-direction: row;
+  align-items: center;
   gap: ${({ theme }) => theme.rem(14)};
 `;
 
@@ -28,6 +31,8 @@ export const ProfileButtonWrapperPressable = styled.Pressable`
   flex-direction: column;
   align-items: center;
   min-width: ${({ theme }) => theme.rem(64)};
+  margin-right: ${({ theme }) => theme.rem(14)};
+
 `;
 
 export const ProfileLabel = styled.Text`
