@@ -1,6 +1,7 @@
 import { postFeedback } from "@/entities/character/api/feedback";
 import { postRecord } from "@/features/record/api/PostRecord";
 import { putRecord } from "@/features/record/api/PutRecord";
+import { useFeedbackTimerActions } from "@/shared/store/feedbackTimer";
 import type { EmotionChip } from "@/shared/types";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
@@ -20,6 +21,7 @@ const ERROR_MESSAGES: Record<number, string> = {
 
 export function useRecordFlow() {
 	const router = useRouter();
+	const { startTimer } = useFeedbackTimerActions();
 	const [phase, setPhase] = useState<Phase>("explore");
 	const [selectedEmotion, setSelectedEmotion] = useState<EmotionChip | null>(
 		null,
@@ -70,6 +72,7 @@ export function useRecordFlow() {
 			onSuccess: (data) => {
 				setIsToastVisible(false);
 				feedbackMutate(data.record_id);
+				startTimer(data.record_id.toString(), 60);
 				setPhase("complete");
 			},
 			onError: (error) => {
@@ -140,6 +143,7 @@ export function useRecordFlow() {
 	const handleConfirmFeedback = () => {
 		if (updatedRecordId) {
 			feedbackMutate(updatedRecordId);
+			startTimer(updatedRecordId.toString(), 60);
 		}
 		setShowConfirmModal(false);
 		setPhase("complete");

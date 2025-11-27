@@ -15,7 +15,9 @@ export default function NameEdit() {
 
 	const { mutate: updateNicknameMutate } = useMutation({
 		mutationFn: updateNickname,
-		onSuccess: () => {},
+		onSuccess: () => {
+			router.back();
+		},
 		onError: (error) => {
 			console.error("닉네임 수정 에러:", error);
 		},
@@ -23,7 +25,6 @@ export default function NameEdit() {
 
 	const handleUpdateNickname = () => {
 		updateNicknameMutate({ nickname: name });
-		router.back();
 	};
 	return (
 		<>

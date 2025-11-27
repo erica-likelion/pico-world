@@ -130,6 +130,7 @@ export const BottomNav = ({
 		(autoActiveIndex !== -1 ? autoActiveIndex : internalActiveIndex);
 
 	const handlePress = (index: number) => {
+		if (index === activeIndex) return;
 		setInternalActiveIndex(index);
 		if (setActiveIndex) {
 			setActiveIndex(index);
