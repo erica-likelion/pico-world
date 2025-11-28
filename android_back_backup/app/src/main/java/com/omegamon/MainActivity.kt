@@ -1,4 +1,4 @@
-package com.whddnjs960.omegamon
+package com.omegamon
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build

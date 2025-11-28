@@ -1,4 +1,4 @@
-package com.whddnjs960.omegamon
+package com.omegamon
 
 import android.app.Application
 import android.content.res.Configuration
