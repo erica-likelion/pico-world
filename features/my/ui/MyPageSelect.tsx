@@ -41,7 +41,7 @@ export function MyPageSelect() {
 
 	const menuItems = [
 		{
-			label: "피코월드 캐릭터 수정",
+			label: "Pico world 캐릭터 수정",
 			onPress: () => {
 				router.push({ pathname: "/onboarding", params: { from: "my" } });
 			},
