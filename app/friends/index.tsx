@@ -43,7 +43,7 @@ export default function Friends() {
 			/>
 			<ScrollView
 				ref={scrollViewRef}
-				contentContainerStyle={{ alignItems: "center", flexGrow: 1 }}
+				contentContainerStyle={{ alignItems: "center" }}
 				showsVerticalScrollIndicator={false}
 				refreshControl={
 					<RefreshControl

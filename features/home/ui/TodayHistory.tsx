@@ -1,13 +1,14 @@
 import { getFeedback } from "@/entities/character/api/feedback";
 import * as S from "@/features/home/style/TodayHistory.styles";
 import { getRecordById } from "@/features/record/api/getRecordById";
+import { useFeedbackTimer } from "@/shared/hooks/useFeedbackTimer";
 import { useAuthStore } from "@/shared/store/auth";
 import { EmotionCard } from "@/shared/ui/EmotionCard";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { BlurView } from "expo-blur";
 import { useRouter } from "expo-router";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import type { ImageSourcePropType } from "react-native";
 import {
 	ActivityIndicator,
@@ -30,6 +31,9 @@ export function TodayHistory({
 }: TodayHistoryProps) {
 	const router = useRouter();
 	const { isLoggedIn } = useAuthStore();
+	const journalIdString = String(recordId);
+	const { isWaitingForFeedback, remainingSeconds } =
+		useFeedbackTimer(journalIdString);
 
 	const { data: record, isLoading: isRecordLoading } = useQuery({
 		queryKey: ["emotionRecord", recordId],
@@ -40,7 +44,7 @@ export function TodayHistory({
 	const { data: feedbackData, isLoading: isFeedbackLoading } = useQuery({
 		queryKey: ["feedback", recordId],
 		queryFn: () => getFeedback(recordId),
-		enabled: !!record && !!isLoggedIn, // Enable only after record is fetched
+		enabled: !!record && !!isLoggedIn && !isWaitingForFeedback,
 	});
 
 	// 애니메이션 값들
@@ -109,6 +113,16 @@ export function TodayHistory({
 		characterSlideAnim,
 	]);
 
+	const displayAIComment = useMemo(() => {
+		if (isWaitingForFeedback) {
+			return `기록을 읽고 답장을 쓰는 중... (${remainingSeconds}초)`;
+		}
+		if (isFeedbackLoading) {
+			return "피드백을 생성하고 있습니다...";
+		}
+		return feedbackData?.aiReply || "오늘 하루도 수고했어.";
+	}, [isWaitingForFeedback, remainingSeconds, isFeedbackLoading, feedbackData]);
+
 	if (isRecordLoading) {
 		return (
 			<View style={{ height: 300, justifyContent: "center" }}>
@@ -129,9 +143,6 @@ export function TodayHistory({
 	const displaySubColor = record.sub_color;
 	const displayTextColor = record.text_color;
 	const displayHistoryText = record.record;
-	const displayAIComment = isFeedbackLoading
-		? "피드백을 생성하고 있습니다..."
-		: feedbackData?.aiReply || "오늘 하루도 수고했어.";
 
 	const handleMenuPress = () => {
 		onMenuPress();
