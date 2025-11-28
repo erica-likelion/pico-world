@@ -48,6 +48,8 @@ function RootLayoutNav() {
 	const pathname = usePathname();
 	const { isVisible } = useBottomNavStore();
 	const { isLoggedIn, setIsLoggedIn } = useAuthStore();
+	const { pendingDestination, setPendingDestination, clearPendingDestination } =
+		useDeepLinkStore();
 	const {
 		isVisible: isToastVisible,
 		message: toastMessage,
@@ -67,33 +69,24 @@ function RootLayoutNav() {
 	const handleNotificationNavigation = useCallback(
 		async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
 			const { type, relatedId, url } = remoteMessage.data || {};
-			console.log("Handling notification navigation:", remoteMessage.data);
+
+			const destination =
+				type === "ai_feedback" && relatedId
+					? `/journal/edit?id=${relatedId}`
+					: typeof type === "string" && type.startsWith("FRIEND")
+						? "/friends"
+						: url;
+			if (!destination) return;
 
 			const currentIsLoggedIn = !!(await AsyncStorage.getItem("accessToken"));
-			if (!currentIsLoggedIn) {
-				const destination =
-					type === "ai_feedback"
-						? `/journal/edit?id=${relatedId}`
-						: typeof type === "string" && type.startsWith("FRIEND")
-							? "/friends"
-							: (url as string | undefined);
-				if (destination) {
-					const { setPendingDestination } = useDeepLinkStore.getState();
-					setPendingDestination(destination);
-					router.push("/login");
-				}
-				return;
-			}
-
-			if (type === "ai_feedback" && relatedId) {
-				router.replace(`/journal/edit?id=${relatedId}` as Href);
-			} else if (typeof type === "string" && type.startsWith("FRIEND")) {
-				router.replace("/friends");
-			} else if (url) {
-				router.replace(url as Href);
+			if (currentIsLoggedIn) {
+				setPendingDestination(destination as string);
+			} else {
+				setPendingDestination(destination as string);
+				router.push("/login");
 			}
 		},
-		[router],
+		[router, setPendingDestination],
 	);
 
 	useEffect(() => {
@@ -136,16 +129,37 @@ function RootLayoutNav() {
 		initializeApp();
 	}, [loaded, setIsLoggedIn, showToast, handleNotificationNavigation]);
 
+	// 2. 인증 상태에 따른 경로 보호
 	useEffect(() => {
 		if (isLoggedIn === null) {
 			return;
 		}
+
+		if (pendingDestination) {
+			if (isLoggedIn) {
+				router.replace(pendingDestination as Href);
+				clearPendingDestination();
+			} else {
+				router.replace("/login");
+			}
+			return;
+		}
+
 		const inAuthGroup = pathname.startsWith("/login");
 
+		if (isLoggedIn && inAuthGroup) {
+			router.replace("/home");
+		}
 		if (!isLoggedIn && !inAuthGroup) {
 			router.replace("/login");
 		}
-	}, [isLoggedIn, pathname, router]);
+	}, [
+		isLoggedIn,
+		pathname,
+		router,
+		pendingDestination,
+		clearPendingDestination,
+	]);
 
 	useEffect(() => {
 		if (error) throw error;

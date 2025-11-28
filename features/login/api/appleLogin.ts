@@ -34,7 +34,9 @@ export const appleLogin = async (
 	const userEmail = await getUserInfo();
 	const defaultEmail = userEmail.email.split("@")[0];
 
-	await updateNickname({ nickname: defaultEmail });
+	if (!userEmail.nickname) {
+		await updateNickname({ nickname: defaultEmail });
+	}
 
 	return isOnboardingNeeded;
 };
