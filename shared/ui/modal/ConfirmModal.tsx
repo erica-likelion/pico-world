@@ -6,6 +6,7 @@ interface ConfirmModalProps {
 	isVisible: boolean;
 	title: string;
 	description: string;
+	subDescription?: string;
 	confirmText?: string;
 	cancelText?: string;
 	onConfirm: () => void;
@@ -16,6 +17,7 @@ export function ConfirmModal({
 	isVisible,
 	title,
 	description,
+	subDescription,
 	confirmText = "확인",
 	cancelText = "취소",
 	onConfirm,
@@ -36,6 +38,9 @@ export function ConfirmModal({
 				<S.Title>{title}</S.Title>
 				<S.DescriptionContainer>
 					<S.Description>{description}</S.Description>
+					{subDescription && (
+						<S.SubDescription>{subDescription}</S.SubDescription>
+					)}
 				</S.DescriptionContainer>
 				<S.ButtonRow>
 					<Button

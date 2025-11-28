@@ -115,7 +115,7 @@ export function useRecordFlow() {
 				setIsToastVisible(true);
 				router.push(`/journal/detail?id=${data.record_id}`);
 			} else {
-				setShowConfirmModal(true); // "답변 다시 받을거냐?" 모달 띄우기
+				setShowConfirmModal(true);
 			}
 		},
 		onError: (error) => {

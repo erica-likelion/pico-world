@@ -1,4 +1,18 @@
+import { TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
+
+export const EmotionRecordCardContainer = styled(TouchableOpacity)`
+  display: flex;
+  height: ${({ theme }) => theme.rem(193)};
+  padding-top: ${({ theme }) => theme.rem(59)};
+  padding-bottom: ${({ theme }) => theme.rem(58)};
+  justify-content: center;
+  align-items: center;
+  align-self: stretch;
+  border-radius: 32px;
+  position: relative;
+  overflow: hidden;
+`;
 
 export const JournalHeaderContainer = styled.View`
   display: flex;

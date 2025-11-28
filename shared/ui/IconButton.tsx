@@ -1,5 +1,5 @@
 import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
-import * as S from "@/shared/style/IconButton.style";
+import * as S from "@/shared/style/IconButton.styles";
 import {
 	cloneElement,
 	isValidElement,

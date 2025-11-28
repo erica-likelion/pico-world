@@ -1,6 +1,6 @@
+import * as S from "@/shared/style/Switch.styles";
 import { useEffect, useState } from "react";
 import { Animated, TouchableOpacity } from "react-native";
-import * as S from "@/shared/style/Switch.style";
 
 interface SwitchProps {
 	value?: boolean;

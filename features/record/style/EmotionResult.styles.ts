@@ -25,7 +25,6 @@ export const ChipsScrollView = styled(ScrollView).attrs({
 		alignItems: "center",
 		justifyContent: "center",
 		flexGrow: 1,
-		gap: 10,
 	},
 })``;
 

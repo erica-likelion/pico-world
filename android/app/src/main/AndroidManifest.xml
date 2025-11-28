@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.omegamon">
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
   <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
@@ -38,23 +38,22 @@
       android:exported="true"
       android:screenOrientation="portrait">
 
-      <!-- 정상 앱 실행 -->
+      <!-- 앱 실행 -->
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
 
-      <!-- *** 앱 기본 스킴 — 반드시 host 추가해야 함 *** -->
+      <!-- omegamon 딥링크 (기존 Manifest 내용 유지 + autoVerify 복원) -->
       <intent-filter android:autoVerify="true">
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
-        <data android:scheme="omegamon" />
+        <data android:scheme="omegamon"/>
       </intent-filter>
-
     </activity>
 
-    <!-- *** 카카오 로그인 콜백 전용 Activity (필수) *** -->
+    <!-- 카카오 로그인 Activity (기존에서 가져온 커스텀 부분) -->
     <activity
       android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
       android:exported="true">
@@ -62,7 +61,7 @@
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
-        <data android:scheme="kakao8d0a53545248cb27155e927ab10f1b90"/>
+        <data android:host="oauth" android:scheme="kakao8d0a53545248cb27155e927ab10f1b90"/>
       </intent-filter>
     </activity>
 

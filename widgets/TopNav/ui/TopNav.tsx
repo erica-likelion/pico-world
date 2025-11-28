@@ -11,7 +11,7 @@ import { TouchableOpacity } from "react-native";
 import Reanimated from "react-native-reanimated";
 import type { SvgProps } from "react-native-svg";
 import { useTheme } from "styled-components/native";
-import * as S from "../style/TopNav.style";
+import * as S from "../style/TopNav.styles";
 
 interface TopNavBarProps {
 	title?: string;

@@ -4,7 +4,7 @@ import QuotesIcon from "@/shared/assets/icons/quotes.svg";
 import SettingIcon from "@/shared/assets/icons/setting.svg";
 import UsersIcon from "@/shared/assets/icons/users.svg";
 import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
-import * as S from "@/widgets/BottomNav/style/BottomNav.style";
+import * as S from "@/widgets/BottomNav/style/BottomNav.styles";
 import { type Href, usePathname, useRouter } from "expo-router";
 import React, { type ReactNode, useState } from "react";
 import { TouchableOpacity } from "react-native";

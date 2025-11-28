@@ -145,41 +145,45 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 
 	return (
 		<S.Container>
-			<S.ProfileRow>
-				<S.ProfileButtonWrapper>
-					<ProfileButton
-						logged={hasRecordedToday}
-						imageUrl={profileImageUrl ?? undefined}
-					/>
-					<S.ProfileLabel numberOfLines={1} ellipsizeMode="tail">
-						{nickname}
-					</S.ProfileLabel>
-				</S.ProfileButtonWrapper>
-
-				<S.FriendsList>
-					{acceptedFriends.map((friend) => (
-						<S.ProfileButtonWrapper key={friend.connectCode}>
-							<ProfileButton
-								imageUrl={friend.profileImageUrl ?? undefined}
-								logged={friend.hasRecordedToday ?? false}
-								pressable
-								onPress={() => openFriendBottomSheet(friend)}
-							/>
-							<S.ProfileLabel numberOfLines={1} ellipsizeMode="tail">
-								{friend.nickname}
-							</S.ProfileLabel>
-						</S.ProfileButtonWrapper>
-					))}
-
-					<S.ProfileButtonWrapperPressable onPress={handleAddFriendButtonPress}>
-						<S.ProfileButtonContent>
-							<FriendsPlusIcon width={theme.rem(64)} height={theme.rem(64)} />
-						</S.ProfileButtonContent>
+			<S.ProfileRow horizontal showsHorizontalScrollIndicator={false}>
+				<S.ProfileRowContent>
+					<S.ProfileButtonWrapper>
+						<ProfileButton
+							logged={hasRecordedToday}
+							imageUrl={profileImageUrl ?? undefined}
+						/>
 						<S.ProfileLabel numberOfLines={1} ellipsizeMode="tail">
-							친구 추가 {friendAddProgress}
+							{nickname}
 						</S.ProfileLabel>
-					</S.ProfileButtonWrapperPressable>
-				</S.FriendsList>
+					</S.ProfileButtonWrapper>
+
+					<S.FriendsList>
+						{acceptedFriends.map((friend) => (
+							<S.ProfileButtonWrapper key={friend.connectCode}>
+								<ProfileButton
+									imageUrl={friend.profileImageUrl ?? undefined}
+									logged={friend.hasRecordedToday ?? false}
+									pressable
+									onPress={() => openFriendBottomSheet(friend)}
+								/>
+								<S.ProfileLabel numberOfLines={1} ellipsizeMode="tail">
+									{friend.nickname}
+								</S.ProfileLabel>
+							</S.ProfileButtonWrapper>
+						))}
+
+						<S.ProfileButtonWrapperPressable
+							onPress={handleAddFriendButtonPress}
+						>
+							<S.ProfileButtonContent>
+								<FriendsPlusIcon width={theme.rem(64)} height={theme.rem(64)} />
+							</S.ProfileButtonContent>
+							<S.ProfileLabel numberOfLines={1} ellipsizeMode="tail">
+								친구 추가 {friendAddProgress}
+							</S.ProfileLabel>
+						</S.ProfileButtonWrapperPressable>
+					</S.FriendsList>
+				</S.ProfileRowContent>
 			</S.ProfileRow>
 
 			<S.Spacing>

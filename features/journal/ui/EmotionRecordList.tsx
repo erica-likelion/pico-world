@@ -1,4 +1,4 @@
-import * as JournalListS from "@/features/journal/style/EmotionRecordList.styles";
+import * as S from "@/features/journal/style/EmotionRecordList.styles";
 import { EmotionRecordCard } from "@/features/journal/ui/EmotionRecordCard";
 import LeftSmIcon from "@/shared/assets/icons/left-sm.svg";
 import RightSmIcon from "@/shared/assets/icons/right-sm.svg";
@@ -7,7 +7,7 @@ import { Button } from "@/shared/ui/Button";
 import { type Href, useRouter } from "expo-router";
 import { useMemo, useRef } from "react";
 import type { RefreshControlProps } from "react-native";
-import { RefreshControl, ScrollView, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { useTheme } from "styled-components/native";
 
 const ICON_HIT_SLOP = { top: 8, bottom: 8, left: 8, right: 8 } as const;
@@ -55,20 +55,17 @@ export const EmotionRecordList = ({
 
 	if (records.length === 0) {
 		return (
-			<JournalListS.EmptyContainer>
-				<JournalListS.MonthHeader>
-					<JournalListS.IconButton
-						onPress={onPrevMonth}
-						hitSlop={ICON_HIT_SLOP}
-					>
+			<S.EmptyContainer>
+				<S.MonthHeader>
+					<S.IconButton onPress={onPrevMonth} hitSlop={ICON_HIT_SLOP}>
 						<LeftSmIcon
 							width={24}
 							height={24}
 							color={theme.grayscale.gray200}
 						/>
-					</JournalListS.IconButton>
-					<JournalListS.MonthLabel>{monthLabel}</JournalListS.MonthLabel>
-					<JournalListS.IconButton
+					</S.IconButton>
+					<S.MonthLabel>{monthLabel}</S.MonthLabel>
+					<S.IconButton
 						onPress={onNextMonth}
 						hitSlop={ICON_HIT_SLOP}
 						disabled={isNextMonthDisabled}
@@ -82,14 +79,12 @@ export const EmotionRecordList = ({
 									: theme.grayscale.gray200
 							}
 						/>
-					</JournalListS.IconButton>
-				</JournalListS.MonthHeader>
-				<JournalListS.EmptyMonthContainer>
-					<JournalListS.EmptyMonthText>
-						이 달에는 기록이 없습니다.
-					</JournalListS.EmptyMonthText>
-				</JournalListS.EmptyMonthContainer>
-			</JournalListS.EmptyContainer>
+					</S.IconButton>
+				</S.MonthHeader>
+				<S.EmptyMonthContainer>
+					<S.EmptyMonthText>이 달에는 기록이 없습니다.</S.EmptyMonthText>
+				</S.EmptyMonthContainer>
+			</S.EmptyContainer>
 		);
 	}
 
@@ -99,21 +94,18 @@ export const EmotionRecordList = ({
 			showsVerticalScrollIndicator={false}
 			refreshControl={refreshControl}
 		>
-			<JournalListS.ScrollContent>
-				<JournalListS.ListContainer>
-					<JournalListS.MonthHeader>
-						<JournalListS.IconButton
-							onPress={onPrevMonth}
-							hitSlop={ICON_HIT_SLOP}
-						>
+			<S.ScrollContent>
+				<S.ListContainer>
+					<S.MonthHeader>
+						<S.IconButton onPress={onPrevMonth} hitSlop={ICON_HIT_SLOP}>
 							<LeftSmIcon
 								width={24}
 								height={24}
 								color={theme.grayscale.gray200}
 							/>
-						</JournalListS.IconButton>
-						<JournalListS.MonthLabel>{monthLabel}</JournalListS.MonthLabel>
-						<JournalListS.IconButton
+						</S.IconButton>
+						<S.MonthLabel>{monthLabel}</S.MonthLabel>
+						<S.IconButton
 							onPress={onNextMonth}
 							hitSlop={ICON_HIT_SLOP}
 							disabled={isNextMonthDisabled}
@@ -127,12 +119,12 @@ export const EmotionRecordList = ({
 										: theme.grayscale.gray200
 								}
 							/>
-						</JournalListS.IconButton>
-					</JournalListS.MonthHeader>
+						</S.IconButton>
+					</S.MonthHeader>
 					{Object.entries(groupedRecords).map(([date, dailyRecords]) => (
 						<View key={date} style={{ width: "100%" }}>
 							{dailyRecords.map((record) => (
-								<JournalListS.CardWrapper key={record.record_id}>
+								<S.CardWrapper key={record.record_id}>
 									<EmotionRecordCard
 										record={record}
 										onPress={() =>
@@ -144,25 +136,23 @@ export const EmotionRecordList = ({
 											onMenuPress?.(record);
 										}}
 									/>
-								</JournalListS.CardWrapper>
+								</S.CardWrapper>
 							))}
 						</View>
 					))}
-					<JournalListS.Footer>
-						<JournalListS.FooterText>
-							모든 기록을 확인했습니다.
-						</JournalListS.FooterText>
-						<JournalListS.ButtonWrapper>
+					<S.Footer>
+						<S.FooterText>모든 기록을 확인했습니다.</S.FooterText>
+						<S.ButtonWrapper>
 							<Button
 								text="위로 돌아가기"
 								size="small"
 								color="gray"
 								onPress={scrollToTop}
 							/>
-						</JournalListS.ButtonWrapper>
-					</JournalListS.Footer>
-				</JournalListS.ListContainer>
-			</JournalListS.ScrollContent>
+						</S.ButtonWrapper>
+					</S.Footer>
+				</S.ListContainer>
+			</S.ScrollContent>
 		</ScrollView>
 	);
 };

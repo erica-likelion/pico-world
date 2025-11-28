@@ -72,7 +72,10 @@ export function FriendsCard({
 					{description}
 				</S.BodyText>
 				{showReadMore && (
-					<TouchableOpacity onPress={handleReadMore}>
+					<TouchableOpacity
+						onPress={handleReadMore}
+						style={{ alignSelf: "flex-start" }}
+					>
 						<S.ReadMoreButton>
 							<S.ReadMoreText>자세히보기</S.ReadMoreText>
 						</S.ReadMoreButton>

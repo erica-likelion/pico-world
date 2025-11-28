@@ -1,4 +1,4 @@
-import * as S from "@/shared/style/PlusButton.style";
+import * as S from "@/shared/style/PlusButton.styles";
 import type { StyleProp, ViewStyle } from "react-native";
 
 interface PlusButtonProps {
