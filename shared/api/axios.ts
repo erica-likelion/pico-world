@@ -38,17 +38,20 @@ instance.interceptors.response.use(
 
 			if (refreshToken) {
 				try {
-					const response = await axios.post<{ accessToken: string }>(
+					const response = await axios.post<{
+						data: { accessToken: string; refreshToken: string };
+					}>(
 						"/api/v1/auth/refresh",
 						{ refreshToken },
 						{
-							baseURL:
-								process.env.EXPO_PUBLIC_API_URL || "http://localhost:3000/api",
+							baseURL: process.env.EXPO_PUBLIC_API_URL,
 						},
 					);
 
-					const newAccessToken = response.data.accessToken;
+					const newAccessToken = response.data.data.accessToken;
+					const newRefreshToken = response.data.data.refreshToken;
 					await AsyncStorage.setItem("accessToken", newAccessToken);
+					await AsyncStorage.setItem("refreshToken", newRefreshToken);
 
 					originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 					return instance(originalRequest);
