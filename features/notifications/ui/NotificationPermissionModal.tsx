@@ -1,6 +1,6 @@
 import { Button } from "@/shared/ui/Button";
-import React from "react";
-import { Modal, Text, View } from "react-native";
+import type React from "react";
+import { Modal } from "react-native";
 import styled from "styled-components/native";
 
 interface NotificationPermissionModalProps {
@@ -24,14 +24,20 @@ export const NotificationPermissionModal = ({
 					</Description>
 					<ButtonWrapper>
 						<ButtonContainer>
-							<Button variant="secondary" onPress={onClose}>
-								나중에
-							</Button>
+							<Button
+								color="gray"
+								size="medium"
+								text="나중에"
+								onPress={onClose}
+							/>
 						</ButtonContainer>
 						<ButtonContainer>
-							<Button variant="primary" onPress={onConfirm}>
-								알림 켜기
-							</Button>
+							<Button
+								color="white"
+								size="medium"
+								text="알림 켜기"
+								onPress={onConfirm}
+							/>
 						</ButtonContainer>
 					</ButtonWrapper>
 				</ModalContent>
