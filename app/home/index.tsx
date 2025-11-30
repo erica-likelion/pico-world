@@ -1,5 +1,4 @@
 import { fetchGreeting } from "@/entities/character/api/greeting";
-import { Character } from "@/entities/character/model/character";
 import type { CharacterName } from "@/entities/character/model/characterMessages";
 import { getEmotionRecords } from "@/features/home/api/emotion";
 import { CalendarUI, ClickToJournal, TodayHistory } from "@/features/home/ui";
@@ -7,6 +6,7 @@ import { deleteEmotionRecord } from "@/features/journal/api/emotion";
 import { NotificationBell } from "@/features/notifications/ui/NotificationBell";
 import { useAuthStore } from "@/shared/store/auth";
 import { MyCharacter } from "@/shared/store/myCharacter";
+import { useToastStore } from "@/shared/store/toast";
 import type { EmotionRecord } from "@/shared/types/emotion";
 import { CharacterBubble, MenuBottomSheet, Toast } from "@/shared/ui";
 import { formatDate } from "@/shared/utils/date";
@@ -105,6 +105,7 @@ export default function Home() {
 			bottomSheetRef.current?.dismiss();
 		},
 		onError: (error) => {
+			useToastStore.getState().show("기록을 삭제하는데 실패했습니다.");
 			console.error("Error deleting record:", error);
 		},
 	});
@@ -131,10 +132,6 @@ export default function Home() {
 	const isSelectedDateToday = selectedDate === today;
 
 	const characterName = (greetingData?.characterName as CharacterName) ?? name;
-	const characterImage = useMemo(() => {
-		const foundCharacter = Character.find((c) => c.name === characterName);
-		return foundCharacter ? foundCharacter.image : undefined;
-	}, [characterName]);
 
 	return (
 		<View
@@ -172,7 +169,6 @@ export default function Home() {
 				) : isTodayHistory && selectedRecord ? (
 					<TodayHistory
 						recordId={selectedRecord.record_id}
-						AIImage={characterImage}
 						onMenuPress={() => bottomSheetRef.current?.present()}
 					/>
 				) : (

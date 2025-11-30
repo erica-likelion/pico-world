@@ -1,4 +1,6 @@
 import { getFeedback } from "@/entities/character/api/feedback";
+import type { CharacterName } from "@/entities/character/model/characterMessages";
+import { getCharacterImage } from "@/entities/character/utils/getCharacterImage";
 import * as S from "@/features/journal/style/TodayHistory.styles";
 import { EmotionRecordCard } from "@/features/journal/ui/EmotionRecordCard";
 import { getRecordById } from "@/features/record/api/getRecordById";
@@ -8,16 +10,14 @@ import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useEffect, useMemo, useRef } from "react";
-import type { ImageSourcePropType } from "react-native";
 import { ActivityIndicator, Animated, Easing, View } from "react-native";
 import { useTheme } from "styled-components/native";
 
 interface TodayHistoryProps {
 	recordId: number;
-	AIImage?: ImageSourcePropType;
 }
 
-export function TodayHistory({ recordId, AIImage }: TodayHistoryProps) {
+export function TodayHistory({ recordId }: TodayHistoryProps) {
 	const bottomSheetRef = useRef<BottomSheetModal>(null);
 	const theme = useTheme();
 	const { isLoggedIn } = useAuthStore();
@@ -101,6 +101,13 @@ export function TodayHistory({ recordId, AIImage }: TodayHistoryProps) {
 		characterFadeAnim,
 		characterSlideAnim,
 	]);
+
+	const characterImage = useMemo(() => {
+		if (!feedbackData?.characterName) {
+			return getCharacterImage("츠츠");
+		}
+		return getCharacterImage(feedbackData.characterName as CharacterName);
+	}, [feedbackData?.characterName]);
 
 	const displayAIComment = useMemo(() => {
 		if (isWaitingForFeedback) {
@@ -196,7 +203,7 @@ export function TodayHistory({ recordId, AIImage }: TodayHistoryProps) {
 					<S.CharacterCommentBox $mainColor={record.main_color}>
 						<S.InnerShadow />
 						<S.CharacterNameBox>
-							<S.CharacterImage source={AIImage} resizeMode="contain" />
+							<S.CharacterImage source={characterImage} resizeMode="cover" />
 						</S.CharacterNameBox>
 						<S.CharacterText $textColor={record.text_color}>
 							{displayAIComment}
