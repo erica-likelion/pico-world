@@ -1,4 +1,6 @@
 import { getFeedback } from "@/entities/character/api/feedback";
+import type { CharacterName } from "@/entities/character/model/characterMessages";
+import { getCharacterImage } from "@/entities/character/utils/getCharacterImage";
 import * as S from "@/features/home/style/TodayHistory.styles";
 import { getRecordById } from "@/features/record/api/getRecordById";
 import { useFeedbackTimer } from "@/shared/hooks/useFeedbackTimer";
@@ -9,7 +11,6 @@ import { format } from "date-fns";
 import { BlurView } from "expo-blur";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useRef } from "react";
-import type { ImageSourcePropType } from "react-native";
 import {
 	ActivityIndicator,
 	Animated,
@@ -21,14 +22,9 @@ import {
 interface TodayHistoryProps {
 	recordId: number;
 	onMenuPress: () => void;
-	AIImage?: ImageSourcePropType;
 }
 
-export function TodayHistory({
-	recordId,
-	onMenuPress,
-	AIImage,
-}: TodayHistoryProps) {
+export function TodayHistory({ recordId, onMenuPress }: TodayHistoryProps) {
 	const router = useRouter();
 	const { isLoggedIn } = useAuthStore();
 	const journalIdString = String(recordId);
@@ -112,6 +108,13 @@ export function TodayHistory({
 		characterFadeAnim,
 		characterSlideAnim,
 	]);
+
+	const characterImage = useMemo(() => {
+		if (!feedbackData?.characterName) {
+			return getCharacterImage("츠츠");
+		}
+		return getCharacterImage(feedbackData.characterName as CharacterName);
+	}, [feedbackData?.characterName]);
 
 	const displayAIComment = useMemo(() => {
 		if (isWaitingForFeedback) {
@@ -206,7 +209,11 @@ export function TodayHistory({
 					<S.CharacterCommentBox $mainColor={displayMainColor}>
 						<S.InnerShadow />
 						<S.CharacterNameBox>
-							<S.CharacterImage source={AIImage} resizeMode="contain" />
+							{characterImage ? (
+								<S.CharacterImage source={characterImage} resizeMode="cover" />
+							) : (
+								<ActivityIndicator size="small" />
+							)}
 						</S.CharacterNameBox>
 						<S.CharacterText $textColor={displayTextColor}>
 							{displayAIComment}

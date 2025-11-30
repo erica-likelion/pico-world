@@ -20,6 +20,7 @@ export const CharacterMessageBubble: React.FC = () => {
 		},
 	});
 
+	console.log("characterMessageData", characterMessageData);
 	const characterName = useMemo<CharacterName>(() => {
 		if (characterMessageData?.character_name) {
 			return characterMessageData.character_name as CharacterName;

@@ -1,6 +1,3 @@
-import { fetchGreeting } from "@/entities/character/api/greeting";
-import { Character } from "@/entities/character/model/character";
-import type { CharacterName } from "@/entities/character/model/characterMessages";
 import { getEmotionRecord } from "@/features/journal/api/emotion";
 import { TodayHistory } from "@/features/journal/ui";
 import EditIcon from "@/shared/assets/icons/edit.svg";
@@ -8,7 +5,6 @@ import { useHideBottomNav } from "@/shared/hooks/useHideBottomNav";
 import { TopNav } from "@/widgets/TopNav/ui";
 import { useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useMemo } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 export default function JournalDetail() {
@@ -21,19 +17,6 @@ export default function JournalDetail() {
 		queryFn: () => getEmotionRecord(id!),
 		enabled: !!id,
 	});
-
-	const { data: greetingData } = useQuery({
-		queryKey: ["greeting", "home"],
-		queryFn: () => fetchGreeting({ context: "home" }),
-	});
-
-	const characterName = greetingData?.characterName as
-		| CharacterName
-		| undefined;
-	const characterImage = useMemo(() => {
-		const foundCharacter = Character.find((c) => c.name === characterName);
-		return foundCharacter ? foundCharacter.image : undefined;
-	}, [characterName]);
 
 	const handleEditPress = () => {
 		if (id) {
@@ -60,7 +43,7 @@ export default function JournalDetail() {
 				{isRecordLoading ? (
 					<ActivityIndicator style={{ marginTop: 100 }} />
 				) : record ? (
-					<TodayHistory recordId={record.record_id} AIImage={characterImage} />
+					<TodayHistory recordId={record.record_id} />
 				) : (
 					<View
 						style={{
