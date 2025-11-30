@@ -4,7 +4,7 @@
 		"slug": "omegamon",
 		"version": "1.0.0",
 		"orientation": "portrait",
-		"icon": "./shared/assets/images/icon.png",
+		"icon": "./shared/assets/images/logo.png",
 		"scheme": "omegamon",
 		"userInterfaceStyle": "automatic",
 		"newArchEnabled": true,
