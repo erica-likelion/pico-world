@@ -33,6 +33,7 @@ export default function RecordEdit() {
 		showConfirmModal,
 		handleConfirmFeedback,
 		handleCancelFeedback,
+		handleCloseModal,
 	} = useRecordFlow();
 	const router = useRouter();
 	const params = useLocalSearchParams();
@@ -57,7 +58,7 @@ export default function RecordEdit() {
 
 			if (!fetched) return;
 
-			let aiFeedbackCount = 1;
+			let aiFeedbackCount = fetched.ai_feedback_count;
 			try {
 				const feedbackData = await getFeedback(Number(id));
 				aiFeedbackCount = feedbackData.attemptsUsed;
@@ -121,6 +122,7 @@ export default function RecordEdit() {
 					cancelText="그냥 수정하기"
 					onConfirm={handleConfirmFeedback}
 					onCancel={handleCancelFeedback}
+					onBackdropPress={handleCloseModal}
 				/>
 			</>
 		);

@@ -231,6 +231,10 @@ export function useRecordFlow() {
 
 	const handleToastHide = useCallback(() => setIsToastVisible(false), []);
 
+	const handleCloseModal = () => {
+		setShowConfirmModal(false);
+	};
+
 	return {
 		phase,
 		setPhase,
@@ -252,5 +256,6 @@ export function useRecordFlow() {
 		handleCancelFeedback,
 		initializeRecord,
 		aiFeedbackCount,
+		handleCloseModal,
 	};
 }
