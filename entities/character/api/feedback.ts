@@ -7,6 +7,8 @@ interface FeedBackResponse {
 	attemptsUsed: number;
 	createdAt: string;
 	updatedAt: string;
+	characterImageUrl: string;
+	characterName: string;
 }
 
 export const getFeedback = async (
