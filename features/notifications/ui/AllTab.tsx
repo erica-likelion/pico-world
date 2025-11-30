@@ -1,8 +1,8 @@
-import React from "react";
+import type { Notification } from "@/features/notifications/model/types";
+import { NotificationItem } from "@/features/notifications/ui/NotificationItem";
+import type React from "react";
 import type { RefreshControlProps } from "react-native";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
-import type { Notification } from "../model/types";
-import { NotificationItem } from "./NotificationItem";
 
 interface AllTabProps {
 	notifications: Notification[];

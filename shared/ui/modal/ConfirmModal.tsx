@@ -11,6 +11,7 @@ interface ConfirmModalProps {
 	cancelText?: string;
 	onConfirm: () => void;
 	onCancel: () => void;
+	onBackdropPress?: () => void;
 }
 
 export function ConfirmModal({
@@ -22,11 +23,12 @@ export function ConfirmModal({
 	cancelText = "취소",
 	onConfirm,
 	onCancel,
+	onBackdropPress,
 }: ConfirmModalProps) {
 	return (
 		<Modal
 			isVisible={isVisible}
-			onBackdropPress={onCancel}
+			onBackdropPress={onBackdropPress || onCancel}
 			onBackButtonPress={onCancel}
 			useNativeDriver
 			useNativeDriverForBackdrop

@@ -5,6 +5,7 @@ import * as S from "@/features/home/style/TodayHistory.styles";
 import { getRecordById } from "@/features/record/api/getRecordById";
 import { useFeedbackTimer } from "@/shared/hooks/useFeedbackTimer";
 import { useAuthStore } from "@/shared/store/auth";
+import { MyCharacter } from "@/shared/store/myCharacter";
 import { EmotionCard } from "@/shared/ui/EmotionCard";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -18,7 +19,6 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
-
 interface TodayHistoryProps {
 	recordId: number;
 	onMenuPress: () => void;
@@ -30,7 +30,7 @@ export function TodayHistory({ recordId, onMenuPress }: TodayHistoryProps) {
 	const journalIdString = String(recordId);
 	const { isWaitingForFeedback, remainingSeconds } =
 		useFeedbackTimer(journalIdString);
-
+	const { name: currentCharacterName } = MyCharacter();
 	const { data: record, isLoading: isRecordLoading } = useQuery({
 		queryKey: ["emotionRecord", recordId],
 		queryFn: () => getRecordById(recordId.toString()),
@@ -110,11 +110,14 @@ export function TodayHistory({ recordId, onMenuPress }: TodayHistoryProps) {
 	]);
 
 	const characterImage = useMemo(() => {
+		if (isWaitingForFeedback) {
+			return getCharacterImage(currentCharacterName as CharacterName);
+		}
 		if (!feedbackData?.characterName) {
 			return getCharacterImage("츠츠");
 		}
 		return getCharacterImage(feedbackData.characterName as CharacterName);
-	}, [feedbackData?.characterName]);
+	}, [feedbackData?.characterName, currentCharacterName, isWaitingForFeedback]);
 
 	const displayAIComment = useMemo(() => {
 		if (isWaitingForFeedback) {

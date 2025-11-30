@@ -33,6 +33,7 @@ export default function RecordEdit() {
 		showConfirmModal,
 		handleConfirmFeedback,
 		handleCancelFeedback,
+		handleCloseModal,
 	} = useRecordFlow();
 	const router = useRouter();
 	const params = useLocalSearchParams();
@@ -45,21 +46,37 @@ export default function RecordEdit() {
 
 	useEffect(() => {
 		const id = params.id as string | undefined;
+
 		if (!id) return;
+
+		let isCancelled = false;
 
 		(async () => {
 			const fetched = await getEmotionRecord(id);
+
+			if (isCancelled) return;
+
 			if (!fetched) return;
 
-			const feedbackData = await getFeedback(Number(id));
+			let aiFeedbackCount = fetched.ai_feedback_count;
+			try {
+				const feedbackData = await getFeedback(Number(id));
+				aiFeedbackCount = feedbackData.attemptsUsed;
+			} catch (error) {}
+
+			if (isCancelled) return;
 
 			const initialData = {
 				...fetched,
-				ai_feedback_count: feedbackData.attemptsUsed,
+				ai_feedback_count: aiFeedbackCount,
 			};
 
 			initializeRecord(initialData);
 		})();
+
+		return () => {
+			isCancelled = true;
+		};
 	}, [params.id, initializeRecord]);
 
 	const handleComplete = useCallback(() => {
@@ -105,6 +122,7 @@ export default function RecordEdit() {
 					cancelText="그냥 수정하기"
 					onConfirm={handleConfirmFeedback}
 					onCancel={handleCancelFeedback}
+					onBackdropPress={handleCloseModal}
 				/>
 			</>
 		);
