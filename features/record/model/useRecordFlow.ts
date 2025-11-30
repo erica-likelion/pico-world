@@ -1,7 +1,10 @@
 import { postFeedback } from "@/entities/character/api/feedback";
 import { postRecord } from "@/features/record/api/PostRecord";
 import { putRecord } from "@/features/record/api/PutRecord";
-import { useFeedbackTimerActions } from "@/shared/store/feedbackTimer";
+import {
+	useFeedbackTimerActions,
+	useFeedbackTimerStore,
+} from "@/shared/store/feedbackTimer";
 import type { EmotionChip } from "@/shared/types";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
@@ -93,7 +96,7 @@ export function useRecordFlow() {
 					return;
 				}
 
-				setToastMessage("기록 저장 실패");
+				setToastMessage("기록 저장을 실패했습니다.");
 				setIsToastVisible(true);
 			},
 		});
@@ -135,13 +138,22 @@ export function useRecordFlow() {
 				return;
 			}
 
-			setToastMessage("기록 수정 실패");
+			setToastMessage("기록 수정을 실패했습니다.");
 			setIsToastVisible(true);
 		},
 	});
 
 	const handleConfirmFeedback = () => {
 		if (updatedRecordId) {
+			const { isTimerRunning, targetJournalId } =
+				useFeedbackTimerStore.getState();
+			if (isTimerRunning && targetJournalId === updatedRecordId.toString()) {
+				setToastMessage("피드백이 이미 생성 중입니다. 잠시만 기다려주세요.");
+				setIsToastVisible(true);
+				setShowConfirmModal(false);
+				return;
+			}
+
 			feedbackMutate(updatedRecordId);
 			startTimer(updatedRecordId.toString(), 60);
 		}
