@@ -2,7 +2,10 @@ import { fetchGreeting } from "@/entities/character/api/greeting";
 import type { CharacterName } from "@/entities/character/model/characterMessages";
 import { getEmotionRecords } from "@/features/home/api/emotion";
 import { CalendarUI, ClickToJournal, TodayHistory } from "@/features/home/ui";
-import { deleteEmotionRecord } from "@/features/journal/api/emotion";
+import {
+	deleteEmotionRecord,
+	getEmotionRecord,
+} from "@/features/journal/api/emotion";
 import { NotificationBell } from "@/features/notifications/ui/NotificationBell";
 import { useAuthStore } from "@/shared/store/auth";
 import { MyCharacter } from "@/shared/store/myCharacter";
@@ -128,6 +131,17 @@ export default function Home() {
 		}
 	};
 
+	const handleEditPress = () => {
+		if (selectedRecord) {
+			queryClient.prefetchQuery({
+				queryKey: ["emotionRecord", selectedRecord.record_id.toString()],
+				queryFn: () => getEmotionRecord(selectedRecord.record_id.toString()),
+			});
+
+			router.push(`/record/edit?id=${selectedRecord.record_id}`);
+		}
+	};
+
 	const isTodayHistory = selectedRecord !== null;
 	const isSelectedDateToday = selectedDate === today;
 
@@ -195,7 +209,7 @@ export default function Home() {
 					bottomSheetRef={bottomSheetRef}
 					date={formatDate(selectedRecord.created_at, { korean: true })}
 					onEditPress={() => {
-						router.push(`/record/edit?id=${selectedRecord.record_id}`);
+						handleEditPress();
 					}}
 					onDeleteConfirm={handleDeleteConfirm}
 				/>

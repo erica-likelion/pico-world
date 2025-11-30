@@ -9,7 +9,7 @@ export function useHasRecordedToday() {
 
 	const { data: emotionRecords = [] } = useQuery({
 		queryKey: ["emotionRecords", currentMonth, today],
-		queryFn: () => getEmotionRecords(currentMonth),
+		queryFn: getEmotionRecords,
 		staleTime: 1000 * 60 * 5,
 		enabled: !!isLoggedIn,
 	});
