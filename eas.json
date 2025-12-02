@@ -13,8 +13,8 @@
 		},
 		"production": {
 			"autoIncrement": true,
-			"pnpm": "10.14.0",
-			"node": "20.11.0"
+			"node": "18.17.0",
+			"pnpm": "10.14.0"
 		}
 	},
 	"submit": {
