@@ -1,6 +1,6 @@
-def NODE_BINARY = ["node"]
-
 pluginManagement {
+  def NODE_BINARY = ["node"]
+
   def reactNativeGradlePlugin = new File(
     providers.exec {
       workingDir(rootDir)
