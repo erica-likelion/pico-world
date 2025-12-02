@@ -13,7 +13,8 @@
 		"build": "expo export",
 		"storybook-generate": "sb-rn-get-stories",
 		"storybook": "storybook dev -p 6006",
-		"build-storybook": "storybook build"
+		"build-storybook": "storybook build",
+		"eas-build-pre-install": "npm install -g pnpm@10.14.0"
 	},
 	"dependencies": {
 		"@expo/vector-icons": "^15.0.2",
@@ -93,7 +94,9 @@
 		"storybook": "^9.1.10",
 		"typescript": "~5.9.2",
 		"vite": "^7.1.9",
-		"vite-plugin-svgr": "^4.5.0"
+		"vite-plugin-svgr": "^4.5.0",
+		"@react-native-community/cli": "latest",
+		"@react-native/metro-config": "latest"
 	},
 	"private": true,
 	"lint-staged": {
@@ -101,5 +104,10 @@
 			"pnpm lint",
 			"pnpm format"
 		]
+	},
+	"pnpm": {
+		"overrides": {
+			"@react-native-async-storage/async-storage": "2.2.0"
+		}
 	}
 }

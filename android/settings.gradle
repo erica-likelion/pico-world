@@ -1,8 +1,6 @@
-pluginManagement {
-  // --- ADD THIS AT THE VERY TOP ---
-  def NODE_BINARY = "/usr/local/bin/node" 
-  // ---------------------------------
+def NODE_BINARY = ["node"]
 
+pluginManagement {
   def reactNativeGradlePlugin = new File(
     providers.exec {
       workingDir(rootDir)
