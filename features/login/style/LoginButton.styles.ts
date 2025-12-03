@@ -7,10 +7,10 @@ export const LoginButtonContainer = styled.View<{ $isAndroid: boolean }>`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.rem(12)};
-  width: 100%;
-  position: fixed;
+  position: absolute;
+  left: ${({ theme }) => theme.rem(16)};
+  right: ${({ theme }) => theme.rem(16)};
   bottom: ${({ theme, $isAndroid }) => ($isAndroid ? theme.rem(34) : 0)};
-  left: 0;
   z-index: 10;
 `;
 
@@ -19,7 +19,6 @@ export const KaKaoLoginButton = styled(Reanimated.View)`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  width: 100%;
   height: 62px;
   background-color: #fee500;
   border-radius: 60px;
@@ -31,7 +30,6 @@ export const AppleLoginButton = styled(Reanimated.View)`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  width: 100%;
   height: 62px;
   background-color: ${({ theme }) => theme.grayscale.gray800};
   border-radius: 60px;
