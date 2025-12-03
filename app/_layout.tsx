@@ -17,7 +17,14 @@ import messaging, {
 import { ThemeProvider } from "@react-navigation/native";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
-import { type Href, Stack, usePathname, useRouter } from "expo-router";
+import {
+	type Href,
+	Stack,
+	useNavigationContainerRef,
+	usePathname,
+	useRootNavigationState,
+	useRouter,
+} from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect } from "react";
@@ -48,6 +55,9 @@ function RootLayoutNav() {
 	const pathname = usePathname();
 	const { isVisible } = useBottomNavStore();
 	const { isLoggedIn, setIsLoggedIn } = useAuthStore();
+	const rootState = useRootNavigationState();
+	const navigationRef = useNavigationContainerRef();
+
 	const { pendingDestination, setPendingDestination, clearPendingDestination } =
 		useDeepLinkStore();
 	const {
@@ -66,6 +76,18 @@ function RootLayoutNav() {
 		...FontAwesome.font,
 	});
 
+	useEffect(() => {
+		if (error) throw error;
+	}, [error]);
+
+	useEffect(() => {
+		const checkAuthStatus = async () => {
+			const accessToken = await AsyncStorage.getItem("accessToken");
+			setIsLoggedIn(!!accessToken);
+		};
+		checkAuthStatus();
+	}, [setIsLoggedIn]);
+
 	const handleNotificationNavigation = useCallback(
 		async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
 			const { type, relatedId, url } = remoteMessage.data || {};
@@ -80,7 +102,7 @@ function RootLayoutNav() {
 
 			const currentIsLoggedIn = !!(await AsyncStorage.getItem("accessToken"));
 			if (currentIsLoggedIn) {
-				setPendingDestination(destination as string);
+				router.push(destination as Href);
 			} else {
 				setPendingDestination(destination as string);
 				router.push("/login");
@@ -90,11 +112,12 @@ function RootLayoutNav() {
 	);
 
 	useEffect(() => {
-		const initializeApp = async () => {
-			const accessToken = await AsyncStorage.getItem("accessToken");
-			const isUserLoggedIn = !!accessToken;
-			setIsLoggedIn(isUserLoggedIn);
+		const isNavigationReady =
+			rootState?.key && loaded && navigationRef && navigationRef.isReady();
 
+		if (!isNavigationReady || isLoggedIn === null) return;
+
+		const setupNotifications = async (): Promise<boolean> => {
 			messaging().setBackgroundMessageHandler(async (remoteMessage) => {
 				console.log("백그라운드 메시지 수신:", remoteMessage);
 			});
@@ -109,63 +132,57 @@ function RootLayoutNav() {
 
 			messaging().onNotificationOpenedApp(handleNotificationNavigation);
 
-			messaging()
-				.getInitialNotification()
-				.then((remoteMessage) => {
-					if (remoteMessage) {
-						handleNotificationNavigation(remoteMessage);
-					}
-				});
+			const remoteMessage = await messaging().getInitialNotification();
+			if (remoteMessage) {
+				await handleNotificationNavigation(remoteMessage);
+				return true;
+			}
 
-			if (isUserLoggedIn) {
+			if (isLoggedIn) {
 				registerForPushNotificationsAsync();
 			}
-
-			if (loaded) {
-				await SplashScreen.hideAsync();
-			}
+			return false;
 		};
 
-		initializeApp();
-	}, [loaded, setIsLoggedIn, showToast, handleNotificationNavigation]);
+		setupNotifications().then((navigationHandledByNotification) => {
+			SplashScreen.hideAsync();
+			if (navigationHandledByNotification) {
+				return;
+			}
 
-	// 2. 인증 상태에 따른 경로 보호
-	useEffect(() => {
-		if (isLoggedIn === null) {
-			return;
-		}
+			if (pendingDestination) {
+				if (isLoggedIn) {
+					router.replace(pendingDestination as Href);
+					clearPendingDestination();
+				} else {
+					router.replace("/login");
+				}
+				return;
+			}
 
-		if (pendingDestination) {
-			if (isLoggedIn) {
-				router.replace(pendingDestination as Href);
-				clearPendingDestination();
-			} else {
+			const inAuthGroup = pathname.startsWith("/login");
+
+			if (isLoggedIn && inAuthGroup) {
+				router.replace("/home");
+			}
+			if (!isLoggedIn && !inAuthGroup) {
 				router.replace("/login");
 			}
-			return;
-		}
-
-		const inAuthGroup = pathname.startsWith("/login");
-
-		if (isLoggedIn && inAuthGroup) {
-			router.replace("/home");
-		}
-		if (!isLoggedIn && !inAuthGroup) {
-			router.replace("/login");
-		}
+		});
 	}, [
 		isLoggedIn,
 		pathname,
-		router,
-		pendingDestination,
+		rootState,
+		loaded,
+		handleNotificationNavigation,
 		clearPendingDestination,
+		pendingDestination,
+		router,
+		showToast,
+		navigationRef,
 	]);
 
-	useEffect(() => {
-		if (error) throw error;
-	}, [error]);
-
-	if (!loaded || isLoggedIn === null) {
+	if (!loaded || !rootState?.key || isLoggedIn === null) {
 		return null;
 	}
 
