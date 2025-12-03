@@ -3,14 +3,14 @@ import KaKaoIcon from "@/shared/assets/icons/kakao-logo.svg";
 import Reanimated from "react-native-reanimated";
 import styled from "styled-components/native";
 
-export const LoginButtonContainer = styled.View<{ $isAndroid: boolean }>`
+export const LoginButtonContainer = styled.View`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.rem(12)};
   position: absolute;
   left: ${({ theme }) => theme.rem(16)};
   right: ${({ theme }) => theme.rem(16)};
-  bottom: ${({ theme, $isAndroid }) => ($isAndroid ? theme.rem(34) : 0)};
+  bottom: ${({ theme }) => theme.rem(34)};
   z-index: 10;
 `;
 

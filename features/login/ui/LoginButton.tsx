@@ -97,7 +97,7 @@ export function LoginButton() {
 	};
 
 	return (
-		<S.LoginButtonContainer $isAndroid={ios}>
+		<S.LoginButtonContainer>
 			<TouchableOpacity
 				onPress={handleKakaoLogin}
 				onPressIn={kakaoPressIn}
