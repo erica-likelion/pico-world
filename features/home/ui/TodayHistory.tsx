@@ -5,6 +5,7 @@ import * as S from "@/features/home/style/TodayHistory.styles";
 import { getRecordById } from "@/features/record/api/getRecordById";
 import { useFeedbackTimer } from "@/shared/hooks/useFeedbackTimer";
 import { useAuthStore } from "@/shared/store/auth";
+import { useFeedbackTimerStore } from "@/shared/store/feedbackTimer";
 import { MyCharacter } from "@/shared/store/myCharacter";
 import { EmotionCard } from "@/shared/ui/EmotionCard";
 import { useQuery } from "@tanstack/react-query";
@@ -19,6 +20,7 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
+
 interface TodayHistoryProps {
 	recordId: number;
 	onMenuPress: () => void;
@@ -30,6 +32,7 @@ export function TodayHistory({ recordId, onMenuPress }: TodayHistoryProps) {
 	const journalIdString = String(recordId);
 	const { isWaitingForFeedback, remainingSeconds } =
 		useFeedbackTimer(journalIdString);
+	const { characterName: savedCharacterName } = useFeedbackTimerStore();
 	const { name: currentCharacterName } = MyCharacter();
 	const { data: record, isLoading: isRecordLoading } = useQuery({
 		queryKey: ["emotionRecord", recordId],
@@ -110,21 +113,25 @@ export function TodayHistory({ recordId, onMenuPress }: TodayHistoryProps) {
 	]);
 
 	const characterImage = useMemo(() => {
-		if (isWaitingForFeedback) {
-			return getCharacterImage(currentCharacterName as CharacterName);
+		if (isWaitingForFeedback || isFeedbackLoading) {
+			const characterToShow = savedCharacterName || currentCharacterName;
+			return getCharacterImage(characterToShow as CharacterName);
 		}
-		if (!feedbackData?.characterName) {
-			return getCharacterImage("츠츠");
-		}
-		return getCharacterImage(feedbackData.characterName as CharacterName);
-	}, [feedbackData?.characterName, currentCharacterName, isWaitingForFeedback]);
+		return getCharacterImage(feedbackData?.characterName as CharacterName);
+	}, [
+		feedbackData?.characterName,
+		currentCharacterName,
+		isWaitingForFeedback,
+		isFeedbackLoading,
+		savedCharacterName,
+	]);
 
 	const displayAIComment = useMemo(() => {
 		if (isWaitingForFeedback) {
 			return `기록을 읽고 답장을 쓰는 중... (${remainingSeconds}초)`;
 		}
 		if (isFeedbackLoading) {
-			return "피드백을 생성하고 있습니다...";
+			return "답장을 가져오는 중...";
 		}
 		return feedbackData?.aiReply || "오늘 하루도 수고했어.";
 	}, [isWaitingForFeedback, remainingSeconds, isFeedbackLoading, feedbackData]);
