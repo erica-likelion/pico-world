@@ -6,6 +6,7 @@ import { EmotionRecordCard } from "@/features/journal/ui/EmotionRecordCard";
 import { getRecordById } from "@/features/record/api/getRecordById";
 import { useFeedbackTimer } from "@/shared/hooks/useFeedbackTimer";
 import { useAuthStore } from "@/shared/store/auth";
+import { useFeedbackTimerStore } from "@/shared/store/feedbackTimer";
 import { MyCharacter } from "@/shared/store/myCharacter";
 import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useQuery } from "@tanstack/react-query";
@@ -25,7 +26,7 @@ export function TodayHistory({ recordId }: TodayHistoryProps) {
 	const { isWaitingForFeedback, remainingSeconds } =
 		useFeedbackTimer(journalIdString);
 	const { name: currentCharacterName } = MyCharacter();
-
+	const { characterName: savedCharacterName } = useFeedbackTimerStore();
 	const { data: record, isLoading: isRecordLoading } = useQuery({
 		queryKey: ["emotionRecord", recordId],
 		queryFn: () => getRecordById(recordId.toString()),
@@ -104,21 +105,25 @@ export function TodayHistory({ recordId }: TodayHistoryProps) {
 	]);
 
 	const characterImage = useMemo(() => {
-		if (isWaitingForFeedback) {
-			return getCharacterImage(currentCharacterName as CharacterName);
+		if (isWaitingForFeedback || isFeedbackLoading) {
+			const characterToShow = savedCharacterName || currentCharacterName;
+			return getCharacterImage(characterToShow as CharacterName);
 		}
-		if (!feedbackData?.characterName) {
-			return getCharacterImage("츠츠");
-		}
-		return getCharacterImage(feedbackData.characterName as CharacterName);
-	}, [feedbackData?.characterName, currentCharacterName, isWaitingForFeedback]);
+		return getCharacterImage(feedbackData?.characterName as CharacterName);
+	}, [
+		feedbackData?.characterName,
+		currentCharacterName,
+		isWaitingForFeedback,
+		isFeedbackLoading,
+		savedCharacterName,
+	]);
 
 	const displayAIComment = useMemo(() => {
 		if (isWaitingForFeedback) {
 			return `기록을 읽고 답장을 쓰는 중... (${remainingSeconds}초)`;
 		}
 		if (isFeedbackLoading) {
-			return "피드백을 생성하고 있습니다...";
+			return "답장을 가져오는 중...";
 		}
 		return feedbackData?.aiReply || "오늘 하루도 수고했어.";
 	}, [isWaitingForFeedback, remainingSeconds, isFeedbackLoading, feedbackData]);
