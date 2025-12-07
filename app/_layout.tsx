@@ -54,7 +54,8 @@ function RootLayoutNav() {
 	const router = useRouter();
 	const pathname = usePathname();
 	const { isVisible } = useBottomNavStore();
-	const { isLoggedIn, setIsLoggedIn } = useAuthStore();
+	const { isLoggedIn, setIsLoggedIn, isOnboarding, setIsOnboarding } =
+		useAuthStore();
 	const rootState = useRootNavigationState();
 	const navigationRef = useNavigationContainerRef();
 
@@ -84,9 +85,17 @@ function RootLayoutNav() {
 		const checkAuthStatus = async () => {
 			const accessToken = await AsyncStorage.getItem("accessToken");
 			setIsLoggedIn(!!accessToken);
+
+			if (accessToken) {
+				const isOnboardingNeeded =
+					await AsyncStorage.getItem("isOnboardingNeeded");
+				setIsOnboarding(isOnboardingNeeded === "true");
+			} else {
+				setIsOnboarding(false);
+			}
 		};
 		checkAuthStatus();
-	}, [setIsLoggedIn]);
+	}, [setIsLoggedIn, setIsOnboarding]);
 
 	const handleNotificationNavigation = useCallback(
 		async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
@@ -161,7 +170,14 @@ function RootLayoutNav() {
 			}
 
 			const inAuthGroup = pathname.startsWith("/login");
-			const isOnboarding = pathname.startsWith("/onboarding");
+
+			if (isLoggedIn && inAuthGroup && !isOnboarding) {
+				router.replace("/home");
+			}
+
+			if (isLoggedIn && isOnboarding && pathname !== "/onboarding") {
+				router.replace("/onboarding");
+			}
 
 			if (!isLoggedIn && !inAuthGroup && !isOnboarding) {
 				router.replace("/login");
@@ -169,6 +185,7 @@ function RootLayoutNav() {
 		});
 	}, [
 		isLoggedIn,
+		isOnboarding,
 		pathname,
 		rootState,
 		loaded,
