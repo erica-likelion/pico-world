@@ -6,6 +6,7 @@ import {
 	deleteEmotionRecord,
 	getEmotionRecord,
 } from "@/features/journal/api/emotion";
+import { getUserInfo } from "@/features/my/api/MyInfo";
 import { NotificationBell } from "@/features/notifications/ui/NotificationBell";
 import { useAuthStore } from "@/shared/store/auth";
 import { MyCharacter } from "@/shared/store/myCharacter";
@@ -41,7 +42,7 @@ export default function Home() {
 	const today = getTodayKST();
 	const queryClient = useQueryClient();
 	const { isLoggedIn } = useAuthStore();
-	const { name } = MyCharacter();
+	const { name, setName } = MyCharacter();
 
 	const [selectedDate, setSelectedDate] = useState<string>(today);
 	const [currentMonth, setCurrentMonth] = useState<string>(today.slice(0, 7));
@@ -112,6 +113,20 @@ export default function Home() {
 			console.error("Error deleting record:", error);
 		},
 	});
+
+	const { data: userInfo } = useQuery({
+		queryKey: ["userInfo"],
+		queryFn: getUserInfo,
+		enabled: !!isLoggedIn,
+	});
+
+	useEffect(() => {
+		if (userInfo?.characterInfo?.name) {
+			if (name !== userInfo.characterInfo.name) {
+				setName(userInfo.characterInfo.name);
+			}
+		}
+	}, [userInfo, name, setName]);
 
 	useEffect(() => {
 		show();
