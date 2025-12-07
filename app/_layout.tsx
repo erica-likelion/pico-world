@@ -153,7 +153,7 @@ function RootLayoutNav() {
 			return false;
 		};
 
-		setupNotifications().then((navigationHandledByNotification) => {
+		setupNotifications().then(async (navigationHandledByNotification) => {
 			SplashScreen.hideAsync();
 			if (navigationHandledByNotification) {
 				return;
@@ -171,15 +171,27 @@ function RootLayoutNav() {
 
 			const inAuthGroup = pathname.startsWith("/login");
 
-			if (isLoggedIn && inAuthGroup && !isOnboarding) {
+			let currentIsOnboarding = isOnboarding;
+			if (isLoggedIn) {
+				const isOnboardingNeeded =
+					await AsyncStorage.getItem("isOnboardingNeeded");
+				currentIsOnboarding = isOnboardingNeeded === "true";
+				if (currentIsOnboarding !== isOnboarding) {
+					setIsOnboarding(currentIsOnboarding);
+				}
+			}
+
+			if (isLoggedIn && inAuthGroup && !currentIsOnboarding) {
 				router.replace("/home");
+				return;
 			}
 
-			if (isLoggedIn && isOnboarding && pathname !== "/onboarding") {
+			if (isLoggedIn && currentIsOnboarding && pathname !== "/onboarding") {
 				router.replace("/onboarding");
+				return;
 			}
 
-			if (!isLoggedIn && !inAuthGroup && !isOnboarding) {
+			if (!isLoggedIn && !inAuthGroup && !currentIsOnboarding) {
 				router.replace("/login");
 			}
 		});
@@ -195,6 +207,7 @@ function RootLayoutNav() {
 		router,
 		showToast,
 		navigationRef,
+		setIsOnboarding,
 	]);
 
 	if (!loaded || !rootState?.key || isLoggedIn === null) {
