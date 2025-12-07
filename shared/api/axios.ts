@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/shared/store/auth";
 import type { ApiResponse } from "@/shared/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios, {
@@ -56,9 +57,17 @@ instance.interceptors.response.use(
 					originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 					return instance(originalRequest);
 				} catch (_refreshError) {
+					// 리프레시 실패 시 로그인 페이지 이동
 					await AsyncStorage.multiRemove(["accessToken", "refreshToken"]);
+					useAuthStore.getState().setIsLoggedIn(false);
 					router.replace("/login");
+					return Promise.reject(_refreshError);
 				}
+			} else {
+				await AsyncStorage.multiRemove(["accessToken", "refreshToken"]);
+				useAuthStore.getState().setIsLoggedIn(false);
+				router.replace("/login");
+				return Promise.reject(error);
 			}
 		}
 
