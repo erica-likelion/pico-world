@@ -161,11 +161,9 @@ function RootLayoutNav() {
 			}
 
 			const inAuthGroup = pathname.startsWith("/login");
+			const isOnboarding = pathname.startsWith("/onboarding");
 
-			if (isLoggedIn && inAuthGroup) {
-				router.replace("/home");
-			}
-			if (!isLoggedIn && !inAuthGroup) {
+			if (!isLoggedIn && !inAuthGroup && !isOnboarding) {
 				router.replace("/login");
 			}
 		});
