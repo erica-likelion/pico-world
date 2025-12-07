@@ -5,6 +5,7 @@ import {
 	useFeedbackTimerActions,
 	useFeedbackTimerStore,
 } from "@/shared/store/feedbackTimer";
+import { MyCharacter } from "@/shared/store/myCharacter";
 import type { EmotionChip } from "@/shared/types";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
@@ -75,7 +76,8 @@ export function useRecordFlow() {
 			onSuccess: (data) => {
 				setIsToastVisible(false);
 				feedbackMutate(data.record_id);
-				startTimer(data.record_id.toString(), 60);
+				const { name: currentCharacterName } = MyCharacter.getState();
+				startTimer(data.record_id.toString(), 60, currentCharacterName);
 				setPhase("complete");
 			},
 			onError: (error) => {
@@ -155,7 +157,8 @@ export function useRecordFlow() {
 			}
 
 			feedbackMutate(updatedRecordId);
-			startTimer(updatedRecordId.toString(), 60);
+			const { name: currentCharacterName } = MyCharacter.getState();
+			startTimer(updatedRecordId.toString(), 60, currentCharacterName);
 		}
 		setShowConfirmModal(false);
 		setPhase("complete");
