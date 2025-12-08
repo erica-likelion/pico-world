@@ -5,14 +5,15 @@ import { useInvalidateUserInfo } from "@/entities/user/model/userQueries";
 import { axiosInstance } from "@/shared/api/axios";
 import { useHideBottomNav } from "@/shared/hooks/useHideBottomNav";
 import { usePreloadAssets } from "@/shared/hooks/usePreloadAssets";
+import { useAuthStore } from "@/shared/store/auth";
 import { MyCharacter } from "@/shared/store/myCharacter";
 import { Button } from "@/shared/ui";
 import { TopNav } from "@/widgets/TopNav/ui";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useMutation } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, View } from "react-native";
-
 const characterImages = Character.map((char) => char.image);
 
 export default function Onboarding() {
@@ -26,6 +27,7 @@ export default function Onboarding() {
 	const sele =
 		Character.findIndex((char) => char.name === selectedCharacter.name) + 1;
 	const invalidateUserInfo = useInvalidateUserInfo();
+	const { setIsOnboarding } = useAuthStore();
 
 	useHideBottomNav();
 
@@ -35,8 +37,10 @@ export default function Onboarding() {
 				characterId: characterId,
 			});
 		},
-		onSuccess: () => {
+		onSuccess: async () => {
 			setName(selectedCharacter.name);
+			setIsOnboarding(false);
+			await AsyncStorage.removeItem("isOnboardingNeeded");
 			router.push("/home");
 		},
 		onError: (error) => {

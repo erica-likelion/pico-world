@@ -33,7 +33,6 @@ export const useFeedbackTimerStore = create<FeedbackTimerState>((set) => ({
 				isTimerRunning: false,
 				targetJournalId: null,
 				timerEndTime: null,
-				characterName: null,
 			}),
 	},
 }));

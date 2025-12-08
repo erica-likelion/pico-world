@@ -29,6 +29,7 @@ export const kakaoLogin = async (
 
 	await AsyncStorage.setItem("accessToken", accessToken);
 	await AsyncStorage.setItem("refreshToken", refreshToken);
+	await AsyncStorage.setItem("isOnboardingNeeded", String(isOnboardingNeeded));
 
 	const getKakaoProfile = async () => {
 		try {

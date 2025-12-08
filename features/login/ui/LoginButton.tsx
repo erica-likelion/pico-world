@@ -16,7 +16,7 @@ export function LoginButton() {
 	const ios = Platform.OS === "ios";
 	const router = useRouter();
 	const { pendingDestination, clearPendingDestination } = useDeepLinkStore();
-	const { setIsLoggedIn } = useAuthStore();
+	const { setIsLoggedIn, setIsOnboarding } = useAuthStore();
 
 	const {
 		animatedStyle: kakaoAnimatedStyle,
@@ -33,13 +33,18 @@ export function LoginButton() {
 		setIsLoggedIn(true);
 		registerForPushNotificationsAsync(); // 로그인 성공 후 FCM 토큰 등록/전송
 		console.log(isOnboardingNeeded);
+
 		if (isOnboardingNeeded) {
+			setIsOnboarding(true);
 			router.replace("/onboarding");
-		} else if (pendingDestination) {
-			router.replace(pendingDestination as Href);
-			clearPendingDestination();
 		} else {
-			router.replace("/home");
+			setIsOnboarding(false);
+			if (pendingDestination) {
+				router.replace(pendingDestination as Href);
+				clearPendingDestination();
+			} else {
+				router.replace("/home");
+			}
 		}
 	};
 

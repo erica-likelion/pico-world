@@ -7,7 +7,6 @@ import { getRecordById } from "@/features/record/api/getRecordById";
 import { useFeedbackTimer } from "@/shared/hooks/useFeedbackTimer";
 import { useAuthStore } from "@/shared/store/auth";
 import { useFeedbackTimerStore } from "@/shared/store/feedbackTimer";
-import { MyCharacter } from "@/shared/store/myCharacter";
 import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -25,7 +24,6 @@ export function TodayHistory({ recordId }: TodayHistoryProps) {
 	const journalIdString = String(recordId);
 	const { isWaitingForFeedback, remainingSeconds } =
 		useFeedbackTimer(journalIdString);
-	const { name: currentCharacterName } = MyCharacter();
 	const { characterName: savedCharacterName } = useFeedbackTimerStore();
 	const { data: record, isLoading: isRecordLoading } = useQuery({
 		queryKey: ["emotionRecord", recordId],
@@ -106,13 +104,11 @@ export function TodayHistory({ recordId }: TodayHistoryProps) {
 
 	const characterImage = useMemo(() => {
 		if (isWaitingForFeedback || isFeedbackLoading) {
-			const characterToShow = savedCharacterName || currentCharacterName;
-			return getCharacterImage(characterToShow as CharacterName);
+			return getCharacterImage(savedCharacterName as CharacterName);
 		}
 		return getCharacterImage(feedbackData?.characterName as CharacterName);
 	}, [
 		feedbackData?.characterName,
-		currentCharacterName,
 		isWaitingForFeedback,
 		isFeedbackLoading,
 		savedCharacterName,

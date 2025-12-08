@@ -54,7 +54,8 @@ function RootLayoutNav() {
 	const router = useRouter();
 	const pathname = usePathname();
 	const { isVisible } = useBottomNavStore();
-	const { isLoggedIn, setIsLoggedIn } = useAuthStore();
+	const { isLoggedIn, setIsLoggedIn, isOnboarding, setIsOnboarding } =
+		useAuthStore();
 	const rootState = useRootNavigationState();
 	const navigationRef = useNavigationContainerRef();
 
@@ -84,9 +85,17 @@ function RootLayoutNav() {
 		const checkAuthStatus = async () => {
 			const accessToken = await AsyncStorage.getItem("accessToken");
 			setIsLoggedIn(!!accessToken);
+
+			if (accessToken) {
+				const isOnboardingNeeded =
+					await AsyncStorage.getItem("isOnboardingNeeded");
+				setIsOnboarding(isOnboardingNeeded === "true");
+			} else {
+				setIsOnboarding(false);
+			}
 		};
 		checkAuthStatus();
-	}, [setIsLoggedIn]);
+	}, [setIsLoggedIn, setIsOnboarding]);
 
 	const handleNotificationNavigation = useCallback(
 		async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
@@ -144,7 +153,7 @@ function RootLayoutNav() {
 			return false;
 		};
 
-		setupNotifications().then((navigationHandledByNotification) => {
+		setupNotifications().then(async (navigationHandledByNotification) => {
 			SplashScreen.hideAsync();
 			if (navigationHandledByNotification) {
 				return;
@@ -162,15 +171,33 @@ function RootLayoutNav() {
 
 			const inAuthGroup = pathname.startsWith("/login");
 
-			if (isLoggedIn && inAuthGroup) {
-				router.replace("/home");
+			let currentIsOnboarding = isOnboarding;
+			if (isLoggedIn) {
+				const isOnboardingNeeded =
+					await AsyncStorage.getItem("isOnboardingNeeded");
+				currentIsOnboarding = isOnboardingNeeded === "true";
+				if (currentIsOnboarding !== isOnboarding) {
+					setIsOnboarding(currentIsOnboarding);
+				}
 			}
-			if (!isLoggedIn && !inAuthGroup) {
+
+			if (isLoggedIn && inAuthGroup && !currentIsOnboarding) {
+				router.replace("/home");
+				return;
+			}
+
+			if (isLoggedIn && currentIsOnboarding && pathname !== "/onboarding") {
+				router.replace("/onboarding");
+				return;
+			}
+
+			if (!isLoggedIn && !inAuthGroup && !currentIsOnboarding) {
 				router.replace("/login");
 			}
 		});
 	}, [
 		isLoggedIn,
+		isOnboarding,
 		pathname,
 		rootState,
 		loaded,
@@ -180,6 +207,7 @@ function RootLayoutNav() {
 		router,
 		showToast,
 		navigationRef,
+		setIsOnboarding,
 	]);
 
 	if (!loaded || !rootState?.key || isLoggedIn === null) {
