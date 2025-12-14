@@ -12,7 +12,12 @@ import { useAuthStore } from "@/shared/store/auth";
 import { MyCharacter } from "@/shared/store/myCharacter";
 import { useToastStore } from "@/shared/store/toast";
 import type { EmotionRecord } from "@/shared/types/emotion";
-import { CharacterBubble, MenuBottomSheet, Toast } from "@/shared/ui";
+import {
+	CharacterBubble,
+	CharacterBubbleSkeleton,
+	MenuBottomSheet,
+	Toast,
+} from "@/shared/ui";
 import { formatDate } from "@/shared/utils/date";
 import { useBottomNavStore } from "@/widgets/BottomNav/model";
 import { TopNav } from "@/widgets/TopNav/ui";
@@ -51,7 +56,7 @@ export default function Home() {
 	const [isToastVisible, setIsToastVisible] = useState(false);
 	const [toastMessage, setToastMessage] = useState("");
 
-	const { data: greetingData } = useQuery({
+	const { data: greetingData, isLoading: isGreetingLoading } = useQuery({
 		queryKey: ["greeting", "home"],
 		queryFn: () => fetchGreeting({ context: "home" }),
 		enabled: !!isLoggedIn,
@@ -188,10 +193,16 @@ export default function Home() {
 				}
 			>
 				<View style={{ width: "100%", paddingHorizontal: 16 }}>
-					<CharacterBubble
-						character={characterName}
-						message={greetingData?.message?.replace(/"/g, "") ?? "..."}
-					/>
+					{isGreetingLoading ||
+					!greetingData?.message ||
+					greetingData?.message.trim() === "" ? (
+						<CharacterBubbleSkeleton />
+					) : (
+						<CharacterBubble
+							character={characterName}
+							message={greetingData.message.replace(/"/g, "")}
+						/>
+					)}
 				</View>
 				{isLoading ? (
 					<ActivityIndicator style={{ marginVertical: 20 }} />

@@ -1,7 +1,6 @@
 import { useFriendAlarm } from "@/features/friends/hooks/useFriendAlarm";
 import type { Friend } from "@/features/friends/model/types";
 import { useFriendAlarmStore } from "@/features/friends/store/friendAlarm";
-import { FriendDeleteModal } from "@/features/friends/ui/FriendDeleteModal";
 import BellOffIcon from "@/shared/assets/icons/bell-off.svg";
 import BellIcon from "@/shared/assets/icons/bell.svg";
 import RemoveFriendIcon from "@/shared/assets/icons/remove-minus-circle.svg";
@@ -12,7 +11,6 @@ import {
 	type BottomSheetRef,
 	CustomBottomSheet,
 } from "@/shared/ui/bottomSheet/CustomBottomSheet";
-import { useState } from "react";
 import { View } from "react-native";
 
 interface FriendBottomSheetProps {
@@ -20,20 +18,20 @@ interface FriendBottomSheetProps {
 	snapPoints?: Array<string | number>;
 	friend: Friend | null;
 	onDeleteConfirm?: (connectCode: string) => void;
+	onRemoveFriendPress?: () => void;
 }
 
 interface FriendBottomSheetContentProps {
 	bottomSheetRef: BottomSheetRef;
 	friend: Friend;
-	onDeleteConfirm?: (connectCode: string) => void;
+	onRemoveFriendPress?: () => void;
 }
 
 function FriendBottomSheetContent({
 	bottomSheetRef,
 	friend,
-	onDeleteConfirm,
+	onRemoveFriendPress,
 }: FriendBottomSheetContentProps) {
-	const [isModalVisible, setIsModalVisible] = useState(false);
 	const { block, unblock } = useFriendAlarm(friend);
 	const { blockedFriends } = useFriendAlarmStore();
 
@@ -56,19 +54,7 @@ function FriendBottomSheetContent({
 
 	const handleRemoveFriendPress = () => {
 		bottomSheetRef.current?.close();
-		setIsModalVisible(true);
-	};
-
-	const handleCancel = () => {
-		setIsModalVisible(false);
-	};
-
-	const handleRemoveConfirm = () => {
-		setIsModalVisible(false);
-		bottomSheetRef.current?.close();
-		if (friend) {
-			onDeleteConfirm?.(friend.connectCode);
-		}
+		onRemoveFriendPress?.();
 	};
 
 	const notificationActionLabel = isBlocked
@@ -104,12 +90,6 @@ function FriendBottomSheetContent({
 				<RemoveFriendIcon width={24} height={24} color={colors.happy} />
 				<S.Text style={{ color: colors.happy }}>친구 끊기</S.Text>
 			</S.MenuItem>
-			<FriendDeleteModal
-				isVisible={isModalVisible}
-				onConfirm={handleRemoveConfirm}
-				onCancel={handleCancel}
-				friendName={friend.nickname}
-			/>
 		</>
 	);
 }
@@ -118,7 +98,7 @@ export function FriendBottomSheet({
 	bottomSheetRef,
 	snapPoints = ["42%"],
 	friend,
-	onDeleteConfirm,
+	onRemoveFriendPress,
 }: FriendBottomSheetProps) {
 	return (
 		<CustomBottomSheet
@@ -130,7 +110,7 @@ export function FriendBottomSheet({
 				<FriendBottomSheetContent
 					friend={friend}
 					bottomSheetRef={bottomSheetRef}
-					onDeleteConfirm={onDeleteConfirm}
+					onRemoveFriendPress={onRemoveFriendPress}
 				/>
 			)}
 		</CustomBottomSheet>

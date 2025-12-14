@@ -16,8 +16,10 @@ export function useFriendRequestResponse({
 	const { mutate } = useMutation({
 		mutationFn: respondToFriendRequest,
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["friendList"] });
-			queryClient.invalidateQueries({ queryKey: ["friendRequests"] });
+			queryClient.invalidateQueries({ queryKey: ["friends", "friendList"] });
+			queryClient.invalidateQueries({
+				queryKey: ["friends", "friendRequests"],
+			});
 			onSuccess?.();
 		},
 		onError: (error: unknown) => {
