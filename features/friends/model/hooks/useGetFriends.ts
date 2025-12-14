@@ -49,6 +49,7 @@ export function useGetFriends() {
 
 		greeting: {
 			data: greeting.data,
+			isLoading: greeting.isLoading,
 		},
 	};
 }

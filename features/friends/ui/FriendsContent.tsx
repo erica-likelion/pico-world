@@ -22,6 +22,7 @@ import { MyCharacter } from "@/shared/store/myCharacter";
 import {
 	Button,
 	CharacterBubble,
+	CharacterBubbleSkeleton,
 	Divider,
 	ProfileButton,
 	Toast,
@@ -62,6 +63,7 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 	const friendRequestsData = friendRequests.data ?? [];
 	const friendFeedData = friendFeed.data ?? [];
 	const greetingData = greeting.data;
+	const isGreetingLoading = greeting.isLoading;
 
 	const friendCount = acceptedFriends.length;
 	const friendAddProgress = `${friendCount}/${FRIEND_LIMIT}`;
@@ -187,7 +189,16 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 			</S.ProfileRow>
 
 			<S.Spacing>
-				<CharacterBubble character={characterName} message={greetingMessage} />
+				{isGreetingLoading ||
+				!greetingMessage ||
+				greetingMessage.trim() === "" ? (
+					<CharacterBubbleSkeleton />
+				) : (
+					<CharacterBubble
+						character={characterName}
+						message={greetingMessage}
+					/>
+				)}
 			</S.Spacing>
 
 			{friendRequestsData.length > 0 &&
