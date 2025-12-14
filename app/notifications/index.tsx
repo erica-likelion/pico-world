@@ -6,6 +6,7 @@ import { RepliesTab } from "@/features/notifications/ui/RepliesTab";
 import { useHideBottomNav } from "@/shared/hooks/useHideBottomNav";
 import { useAuthStore } from "@/shared/store/auth";
 import { TopNav } from "@/widgets/TopNav/ui";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import messaging, {
 	AuthorizationStatus,
 } from "@react-native-firebase/messaging";
@@ -23,6 +24,9 @@ import { AppState, AppStateStatus, RefreshControl, View } from "react-native";
 import { useTheme } from "styled-components/native";
 
 const Tab = createMaterialTopTabNavigator();
+
+const DISMISSED_KEY = "permissionGuideDismissedAt";
+const TWO_DAYS_MS = 2 * 24 * 60 * 60 * 1000;
 
 export default function NotificationsScreen() {
 	useHideBottomNav();
@@ -46,11 +50,21 @@ export default function NotificationsScreen() {
 			authStatus === AuthorizationStatus.AUTHORIZED ||
 			authStatus === AuthorizationStatus.PROVISIONAL;
 
-		if (!isGranted) {
-			setShowPermissionGuide(true);
-		} else {
+		if (isGranted) {
 			setShowPermissionGuide(false);
+			await AsyncStorage.removeItem(DISMISSED_KEY);
+			return;
 		}
+
+		const dismissedAt = await AsyncStorage.getItem(DISMISSED_KEY);
+		const shouldShow =
+			!dismissedAt || Date.now() - Number(dismissedAt) >= TWO_DAYS_MS;
+		setShowPermissionGuide(shouldShow);
+	}, []);
+
+	const handleDismiss = useCallback(async () => {
+		await AsyncStorage.setItem(DISMISSED_KEY, Date.now().toString());
+		setShowPermissionGuide(false);
 	}, []);
 
 	useEffect(() => {
@@ -150,10 +164,7 @@ export default function NotificationsScreen() {
 								hasNextPage={hasNextPage}
 								headerComponent={
 									shouldShowGuide ? (
-										<PermissionGuide
-											show={true}
-											onDismiss={() => setShowPermissionGuide(false)}
-										/>
+										<PermissionGuide show={true} onDismiss={handleDismiss} />
 									) : null
 								}
 								refreshControl={refreshControl}
@@ -172,10 +183,7 @@ export default function NotificationsScreen() {
 								hasNextPage={hasNextPage}
 								headerComponent={
 									shouldShowGuide ? (
-										<PermissionGuide
-											show={true}
-											onDismiss={() => setShowPermissionGuide(false)}
-										/>
+										<PermissionGuide show={true} onDismiss={handleDismiss} />
 									) : null
 								}
 								refreshControl={refreshControl}
@@ -194,10 +202,7 @@ export default function NotificationsScreen() {
 								hasNextPage={hasNextPage}
 								headerComponent={
 									shouldShowGuide ? (
-										<PermissionGuide
-											show={true}
-											onDismiss={() => setShowPermissionGuide(false)}
-										/>
+										<PermissionGuide show={true} onDismiss={handleDismiss} />
 									) : null
 								}
 								refreshControl={refreshControl}

@@ -1,6 +1,7 @@
 import { readNotifications } from "@/features/notifications/api/readNotifications";
 import type { Notification } from "@/features/notifications/model/types";
 import * as S from "@/features/notifications/style/NotificationItem.styles";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { formatDistanceToNowStrict, parseISO } from "date-fns";
 import { ko } from "date-fns/locale";
 import { useRouter } from "expo-router";
@@ -15,6 +16,18 @@ interface NotificationItemProps {
 export const NotificationItem = ({ item }: NotificationItemProps) => {
 	const theme = useTheme();
 	const router = useRouter();
+	const queryClient = useQueryClient();
+
+	const readMutation = useMutation({
+		mutationFn: readNotifications,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["notifications"] });
+			queryClient.invalidateQueries({
+				queryKey: ["notifications", "unread-count"],
+			});
+		},
+	});
+
 	const timeAgo = formatDistanceToNowStrict(parseISO(item.createdAt), {
 		addSuffix: true,
 		locale: ko,
@@ -31,12 +44,14 @@ export const NotificationItem = ({ item }: NotificationItemProps) => {
 	}, [item.type, item.title, theme.colors.comfort]);
 
 	const handlePress = () => {
-		readNotifications(item.notificationId).then(() => {
-			if (item.type.startsWith("FRIEND")) {
-				router.push("/friends");
-			} else if (item.type === "AI_FEEDBACK") {
-				router.push(`/journal/detail?id=${item.relatedId}`);
-			}
+		readMutation.mutate(item.notificationId, {
+			onSuccess: () => {
+				if (item.type.startsWith("FRIEND")) {
+					router.push("/friends");
+				} else if (item.type === "AI_FEEDBACK") {
+					router.push(`/journal/detail?id=${item.relatedId}`);
+				}
+			},
 		});
 	};
 
