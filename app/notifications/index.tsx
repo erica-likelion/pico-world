@@ -1,4 +1,5 @@
 import { useNotifications } from "@/features/notifications/model/useNotifications";
+import { usePermissionGuide } from "@/features/notifications/model/usePermissionGuide";
 import { AllTab } from "@/features/notifications/ui/AllTab";
 import { FriendsTab } from "@/features/notifications/ui/FriendsTab";
 import { PermissionGuide } from "@/features/notifications/ui/PermissionGuide";
@@ -6,99 +7,27 @@ import { RepliesTab } from "@/features/notifications/ui/RepliesTab";
 import { useHideBottomNav } from "@/shared/hooks/useHideBottomNav";
 import { useAuthStore } from "@/shared/store/auth";
 import { TopNav } from "@/widgets/TopNav/ui";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import messaging, {
-	AuthorizationStatus,
-} from "@react-native-firebase/messaging";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useQueryClient } from "@tanstack/react-query";
-import { useFocusEffect } from "expo-router";
-import React, {
-	useCallback,
-	useEffect,
-	useMemo,
-	useRef,
-	useState,
-} from "react";
-import { AppState, AppStateStatus, RefreshControl, View } from "react-native";
+import { useCallback, useMemo, useState } from "react";
+import { RefreshControl, View } from "react-native";
 import { useTheme } from "styled-components/native";
 
 const Tab = createMaterialTopTabNavigator();
 
-const DISMISSED_KEY = "permissionGuideDismissedAt";
-const TWO_DAYS_MS = 2 * 24 * 60 * 60 * 1000;
-
-export default function NotificationsScreen() {
+export default function NotificationsPage() {
 	useHideBottomNav();
 	const theme = useTheme();
 	const queryClient = useQueryClient();
-
-	const [permissionStatus, setPermissionStatus] = useState<
-		number | undefined
-	>();
-	const [refreshing, setRefreshing] = useState(false);
-	const [showPermissionGuide, setShowPermissionGuide] = useState(true);
-	const appState = useRef(AppState.currentState);
-
 	const { isLoggedIn } = useAuthStore();
+	const {
+		showPermissionGuide,
+		isPermissionGranted,
+		handleDismiss,
+		checkPermission,
+	} = usePermissionGuide();
 
-	const checkPermission = useCallback(async () => {
-		const authStatus = await messaging().hasPermission();
-		setPermissionStatus(authStatus);
-
-		const isGranted =
-			authStatus === AuthorizationStatus.AUTHORIZED ||
-			authStatus === AuthorizationStatus.PROVISIONAL;
-
-		if (isGranted) {
-			setShowPermissionGuide(false);
-			await AsyncStorage.removeItem(DISMISSED_KEY);
-			return;
-		}
-
-		const dismissedAt = await AsyncStorage.getItem(DISMISSED_KEY);
-		const shouldShow =
-			!dismissedAt || Date.now() - Number(dismissedAt) >= TWO_DAYS_MS;
-		setShowPermissionGuide(shouldShow);
-	}, []);
-
-	const handleDismiss = useCallback(async () => {
-		await AsyncStorage.setItem(DISMISSED_KEY, Date.now().toString());
-		setShowPermissionGuide(false);
-	}, []);
-
-	useEffect(() => {
-		checkPermission();
-	}, [checkPermission]);
-
-	useFocusEffect(
-		useCallback(() => {
-			checkPermission();
-		}, [checkPermission]),
-	);
-
-	useEffect(() => {
-		const subscription = AppState.addEventListener(
-			"change",
-			(nextAppState: AppStateStatus) => {
-				if (
-					appState.current.match(/inactive|background/) &&
-					nextAppState === "active"
-				) {
-					checkPermission();
-				}
-				appState.current = nextAppState;
-			},
-		);
-
-		return () => {
-			subscription.remove();
-		};
-	}, [checkPermission]);
-
-	const isPermissionGranted =
-		permissionStatus === AuthorizationStatus.AUTHORIZED ||
-		permissionStatus === AuthorizationStatus.PROVISIONAL;
+	const [refreshing, setRefreshing] = useState(false);
 
 	const { data, fetchNextPage, hasNextPage, isLoading } = useNotifications({
 		enabled: !!isLoggedIn,
@@ -134,6 +63,8 @@ export default function NotificationsScreen() {
 		/>
 	);
 
+	const shouldShowGuide = showPermissionGuide && !isPermissionGranted;
+
 	return (
 		<View style={{ flex: 1, backgroundColor: "black" }}>
 			<TopNav title="알림" leftIcon />
@@ -154,61 +85,52 @@ export default function NotificationsScreen() {
 				}}
 			>
 				<Tab.Screen name="All" options={{ title: "전체" }}>
-					{() => {
-						const shouldShowGuide = showPermissionGuide && !isPermissionGranted;
-						return (
-							<AllTab
-								notifications={allNotifications}
-								isLoading={isLoading}
-								fetchNextPage={fetchNextPage}
-								hasNextPage={hasNextPage}
-								headerComponent={
-									shouldShowGuide ? (
-										<PermissionGuide show={true} onDismiss={handleDismiss} />
-									) : null
-								}
-								refreshControl={refreshControl}
-							/>
-						);
-					}}
+					{() => (
+						<AllTab
+							notifications={allNotifications}
+							isLoading={isLoading}
+							fetchNextPage={fetchNextPage}
+							hasNextPage={hasNextPage}
+							headerComponent={
+								shouldShowGuide ? (
+									<PermissionGuide show={true} onDismiss={handleDismiss} />
+								) : null
+							}
+							refreshControl={refreshControl}
+						/>
+					)}
 				</Tab.Screen>
 				<Tab.Screen name="Replies" options={{ title: "답장" }}>
-					{() => {
-						const shouldShowGuide = showPermissionGuide && !isPermissionGranted;
-						return (
-							<RepliesTab
-								notifications={repliesNotifications}
-								isLoading={isLoading}
-								fetchNextPage={fetchNextPage}
-								hasNextPage={hasNextPage}
-								headerComponent={
-									shouldShowGuide ? (
-										<PermissionGuide show={true} onDismiss={handleDismiss} />
-									) : null
-								}
-								refreshControl={refreshControl}
-							/>
-						);
-					}}
+					{() => (
+						<RepliesTab
+							notifications={repliesNotifications}
+							isLoading={isLoading}
+							fetchNextPage={fetchNextPage}
+							hasNextPage={hasNextPage}
+							headerComponent={
+								shouldShowGuide ? (
+									<PermissionGuide show={true} onDismiss={handleDismiss} />
+								) : null
+							}
+							refreshControl={refreshControl}
+						/>
+					)}
 				</Tab.Screen>
 				<Tab.Screen name="Friends" options={{ title: "친구" }}>
-					{() => {
-						const shouldShowGuide = showPermissionGuide && !isPermissionGranted;
-						return (
-							<FriendsTab
-								notifications={friendsNotifications}
-								isLoading={isLoading}
-								fetchNextPage={fetchNextPage}
-								hasNextPage={hasNextPage}
-								headerComponent={
-									shouldShowGuide ? (
-										<PermissionGuide show={true} onDismiss={handleDismiss} />
-									) : null
-								}
-								refreshControl={refreshControl}
-							/>
-						);
-					}}
+					{() => (
+						<FriendsTab
+							notifications={friendsNotifications}
+							isLoading={isLoading}
+							fetchNextPage={fetchNextPage}
+							hasNextPage={hasNextPage}
+							headerComponent={
+								shouldShowGuide ? (
+									<PermissionGuide show={true} onDismiss={handleDismiss} />
+								) : null
+							}
+							refreshControl={refreshControl}
+						/>
+					)}
 				</Tab.Screen>
 			</Tab.Navigator>
 		</View>
