@@ -45,7 +45,7 @@ export const EmotionComplete: React.FC<EmotionCompleteProps> = ({
 				duration: 1500,
 				useNativeDriver: true,
 			}),
-			Animated.delay(1800),
+			Animated.delay(1000),
 		]).start(() => {
 			if (onComplete) {
 				onComplete();

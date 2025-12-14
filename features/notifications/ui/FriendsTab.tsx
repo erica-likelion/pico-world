@@ -9,6 +9,7 @@ interface FriendsTabProps {
 	isLoading: boolean;
 	fetchNextPage: () => void;
 	hasNextPage?: boolean;
+	headerComponent: React.ReactNode;
 	refreshControl: React.ReactElement<RefreshControlProps>;
 }
 
@@ -17,40 +18,42 @@ export const FriendsTab = ({
 	isLoading,
 	fetchNextPage,
 	hasNextPage,
+	headerComponent,
 	refreshControl,
 }: FriendsTabProps) => {
 	if (isLoading && !notifications.length) {
 		return <ActivityIndicator style={{ marginTop: 20 }} />;
 	}
 
-	if (!notifications.length) {
-		return (
-			<View
-				style={{
-					flex: 1,
-					justifyContent: "center",
-					alignItems: "center",
-					backgroundColor: "black",
-				}}
-			>
-				<Text style={{ color: "white" }}>친구 알림이 없습니다.</Text>
-			</View>
-		);
-	}
-
 	return (
-		<View style={{ marginTop: 24 }}>
-			<FlatList
-				data={notifications}
-				renderItem={({ item }) => <NotificationItem item={item} />}
-				keyExtractor={(item) => item.notificationId.toString()}
-				onEndReached={() => hasNextPage && fetchNextPage()}
-				onEndReachedThreshold={0.5}
-				ListFooterComponent={hasNextPage ? <ActivityIndicator /> : null}
-				ItemSeparatorComponent={() => <View style={{ height: 24 }} />}
-				style={{ backgroundColor: "black" }}
-				refreshControl={refreshControl}
-			/>
-		</View>
+		<FlatList
+			data={notifications}
+			renderItem={({ item }) => <NotificationItem item={item} />}
+			keyExtractor={(item) => item.notificationId.toString()}
+			ListHeaderComponent={
+				<>
+					{headerComponent}
+					{notifications.length > 0 && <View style={{ marginTop: 24 }} />}
+				</>
+			}
+			ListEmptyComponent={
+				<View
+					style={{
+						flex: 1,
+						justifyContent: "center",
+						alignItems: "center",
+					}}
+				>
+					<Text style={{ color: "white" }}>친구 알림이 없습니다.</Text>
+				</View>
+			}
+			onEndReached={() => hasNextPage && fetchNextPage()}
+			onEndReachedThreshold={0.5}
+			ListFooterComponent={hasNextPage ? <ActivityIndicator /> : null}
+			ItemSeparatorComponent={() => <View style={{ height: 24 }} />}
+			style={{ backgroundColor: "black" }}
+			contentContainerStyle={{ flexGrow: 1 }}
+			refreshControl={refreshControl}
+		/>
 	);
 };
