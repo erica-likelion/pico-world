@@ -1,3 +1,4 @@
+import { useGreeting } from "@/entities/character/model/hooks/useGreeting";
 import {
 	useUserNickname,
 	useUserProfileImageUrl,
@@ -5,7 +6,6 @@ import {
 import {
 	useFriendRequest,
 	useGetFriends,
-	useGreeting,
 	useInviteCodeCopy,
 	useToast,
 } from "@/features/friends/model/hooks";

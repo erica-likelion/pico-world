@@ -1,5 +1,6 @@
 import { fetchGreeting } from "@/entities/character/api/greeting";
 import type { CharacterName } from "@/entities/character/model/characterMessages";
+import { MyCharacter } from "@/entities/character/store/myCharacter";
 import { getEmotionRecords } from "@/features/home/api/emotion";
 import { CalendarUI, ClickToJournal, TodayHistory } from "@/features/home/ui";
 import {
@@ -9,7 +10,6 @@ import {
 import { getUserInfo } from "@/features/my/api/MyInfo";
 import { NotificationBell } from "@/features/notifications/ui/NotificationBell";
 import { useAuthStore } from "@/shared/store/auth";
-import { MyCharacter } from "@/shared/store/myCharacter";
 import { useToastStore } from "@/shared/store/toast";
 import type { EmotionRecord } from "@/shared/types/emotion";
 import {

@@ -1,4 +1,5 @@
 import type { CharacterName } from "@/entities/character/model/characterMessages";
+import { MyCharacter } from "@/entities/character/store/myCharacter";
 import { useHasRecordedToday } from "@/entities/emotion/model/emotionQueries";
 import {
 	useUserConnectCode,
@@ -20,7 +21,6 @@ import {
 	FriendsCard,
 } from "@/features/friends/ui";
 import FriendsPlusIcon from "@/shared/assets/icons/freinds-plus.svg";
-import { MyCharacter } from "@/shared/store/myCharacter";
 import {
 	Button,
 	CharacterBubble,

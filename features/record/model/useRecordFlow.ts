@@ -5,7 +5,7 @@ import {
 	useFeedbackTimerActions,
 	useFeedbackTimerStore,
 } from "@/shared/store/feedbackTimer";
-import { MyCharacter } from "@/shared/store/myCharacter";
+import { MyCharacter } from "@/entities/character/store/myCharacter";
 import type { EmotionChip } from "@/shared/types";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";

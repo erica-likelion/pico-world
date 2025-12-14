@@ -1,6 +1,6 @@
+import { getCharacterMessage } from "@/entities/character/api/message";
 import type { CharacterName } from "@/entities/character/model/characterMessages";
-import { getCharacterMessage } from "@/features/report/api/GetCharacterMessage";
-import { MyCharacter } from "@/shared/store/myCharacter";
+import { MyCharacter } from "@/entities/character/store/myCharacter";
 import { CharacterBubble, CharacterBubbleSkeleton } from "@/shared/ui";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
@@ -14,10 +14,7 @@ export const CharacterMessageBubble: React.FC = () => {
 		error,
 	} = useQuery({
 		queryKey: ["report", "characterMessage"],
-		queryFn: async () => {
-			const response = await getCharacterMessage();
-			return response.data;
-		},
+		queryFn: getCharacterMessage,
 	});
 
 	const characterName = useMemo<CharacterName>(() => {
