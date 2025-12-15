@@ -1,7 +1,7 @@
+import { getCharacterMessage } from "@/entities/character/api/message";
 import type { CharacterName } from "@/entities/character/model/characterMessages";
-import { getCharacterMessage } from "@/features/report/api/GetCharacterMessage";
-import { MyCharacter } from "@/shared/store/myCharacter";
-import { CharacterBubble } from "@/shared/ui/CharacterBubble";
+import { MyCharacter } from "@/entities/character/store/myCharacter";
+import { CharacterBubble, CharacterBubbleSkeleton } from "@/shared/ui";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
@@ -14,13 +14,9 @@ export const CharacterMessageBubble: React.FC = () => {
 		error,
 	} = useQuery({
 		queryKey: ["report", "characterMessage"],
-		queryFn: async () => {
-			const response = await getCharacterMessage();
-			return response.data;
-		},
+		queryFn: getCharacterMessage,
 	});
 
-	console.log("characterMessageData", characterMessageData);
 	const characterName = useMemo<CharacterName>(() => {
 		if (characterMessageData?.character_name) {
 			return characterMessageData.character_name as CharacterName;
@@ -29,14 +25,17 @@ export const CharacterMessageBubble: React.FC = () => {
 	}, [characterMessageData?.character_name, name]);
 
 	const message = useMemo<string>(() => {
-		if (isLoading) {
-			return "...";
-		}
 		if (error) {
 			return "생각하는 중...";
 		}
-		return characterMessageData?.message ?? "생각하는 중...";
-	}, [characterMessageData?.message, isLoading, error]);
+		return characterMessageData?.message ?? "";
+	}, [characterMessageData?.message, error]);
+
+	const shouldShowSkeleton = isLoading || !message || message.trim() === "";
+
+	if (shouldShowSkeleton) {
+		return <CharacterBubbleSkeleton />;
+	}
 
 	return <CharacterBubble character={characterName} message={message} />;
 };

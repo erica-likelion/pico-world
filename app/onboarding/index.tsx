@@ -1,16 +1,11 @@
 import { Character } from "@/entities/character/model/character";
 import type { CharacterProps } from "@/entities/character/model/type";
 import { CharacterInfo } from "@/entities/character/ui";
-import { useInvalidateUserInfo } from "@/entities/user/model/userQueries";
-import { axiosInstance } from "@/shared/api/axios";
+import { useCharacterSelection } from "@/features/onboarding/model/hooks/useCharacterSelection";
 import { useHideBottomNav } from "@/shared/hooks/useHideBottomNav";
 import { usePreloadAssets } from "@/shared/hooks/usePreloadAssets";
-import { useAuthStore } from "@/shared/store/auth";
-import { MyCharacter } from "@/shared/store/myCharacter";
 import { Button } from "@/shared/ui";
 import { TopNav } from "@/widgets/TopNav/ui";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useMutation } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, View } from "react-native";
@@ -20,57 +15,24 @@ export default function Onboarding() {
 	const { isLoaded } = usePreloadAssets(characterImages);
 	const router = useRouter();
 	const { from } = useLocalSearchParams();
-	const { setName } = MyCharacter();
 	const [selectedCharacter, setSelectedCharacter] = useState<CharacterProps>(
 		Character[0],
 	);
-	const sele =
-		Character.findIndex((char) => char.name === selectedCharacter.name) + 1;
-	const invalidateUserInfo = useInvalidateUserInfo();
-	const { setIsOnboarding } = useAuthStore();
+	const { selectCharacter, updateCharacter } =
+		useCharacterSelection(selectedCharacter);
 
 	useHideBottomNav();
-
-	const { mutate: selectMutate } = useMutation({
-		mutationFn: async (characterId: number) => {
-			await axiosInstance.post("/api/v1/characters/select", {
-				characterId: characterId,
-			});
-		},
-		onSuccess: async () => {
-			setName(selectedCharacter.name);
-			setIsOnboarding(false);
-			await AsyncStorage.removeItem("isOnboardingNeeded");
-			router.push("/home");
-		},
-		onError: (error) => {
-			console.log(error);
-		},
-	});
-
-	const { mutate: reSelectMutate } = useMutation({
-		mutationFn: async (characterId: number) => {
-			await axiosInstance.put("/api/v1/users/me/character", {
-				characterId: characterId,
-			});
-		},
-		onSuccess: () => {
-			invalidateUserInfo();
-			setName(selectedCharacter.name);
-			router.replace("/my?characterUpdated=true");
-		},
-	});
 
 	const handleSelectCharacter = async () => {
 		if (from === "my") {
 			try {
-				reSelectMutate(sele);
+				updateCharacter();
 			} catch (e) {
 				console.log(e);
 			}
 		} else {
 			try {
-				selectMutate(sele);
+				selectCharacter();
 			} catch (e) {
 				console.log(e);
 			}

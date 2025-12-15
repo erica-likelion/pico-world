@@ -1,10 +1,10 @@
 import { axiosInstance } from "@/shared/api/axios";
 
-interface GreetingResponse {
+export interface GreetingResponse {
 	message: string;
-	characterName: string;
+	characterName: string | null;
 	context: string;
-	hasRecordedToday?: true | false;
+	hasRecordedToday?: boolean | null;
 }
 
 export const fetchGreeting = async ({

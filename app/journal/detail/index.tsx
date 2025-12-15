@@ -30,7 +30,7 @@ export default function JournalDetail() {
 				title="내 기록"
 				leftIcon={true}
 				rightIcon={<EditIcon />}
-				onLeftPress={() => router.push("/journal")}
+				onLeftPress={() => router.back()}
 				onRightPress={handleEditPress}
 			/>
 			<ScrollView

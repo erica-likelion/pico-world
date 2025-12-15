@@ -1,4 +1,5 @@
 import type { CharacterName } from "@/entities/character/model/characterMessages";
+import { MyCharacter } from "@/entities/character/store/myCharacter";
 import { useHasRecordedToday } from "@/entities/emotion/model/emotionQueries";
 import {
 	useUserConnectCode,
@@ -9,36 +10,41 @@ import {
 	useFriendRequestResponse,
 	useGetFriends,
 	useRemoveFriend,
-	useToast,
 } from "@/features/friends/model/hooks";
 import type { Friend, FriendRequest } from "@/features/friends/model/types";
 import * as S from "@/features/friends/style/FriendsContent.styles";
-import { FriendBottomSheet } from "@/features/friends/ui/FriendBottomSheet";
-import { FriendInviteBottomSheet } from "@/features/friends/ui/FriendInviteBottomSheet";
-import { FriendRequestCard } from "@/features/friends/ui/FriendRequestCard";
-import { FriendsCard } from "@/features/friends/ui/FriendsCard/FriendsCard";
+import {
+	FriendBottomSheet,
+	FriendDeleteModal,
+	FriendInviteBottomSheet,
+	FriendRequestCard,
+	FriendsCard,
+} from "@/features/friends/ui";
 import FriendsPlusIcon from "@/shared/assets/icons/freinds-plus.svg";
-import { MyCharacter } from "@/shared/store/myCharacter";
 import {
 	Button,
 	CharacterBubble,
+	CharacterBubbleSkeleton,
 	Divider,
 	ProfileButton,
-	Toast,
 } from "@/shared/ui";
 import { formatTimeAgo } from "@/shared/utils/date";
 import type { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { View } from "react-native";
 import { useTheme } from "styled-components/native";
 
 interface FriendsContentProps {
-	onScrollToTop?: () => void;
+	onScrollToTop: () => void;
+	onShowToast: (message: string) => void;
 }
 
 const FRIEND_LIMIT = 5;
 
-export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
+export function FriendsContent({
+	onScrollToTop,
+	onShowToast,
+}: FriendsContentProps) {
 	const theme = useTheme();
 	const nickname = useUserNickname();
 	const profileImageUrl = useUserProfileImageUrl();
@@ -47,21 +53,16 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 	const inviteCode = useUserConnectCode();
 	const { friendList, friendRequests, friendFeed, greeting } = useGetFriends();
 
-	const {
-		isVisible: isToastVisible,
-		message: toastMessage,
-		show: showToast,
-		hide: hideToast,
-	} = useToast();
 	const [selectedFriend, setSelectedFriend] = useState<Friend | null>(null);
+	const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 	const addFriendBottomSheetRef = useRef<BottomSheetModal>(null);
 	const menuBottomSheetRef = useRef<BottomSheetModal>(null);
-	const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	const acceptedFriends = friendList.data ?? [];
 	const friendRequestsData = friendRequests.data ?? [];
 	const friendFeedData = friendFeed.data ?? [];
 	const greetingData = greeting.data;
+	const isGreetingLoading = greeting.isLoading;
 
 	const friendCount = acceptedFriends.length;
 	const friendAddProgress = `${friendCount}/${FRIEND_LIMIT}`;
@@ -74,15 +75,9 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 
 	const showToastWithAutoHide = useCallback(
 		(message: string) => {
-			showToast(message);
-			if (toastTimerRef.current) {
-				clearTimeout(toastTimerRef.current);
-			}
-			toastTimerRef.current = setTimeout(() => {
-				hideToast();
-			}, 2000);
+			onShowToast?.(message);
 		},
-		[showToast, hideToast],
+		[onShowToast],
 	);
 
 	const { friendAccept, friendReject } = useFriendRequestResponse({
@@ -92,14 +87,6 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 		onSuccess: () => showToastWithAutoHide("친구를 끊었습니다."),
 		onError: showToastWithAutoHide,
 	});
-
-	useEffect(() => {
-		return () => {
-			if (toastTimerRef.current) {
-				clearTimeout(toastTimerRef.current);
-			}
-		};
-	}, []);
 
 	const handleAcceptRequest = useCallback(
 		(request: FriendRequest) => {
@@ -139,9 +126,20 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 	const handleRemoveFriend = useCallback(
 		(connectCode: string) => {
 			disconnectFriend(connectCode);
+			setIsDeleteModalVisible(false);
+			setSelectedFriend(null);
 		},
 		[disconnectFriend],
 	);
+
+	const handleRemoveFriendPress = useCallback(() => {
+		menuBottomSheetRef.current?.dismiss();
+		setIsDeleteModalVisible(true);
+	}, []);
+
+	const handleDeleteCancel = useCallback(() => {
+		setIsDeleteModalVisible(false);
+	}, []);
 
 	return (
 		<S.Container>
@@ -187,7 +185,16 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 			</S.ProfileRow>
 
 			<S.Spacing>
-				<CharacterBubble character={characterName} message={greetingMessage} />
+				{isGreetingLoading ||
+				!greetingMessage ||
+				greetingMessage.trim() === "" ? (
+					<CharacterBubbleSkeleton />
+				) : (
+					<CharacterBubble
+						character={characterName}
+						message={greetingMessage}
+					/>
+				)}
 			</S.Spacing>
 
 			{friendRequestsData.length > 0 &&
@@ -256,13 +263,6 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 				</S.FooterButtonWrapper>
 			</S.Footer>
 
-			<View style={{ position: "absolute", bottom: 20, left: 0, right: 0 }}>
-				<Toast
-					visible={isToastVisible}
-					message={toastMessage}
-					onHide={hideToast}
-				/>
-			</View>
 			<FriendInviteBottomSheet
 				bottomSheetRef={addFriendBottomSheetRef}
 				inviteCode={inviteCode}
@@ -273,7 +273,17 @@ export function FriendsContent({ onScrollToTop }: FriendsContentProps) {
 				bottomSheetRef={menuBottomSheetRef}
 				friend={selectedFriend}
 				onDeleteConfirm={handleRemoveFriend}
+				onRemoveFriendPress={handleRemoveFriendPress}
 			/>
+
+			{selectedFriend && (
+				<FriendDeleteModal
+					isVisible={isDeleteModalVisible}
+					onConfirm={() => handleRemoveFriend(selectedFriend.connectCode)}
+					onCancel={handleDeleteCancel}
+					friendName={selectedFriend.nickname}
+				/>
+			)}
 		</S.Container>
 	);
 }

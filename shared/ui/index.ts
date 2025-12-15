@@ -3,6 +3,7 @@ export * from "@/shared/ui/bottomSheet/CustomBottomSheet";
 export * from "@/shared/ui/bottomSheet/MenuBottomSheet";
 export * from "@/shared/ui/Button";
 export * from "@/shared/ui/CharacterBubble";
+export * from "@/shared/ui/CharacterBubbleSkeleton";
 export * from "@/shared/ui/Chip";
 export * from "@/shared/ui/Divider";
 export * from "@/shared/ui/emotion";
