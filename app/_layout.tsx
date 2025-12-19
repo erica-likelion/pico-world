@@ -27,7 +27,7 @@ import {
 } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
@@ -68,6 +68,7 @@ function RootLayoutNav() {
 		hide: hideToast,
 	} = useToast();
 	const isLogin = pathname.startsWith("/login");
+	const isHandlingNotificationRef = useRef(false);
 
 	const [loaded, error] = useFonts({
 		"Pretendard-Bold": require("@/shared/assets/fonts/Pretendard-Bold.ttf"),
@@ -99,6 +100,7 @@ function RootLayoutNav() {
 
 	const handleNotificationNavigation = useCallback(
 		async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
+			isHandlingNotificationRef.current = true;
 			const { type, relatedId, url } = remoteMessage.data || {};
 
 			const destination =
@@ -109,13 +111,15 @@ function RootLayoutNav() {
 						: url;
 			if (!destination) return;
 
-			const currentIsLoggedIn = !!(await AsyncStorage.getItem("accessToken"));
-			if (currentIsLoggedIn) {
-				router.push(destination as Href);
-			} else {
-				setPendingDestination(destination as string);
-				router.push("/login");
-			}
+			router.push(destination as Href);
+
+			// 로그인 체크는 뒤에서
+			AsyncStorage.getItem("accessToken").then((token) => {
+				if (!token) {
+					setPendingDestination(destination as string);
+					router.replace("/login");
+				}
+			});
 		},
 		[router, setPendingDestination],
 	);
@@ -153,9 +157,11 @@ function RootLayoutNav() {
 			return false;
 		};
 
-		setupNotifications().then(async (navigationHandledByNotification) => {
+		setupNotifications().then(async () => {
 			SplashScreen.hideAsync();
-			if (navigationHandledByNotification) {
+
+			if (isHandlingNotificationRef.current) {
+				isHandlingNotificationRef.current = false;
 				return;
 			}
 

@@ -10,7 +10,7 @@ import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 export default function JournalDetail() {
 	useHideBottomNav();
 	const router = useRouter();
-	const { id } = useLocalSearchParams<{ id: string }>();
+	const { id, from } = useLocalSearchParams<{ id: string; from?: string }>();
 
 	const { data: record, isLoading: isRecordLoading } = useQuery({
 		queryKey: ["emotionRecord", id],
@@ -24,13 +24,21 @@ export default function JournalDetail() {
 		}
 	};
 
+	const handleLeftPress = () => {
+		if (from === "edit") {
+			router.replace("/journal");
+		} else {
+			router.back();
+		}
+	};
+
 	return (
 		<View style={{ flex: 1 }}>
 			<TopNav
 				title="내 기록"
 				leftIcon={true}
 				rightIcon={<EditIcon />}
-				onLeftPress={() => router.back()}
+				onLeftPress={handleLeftPress}
 				onRightPress={handleEditPress}
 			/>
 			<ScrollView

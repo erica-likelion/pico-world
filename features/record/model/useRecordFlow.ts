@@ -1,11 +1,11 @@
 import { postFeedback } from "@/entities/character/api/feedback";
+import { MyCharacter } from "@/entities/character/store/myCharacter";
 import { postRecord } from "@/features/record/api/PostRecord";
 import { putRecord } from "@/features/record/api/PutRecord";
 import {
 	useFeedbackTimerActions,
 	useFeedbackTimerStore,
 } from "@/shared/store/feedbackTimer";
-import { MyCharacter } from "@/entities/character/store/myCharacter";
 import type { EmotionChip } from "@/shared/types";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
@@ -76,6 +76,7 @@ export function useRecordFlow() {
 			onSuccess: (data) => {
 				setIsToastVisible(false);
 				feedbackMutate(data.record_id);
+				setUpdatedRecordId(data.record_id);
 				const { name: currentCharacterName } = MyCharacter.getState();
 				startTimer(data.record_id.toString(), 60, currentCharacterName);
 				setPhase("complete");
@@ -118,7 +119,7 @@ export function useRecordFlow() {
 			if (newCount >= 3) {
 				setToastMessage("피드백 횟수가 끝났습니다.");
 				setIsToastVisible(true);
-				router.push(`/journal/detail?id=${data.record_id}`);
+				router.push(`/journal/detail?id=${data.record_id}&from=edit`);
 			} else {
 				setShowConfirmModal(true);
 			}
@@ -167,7 +168,7 @@ export function useRecordFlow() {
 	const handleCancelFeedback = () => {
 		setShowConfirmModal(false);
 		if (updatedRecordId) {
-			router.push(`/journal/detail?id=${updatedRecordId}`);
+			router.push(`/journal/detail?id=${updatedRecordId}&from=edit`);
 		} else {
 			router.push("/journal");
 		}
@@ -260,5 +261,6 @@ export function useRecordFlow() {
 		initializeRecord,
 		aiFeedbackCount,
 		handleCloseModal,
+		updatedRecordId,
 	};
 }

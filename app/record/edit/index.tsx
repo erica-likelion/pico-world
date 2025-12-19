@@ -34,6 +34,7 @@ export default function RecordEdit() {
 		handleConfirmFeedback,
 		handleCancelFeedback,
 		handleCloseModal,
+		updatedRecordId,
 	} = useRecordFlow();
 	const router = useRouter();
 	const params = useLocalSearchParams();
@@ -80,8 +81,9 @@ export default function RecordEdit() {
 	}, [params.id, initializeRecord]);
 
 	const handleComplete = useCallback(() => {
-		router.push(`/journal/detail?id=${params.id}`);
-	}, [router, params.id]);
+		const id = updatedRecordId || params.id;
+		router.push(`/journal/detail?id=${id}&from=edit`);
+	}, [router, params.id, updatedRecordId]);
 
 	if (phase === "explore") {
 		return (
