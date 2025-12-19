@@ -109,17 +109,23 @@ function RootLayoutNav() {
 					: typeof type === "string" && type.startsWith("FRIEND")
 						? "/friends"
 						: url;
-			if (!destination) return;
+			if (!destination) {
+				isHandlingNotificationRef.current = false;
+				return;
+			}
 
-			router.push(destination as Href);
+			// 먼저 로그인 체크
+			const token = await AsyncStorage.getItem("accessToken");
+			if (!token) {
+				setPendingDestination(destination as string);
+				router.replace("/login");
+				isHandlingNotificationRef.current = false;
+				return;
+			}
 
-			// 로그인 체크는 뒤에서
-			AsyncStorage.getItem("accessToken").then((token) => {
-				if (!token) {
-					setPendingDestination(destination as string);
-					router.replace("/login");
-				}
-			});
+			// 로그인 이후에 이동
+			router.replace(destination as Href);
+			isHandlingNotificationRef.current = false;
 		},
 		[router, setPendingDestination],
 	);
@@ -161,7 +167,7 @@ function RootLayoutNav() {
 			SplashScreen.hideAsync();
 
 			if (isHandlingNotificationRef.current) {
-				isHandlingNotificationRef.current = false;
+				// 알림 처리 중이면 라우팅 XX
 				return;
 			}
 

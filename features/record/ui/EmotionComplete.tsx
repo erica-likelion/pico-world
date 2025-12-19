@@ -50,7 +50,7 @@ export const EmotionComplete: React.FC<EmotionCompleteProps> = ({
 			if (onComplete) {
 				onComplete();
 			} else {
-				router.push("/journal" as Href);
+				router.push("/home" as Href);
 			}
 		});
 	}, [fade1, fade2, fade3, router, onComplete]);
