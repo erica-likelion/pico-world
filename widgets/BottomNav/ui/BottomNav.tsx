@@ -5,12 +5,12 @@ import SettingIcon from "@/shared/assets/icons/setting.svg";
 import UsersIcon from "@/shared/assets/icons/users.svg";
 import { usePressAnimation } from "@/shared/hooks/usePressAnimation";
 import * as S from "@/widgets/BottomNav/style/BottomNav.styles";
-import { type Href, usePathname, useRouter } from "expo-router";
-import React, { type ReactNode, useState } from "react";
+import React, { type ReactNode } from "react";
 import { TouchableOpacity } from "react-native";
 import Reanimated from "react-native-reanimated";
 import type { SvgProps } from "react-native-svg";
 import { useTheme } from "styled-components/native";
+import { useBottomNav } from "../model/useBottomNav";
 
 export interface NavItem {
 	icon: React.ComponentType<SvgProps>;
@@ -54,12 +54,14 @@ interface BottomNavBarProps {
 const NavItemComponent = React.memo(
 	({
 		item,
+		index,
 		isActive,
 		onPress,
 	}: {
 		item: NavItem;
+		index: number;
 		isActive: boolean;
-		onPress: () => void;
+		onPress: (index: number) => void;
 	}) => {
 		const theme = useTheme();
 		const { animatedStyle, handlePressIn, handlePressOut } =
@@ -68,7 +70,7 @@ const NavItemComponent = React.memo(
 
 		return (
 			<TouchableOpacity
-				onPress={onPress}
+				onPress={() => onPress(index)}
 				onPressIn={handlePressIn}
 				onPressOut={handlePressOut}
 				activeOpacity={1}
@@ -92,6 +94,7 @@ const NavItemComponent = React.memo(
 		return (
 			prev.isActive === next.isActive &&
 			prev.item === next.item &&
+			prev.index === next.index &&
 			prev.onPress === next.onPress
 		);
 	},
@@ -101,46 +104,11 @@ export const BottomNav = ({
 	activeIndex: controlledActiveIndex,
 	setActiveIndex,
 }: BottomNavBarProps) => {
-	const [internalActiveIndex, setInternalActiveIndex] = useState(0);
-
-	const router = useRouter();
-	const pathname = usePathname();
-
-	// 🔽 현재 경로를 기반으로 activeIndex 자동 계산
-	const autoActiveIndex = NAV_ITEMS.findIndex((item) => {
-		if (!item.route) return false;
-
-		// 직접 매칭 (예: /home, /journal)
-		if (pathname === `/${item.route}`) return true;
-
-		// activePaths 매칭 (여러 경로를 하나의 탭으로)
-		if (item.activePaths) {
-			return item.activePaths.some((path) => pathname.startsWith(path));
-		}
-
-		// 하위 경로 매칭 (예: /journal/explore -> journal 탭 활성화)
-		if (pathname.startsWith(`/${item.route}/`)) return true;
-
-		return false;
+	const { activeIndex, handlePress } = useBottomNav({
+		navItems: NAV_ITEMS,
+		controlledActiveIndex,
+		setActiveIndex,
 	});
-
-	// 🔽 자동 계산된 activeIndex 사용 (route 기능 활성화 시)
-	const activeIndex =
-		controlledActiveIndex ??
-		(autoActiveIndex !== -1 ? autoActiveIndex : internalActiveIndex);
-
-	const handlePress = (index: number) => {
-		if (index === activeIndex) return;
-		setInternalActiveIndex(index);
-		if (setActiveIndex) {
-			setActiveIndex(index);
-		}
-
-		const item = NAV_ITEMS[index];
-		if (item.route) {
-			router.replace(`/${item.route}` as Href);
-		}
-	};
 
 	return (
 		<S.Container>
@@ -150,8 +118,9 @@ export const BottomNav = ({
 					<NavItemComponent
 						key={`nav-${item.label}-${index}`}
 						item={item}
+						index={index}
 						isActive={isActive}
-						onPress={() => handlePress(index)}
+						onPress={handlePress}
 					/>
 				);
 			})}
